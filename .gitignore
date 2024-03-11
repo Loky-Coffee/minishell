@@ -6,6 +6,10 @@
 !README.md
 
 # Erlaube C-Quellcodedateien und Header-Dateien
+!mandatory
+!libft
+!libft/printf
+!libft/gnl
 !*.c
 !*.h
 
