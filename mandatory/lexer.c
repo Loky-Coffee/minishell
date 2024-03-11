@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:45:10 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/11 18:46:29 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/11 20:14:49 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	ft_lexer(t_ms *ms)
 		start = i;
 		len = 1;
 
-		if (ms->line[i] && ms->line[i + 1] && ms->line[i + 2] && ms->line[i] == '<' && ms->line[i + 1] == '<' && ms->line[i + 2] == '<')
+		if (is_tripple_token(&ms->line[i]))
 		{
 			len += 2;
 			add_new_token((t_token){start, len, TOKEN_TLESS, NULL}, ms);

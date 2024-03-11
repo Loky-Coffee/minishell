@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:51:40 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/11 18:52:12 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/11 19:43:34 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,5 +81,13 @@ t_tokentype	is_double_token(char *s)
 			return (ft_get_dtokentype(s));
 		i++;
 	}
+	return (0);
+}
+	
+t_tokentype	is_tripple_token(char *s)
+{
+	if (ft_strlen(s) >= 3)
+		if (s[0] == '<' && s[1] == '<' && s[2] == '<')
+			return (1);
 	return (0);
 }

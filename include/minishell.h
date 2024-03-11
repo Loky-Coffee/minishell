@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/11 18:49:24 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/11 19:43:58 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,9 +88,7 @@ typedef struct s_ms
 	t_list	*tokens;
 	t_node	node;
 	char	*line;
-	// char	line[256];
 }		t_ms;
-
 
 // Lexer
 void		ft_lexer(t_ms *ms);
@@ -99,7 +97,6 @@ void		ft_lexer(t_ms *ms);
 void		parse(t_ms *ms);
 
 // Renderer
-// void		render_promprt(void);
 void		render_tokens(t_ms *ms);
 
 // Terminate
@@ -109,5 +106,6 @@ void		free_ms(t_ms *ms);
 // uToken
 t_tokentype	is_single_token(char c);
 t_tokentype	is_double_token(char *s);
+t_tokentype	is_tripple_token(char *s);
 
 #endif

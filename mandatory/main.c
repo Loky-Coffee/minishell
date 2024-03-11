@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/11 18:53:47 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/11 20:17:37 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	main(void)
 
 	while (ms.run)
 	{
-		ms.line = readline(LIGHTGREEN"minishell $ "RESET);
+		ms.line = readline(LIGHTGREEN"minishell:~$ "RESET);
 		add_history(ms.line);
 		ft_printf("=> %s\n", ms.line);
 
@@ -31,10 +31,13 @@ int	main(void)
 
 		// PARSE IT aka Build TREE
 
+		// EXEXUTE IT
+
 		// check for EXIT
 		if (ft_strncmp(ms.line, "exit\0", 5) == 0)
 			ms.run = FALSE;
-		// free line && tokens
+
+		// FREE line && tokens
 		if (ms.line)
 			free(ms.line);
 		ft_lstclear(&ms.tokens, del_token);
