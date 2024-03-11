@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   terminate.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:48:38 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/11 18:49:05 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/11 21:05:17 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

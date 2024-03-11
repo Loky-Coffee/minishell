@@ -1,26 +1,32 @@
 
-NAME	= minishell
+GREEN	= \033[0;32m
+YELLOW	= \033[0;33m
+NC		= \033[0m
 
+NAME	= minishell
 CC		= cc
-CFLAGS	= -Wall -Wextra -Werror			# -g -fsanitize=address
+CFLAGS	= -Wall -Wextra -Werror #	-g -fsanitize=address
 
 SRC_DIR	= mandatory/
 OBJ_DIR = mandatory/obj/
 
-SRCS = main.c terminate.c lexer.c renderer.c utoken.c 
+SRCS = main.c terminate.c lexer.c renderer.c utoken.c
 OBJS = $(addprefix $(OBJ_DIR), $(notdir $(SRCS:.c=.o)))
 
 .SILENT:
 
 all: $(NAME)
 
+start:
+	@echo "$(YELLOW)Compiling your files, please wait a moment.$(NC)"
+
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	mkdir -p $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(NAME): libft $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME) -lreadline
-	echo "COMPILATION SUCCESSFULL"
+$(NAME): start libft $(OBJS)
+	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME) -lreadline
+	echo "$(GREEN)Compilation successful ✅$(NC)"
 
 clean:
 	rm -rf $(OBJ_DIR)
@@ -69,5 +75,5 @@ re_libft:
 ####                             GLOBAL  RULES                             #####
 ################################################################################
 
-fcleanall: fclean clean_libft  fclean_libft 
+fcleanall: fclean clean_libft  fclean_libft
 	rm -f libft.a
