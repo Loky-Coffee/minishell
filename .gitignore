@@ -1,2 +1,13 @@
-.DS_Store
-.vscode
+# Ignoriere alles
+*
+
+# Erlaube .gitignore und README.md
+!.gitignore
+!README.md
+
+# Erlaube C-Quellcodedateien und Header-Dateien
+!*.c
+!*.h
+
+# Erlaube Makefile
+!Makefile
