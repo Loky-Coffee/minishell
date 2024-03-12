@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:50:40 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/12 13:40:20 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/12 20:30:58 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,4 +37,15 @@ void	render_tokens(t_ms *ms)
 		}
 		lst = lst->next;
 	}
+}
+
+void	render_nodes(int depth, t_ms *ms)
+{
+	int		i;
+	t_node	*n;
+
+	n = ms->node;
+	i = 0;
+	while (i < depth)
+		printf(" ");
 }

@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/12 20:17:53 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/12 20:33:38 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ t_node		*ft_parser(t_ms *ms);
 
 // Renderer
 void		render_tokens(t_ms *ms);
+void	render_nodes(int depth, t_ms *ms);
 
 // Terminate
 void		del_token(void *param);
