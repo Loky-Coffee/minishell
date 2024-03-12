@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/12 19:30:07 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/12 21:52:32 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ int	main(void)
 		ms.line = readline(LIGHTGREEN"minishell:~$ "RESET);
 		if (ms.line)
 			add_history(ms.line);
+		else
+			continue ;
 		ft_printf("=> %s\n", ms.line);
 
 		// TOKENIZE IT

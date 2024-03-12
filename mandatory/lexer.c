@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:45:10 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/12 20:18:32 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/12 21:51:01 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	ft_lexer(t_ms *ms)
 
 	i = 0;
 	// cq = 0;
-	while (ms->line[i])
+	while (ms->line && ms->line[i])
 	{
 		start = i;
 		len = 1;

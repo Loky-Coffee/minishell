@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/12 20:33:38 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/12 21:49:38 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,14 @@ typedef enum e_tokentype
 
 }	t_tokentype;
 
+// typedef enum e_nodetype
+// {
+// 	NODE_ERROR,
+// 	NODE_CMD,
+// 	NODE_OPERATOR,
+// 	NODE_FILE,
+// }	t_nodetype;
+
 typedef struct s_token
 {
 	int			start;
@@ -73,6 +81,7 @@ typedef struct s_token
 
 typedef struct s_node
 {
+	// t_nodetype		type;
 	t_token			**tokens;
 	struct s_node	*lft;
 	struct s_node	*rgt;
@@ -109,5 +118,6 @@ t_tokentype	is_single_token(char c);
 t_tokentype	is_double_token(char *s);
 t_tokentype	is_tripple_token(char *s);
 t_tokentype is_operator(char *s);
+t_tokentype is_word(char *str);
 
 #endif

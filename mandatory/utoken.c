@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utoken.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:51:40 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/12 20:17:42 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/12 21:00:41 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ t_tokentype	is_single_token(char c)
 	while (*tokens)
 		if (c == *tokens++)
 			return (ft_get_stokentype(c));
-	return (0);
+	return (TOKEN_ERROR);
 }
 
 t_tokentype	is_double_token(char *s)
@@ -83,15 +83,15 @@ t_tokentype	is_double_token(char *s)
 			return (ft_get_dtokentype(s));
 		i++;
 	}
-	return (0);
+	return (TOKEN_ERROR);
 }
-	
+
 t_tokentype	is_tripple_token(char *s)
 {
 	if (ft_strlen(s) >= 3)
 		if (s[0] == '<' && s[1] == '<' && s[2] == '<')
 			return (TOKEN_TLESS);
-	return (0);
+	return (TOKEN_ERROR);
 }
 
 t_tokentype is_operator(char *s)
@@ -102,5 +102,11 @@ t_tokentype is_operator(char *s)
 		return (is_double_token(s));
 	else if (is_single_token(*s))
 		return (is_single_token(*s));
-	return (0);
+	return (TOKEN_ERROR);
+}
+t_tokentype is_word(char *str)
+{
+	if (str && !ft_isspace(str[0]) && !is_operator(str))
+		return (TOKEN_WORD);
+	return (TOKEN_ERROR);
 }
