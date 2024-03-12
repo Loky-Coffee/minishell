@@ -11,7 +11,7 @@ CFLAGS	= -Wall -Wextra -Werror 			-g -fsanitize=address
 SRC_DIR	= mandatory/
 OBJ_DIR = mandatory/obj/
 
-SRCS = main.c terminate.c lexer.c renderer.c utoken.c ft_whitespace.c
+SRCS = main.c terminate.c lexer.c renderer.c utoken.c
 OBJS = $(addprefix $(OBJ_DIR), $(notdir $(SRCS:.c=.o)))
 
 .SILENT:

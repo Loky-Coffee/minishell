@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:45:10 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/12 16:23:30 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/12 16:27:51 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void	ft_lexer(t_ms *ms)
 			else if (cq && cq == ft_get_quote(ms->line[i]))
 				cq = 0;
 		}
-		else if (ms->line[i] && !ft_iswhitespace(ms->line[i]))
+		else if (ms->line[i] && !ft_isspace(ms->line[i]))
 		{
 			while (ms->line[i + len] && !ft_isspace(ms->line[i + len]) && !is_token(&ms->line[i + len]) )
 				len++;
