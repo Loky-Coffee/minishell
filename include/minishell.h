@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/12 19:29:39 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/12 20:17:53 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,6 @@ void		free_ms(t_ms *ms);
 t_tokentype	is_single_token(char c);
 t_tokentype	is_double_token(char *s);
 t_tokentype	is_tripple_token(char *s);
-t_tokentype is_token(char *s);
+t_tokentype is_operator(char *s);
 
 #endif

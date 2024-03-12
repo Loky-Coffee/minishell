@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:45:10 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/12 19:48:56 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/12 20:18:32 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	ft_lexer(t_ms *ms)
 		}
 		else if (ms->line[i] && !ft_isspace(ms->line[i]))
 		{
-			while (ms->line[i + len] && !ft_isspace(ms->line[i + len]) && !is_token(&ms->line[i + len]) )
+			while (ms->line[i + len] && !ft_isspace(ms->line[i + len]) && !is_operator(&ms->line[i + len]) )
 				len++;
 			add_new_token((t_token){start, len, TOKEN_WORD, NULL}, ms);
 		}
