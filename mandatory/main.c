@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/12 16:24:17 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/12 19:30:07 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ int	main(void)
 		render_tokens(&ms);
 
 		// PARSE IT aka Build TREE
+		ft_parser(&ms);
 
 		// EXEXUTE IT
 
