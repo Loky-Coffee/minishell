@@ -11,7 +11,7 @@ CFLAGS	= -Wall -Wextra -Werror 			-g -fsanitize=address
 SRC_DIR	= mandatory/
 OBJ_DIR = mandatory/obj/
 
-SRCS = main.c terminate.c lexer.c renderer.c utoken.c
+SRCS = main.c terminate.c lexer.c parser.c renderer.c utoken.c
 OBJS = $(addprefix $(OBJ_DIR), $(notdir $(SRCS:.c=.o)))
 
 .SILENT:
@@ -28,7 +28,10 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 
 $(NAME): start libft $(OBJS)
 	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME) -lreadline
-	echo "$(GREEN)Compilation successful ✅$(NC)"
+	echo "$(GREEN)/*--------------------------*\ $(NC)"
+	echo "$(GREEN)|  Compilation successful ✅ |$(NC)"
+	echo "$(GREEN)\*--------------------------*/$(NC)"
+
 
 clean:
 	rm -rf $(OBJ_DIR)

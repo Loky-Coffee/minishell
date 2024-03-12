@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/12 16:18:37 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/12 19:29:39 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,11 +73,11 @@ typedef struct s_token
 
 typedef struct s_node
 {
-	t_token			**token;
+	t_token			**tokens;
 	struct s_node	*lft;
 	struct s_node	*rgt;
-	char			**inf;
-	char			**outf;
+	char			*inf;
+	char			*outf;
 	int				pfd[2];
 }			t_node;
 
@@ -86,7 +86,7 @@ typedef struct s_ms
 	int		run;
 	int		error;
 	t_list	*tokens;
-	t_node	node;
+	t_node	*node;
 	char	*line;
 }		t_ms;
 
@@ -94,7 +94,7 @@ typedef struct s_ms
 void		ft_lexer(t_ms *ms);
 
 // Parser
-void		parse(t_ms *ms);
+t_node		*ft_parser(t_ms *ms);
 
 // Renderer
 void		render_tokens(t_ms *ms);
