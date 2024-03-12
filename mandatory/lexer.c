@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:45:10 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/12 00:05:03 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/12 16:23:30 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,24 @@ static int	add_new_token(t_token token_val, t_ms *ms)
 	return (0);
 }
 
+static int	ft_get_quote(int c)
+{
+	if (c == '\'')
+		return ('\'');
+	else if (c == '\"')
+		return ('\"');
+	return (0);
+}
+
 void	ft_lexer(t_ms *ms)
 {
-	static int	i;
-	int			start;
-	int			len;
+	int	i;
+	int	start;
+	int	len;
+	int	cq;
 
+	i = 0;
+	cq = 0;
 	while (ms->line[i])
 	{
 		start = i;
@@ -47,10 +59,16 @@ void	ft_lexer(t_ms *ms)
 		else if (is_double_token(&ms->line[i]))
 			add_new_token((t_token){start, ++len, is_double_token(&ms->line[i]), NULL}, ms);
 		else if (is_single_token(ms->line[i]))
-			add_new_token((t_token){start, len, is_single_token(ms->line[i]), NULL}, ms);
-		else if (ms->line[i] && ft_isalpha(ms->line[i]))
 		{
-			while (ft_isalpha(ms->line[i + len]))
+			add_new_token((t_token){start, len, is_single_token(ms->line[i]), NULL}, ms);
+			if (cq && ft_get_quote(ms->line[i]) && cq != ft_get_quote(ms->line[i]))
+				cq = ft_get_quote(ms->line[i]);
+			else if (cq && cq == ft_get_quote(ms->line[i]))
+				cq = 0;
+		}
+		else if (ms->line[i] && !ft_iswhitespace(ms->line[i]))
+		{
+			while (ms->line[i + len] && !ft_isspace(ms->line[i + len]) && !is_token(&ms->line[i + len]) )
 				len++;
 			add_new_token((t_token){start, len, TOKEN_WORD, NULL}, ms);
 		}

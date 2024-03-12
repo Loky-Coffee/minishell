@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:51:40 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/11 19:43:34 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/12 16:02:02 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,16 +26,16 @@ static t_tokentype	ft_get_stokentype(char c)
 		return (TOKEN_GRAETER);
 	else if (c == '\n')
 		return (TOKEN_NEWLINE);
-	else if (c == '&')
-		return (TOKEN_AND);
-	else if (c == '~')
-		return (TOKEN_TILDE);
-	else if (c == '$')
-		return (TOKEN_DOLLAR);
-	else if (c == '.')
-		return (TOKEN_DOT);
-	else if (c == '-')
-		return (TOKEN_MINUS);
+	// else if (c == '&')
+	// 	return (TOKEN_AND);
+	// else if (c == '~')
+	// 	return (TOKEN_TILDE);
+	// else if (c == '$')
+	// 	return (TOKEN_DOLLAR);
+	// else if (c == '.')
+	// 	return (TOKEN_DOT);
+	// else if (c == '-')
+	// 	return (TOKEN_MINUS);
 	return (TOKEN_ERROR);
 }
 
@@ -56,8 +56,10 @@ t_tokentype	is_single_token(char c)
 {
 	char	*tokens;
 
-	// ;&|><~*?$!\'\"^.=\\:
-	tokens = "\'\"|<>\n&~$.-";
+	// not required:
+	// => ;  \n&~$.
+	// -&|><~*?$!\'"^.=\\:
+	tokens = "\'\"|<>";
 	while (*tokens)
 		if (c == *tokens++)
 			return (ft_get_stokentype(c));
@@ -88,6 +90,17 @@ t_tokentype	is_tripple_token(char *s)
 {
 	if (ft_strlen(s) >= 3)
 		if (s[0] == '<' && s[1] == '<' && s[2] == '<')
-			return (1);
+			return (TOKEN_TLESS);
+	return (0);
+}
+
+t_tokentype is_token(char *s)
+{
+	if (is_tripple_token(s))
+		return (is_tripple_token(s));
+	else if (is_double_token(s))
+		return (is_double_token(s));
+	else if (is_single_token(*s))
+		return (is_single_token(*s));
 	return (0);
 }

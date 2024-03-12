@@ -1,27 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   terminate.c                                        :+:      :+:    :+:   */
+/*   ft_isspace.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/11 18:48:38 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/11 23:32:27 by nmihaile         ###   ########.fr       */
+/*   Created: 2024/03/12 16:09:18 by nmihaile          #+#    #+#             */
+/*   Updated: 2024/03/12 16:18:00 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "libft.h"
 
-void	del_token(void *param)
+int	ft_isspace(int c)
 {
-	t_token	*token;
-
-	token = (t_token *)param;
-	if (token)
-		free(token);
-}
-
-void	free_ms(t_ms *ms)
-{
-	ft_lstclear(&ms->tokens, del_token);
+	if ((c >=9 && c <= 13) || c == ' ')
+		return(1);
+	return(0);
 }

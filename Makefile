@@ -6,12 +6,12 @@ NC		= \033[0m
 
 NAME	= minishell
 CC		= cc
-CFLAGS	= -Wall -Wextra -Werror #	-g -fsanitize=address
+CFLAGS	= -Wall -Wextra -Werror 			-g -fsanitize=address
 
 SRC_DIR	= mandatory/
 OBJ_DIR = mandatory/obj/
 
-SRCS = main.c terminate.c lexer.c renderer.c utoken.c
+SRCS = main.c terminate.c lexer.c renderer.c utoken.c ft_whitespace.c
 OBJS = $(addprefix $(OBJ_DIR), $(notdir $(SRCS:.c=.o)))
 
 .SILENT:
@@ -39,6 +39,7 @@ fclean: clean
 re: fclean all
 
 t: $(NAME)
+	echo "\n"
 	./$(NAME)
 
 ret: re t
