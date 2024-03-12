@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/11 19:43:58 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/12 16:18:37 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,18 +40,18 @@ typedef enum e_tokentype
 {
 	TOKEN_ERROR,
 	TOKEN_WORD,
-	TOKEN_VARIABLE,	// ? do we need this??
+	// TOKEN_VARIABLE,	// ? do we need this??
 
 	TOKEN_SQUOTE,
 	TOKEN_DQUOTE,
 	TOKEN_PIPE,
 	TOKEN_LESS,
 	TOKEN_GRAETER,
-	TOKEN_AND,		// do we need this??
-	TOKEN_DOT,
-	TOKEN_TILDE,
-	TOKEN_DOLLAR,
-	TOKEN_MINUS,
+	// TOKEN_AND,		// do we need this??
+	// TOKEN_DOT,
+	// TOKEN_TILDE,
+	// TOKEN_DOLLAR,
+	// TOKEN_MINUS,
 	TOKEN_NEWLINE,	// do we need this??
 
 	TOKEN_DLESS,
@@ -107,5 +107,6 @@ void		free_ms(t_ms *ms);
 t_tokentype	is_single_token(char c);
 t_tokentype	is_double_token(char *s);
 t_tokentype	is_tripple_token(char *s);
+t_tokentype is_token(char *s);
 
 #endif

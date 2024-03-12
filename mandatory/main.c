@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/11 23:29:53 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/12 12:35:43 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ int	main(void)
 	while (ms.run)
 	{
 		ms.line = readline(LIGHTGREEN"minishell:~$ "RESET);
-		add_history(ms.line);
+		if (ms.line)
+			add_history(ms.line);
 		ft_printf("=> %s\n", ms.line);
 
 		// TOKENIZE IT

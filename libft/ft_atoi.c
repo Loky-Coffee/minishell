@@ -6,19 +6,19 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 16:00:09 by nmihaile          #+#    #+#             */
-/*   Updated: 2023/12/14 15:55:43 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/12 16:13:33 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	ft_isspace(char c)
-{
-	if (c == '\t' || c == '\n' || c == '\v' || c == '\f' || c == '\r'
-		|| c == ' ')
-		return (1);
-	return (0);
-}
+// static int	ft_isspace(char c)
+// {
+// 	if (c == '\t' || c == '\n' || c == '\v' || c == '\f' || c == '\r'
+// 		|| c == ' ')
+// 		return (1);
+// 	return (0);
+// }
 
 int	ft_atoi(const char *str)
 {
