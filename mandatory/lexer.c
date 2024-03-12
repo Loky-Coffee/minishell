@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:45:10 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/11 20:14:49 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/12 00:05:03 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,16 +31,14 @@ static int	add_new_token(t_token token_val, t_ms *ms)
 
 void	ft_lexer(t_ms *ms)
 {
-	int	i;
-	int	start;
-	int	len;
+	static int	i;
+	int			start;
+	int			len;
 
-	i = 0;
 	while (ms->line[i])
 	{
 		start = i;
 		len = 1;
-
 		if (is_tripple_token(&ms->line[i]))
 		{
 			len += 2;

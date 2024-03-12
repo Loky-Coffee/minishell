@@ -1,6 +1,7 @@
 
 GREEN	= \033[0;32m
 YELLOW	= \033[0;33m
+RED		= \033[0;31m
 NC		= \033[0m
 
 NAME	= minishell
@@ -22,7 +23,8 @@ start:
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@ || \
+	echo "$(RED)Compilation failed ❌$(NC)"
 
 $(NAME): start libft $(OBJS)
 	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME) -lreadline

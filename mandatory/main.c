@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/11 23:29:53 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/12 15:41:19 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 int	main(void)
 {
-	static t_ms ms;
-	ms.run = 1;
+	static t_ms	ms;
 
+	ms.run = 1;
 	while (ms.run)
 	{
 		ms.line = readline(LIGHTGREEN"minishell:~$ "RESET);
