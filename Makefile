@@ -19,7 +19,7 @@ OBJS = $(addprefix $(OBJ_DIR), $(notdir $(SRCS:.c=.o)))
 all: $(NAME)
 
 start:
-	@echo "$(YELLOW)Compiling your files, please wait a moment.$(NC)"
+	@echo "$(YELLOW)Compiling from source, please wait a moment…$(NC)"
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	mkdir -p $(OBJ_DIR)
@@ -28,9 +28,7 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 
 $(NAME): start libft $(OBJS)
 	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME) -lreadline
-	echo "$(GREEN)/*--------------------------*\ $(NC)"
-	echo "$(GREEN)|  Compilation successful ✅ |$(NC)"
-	echo "$(GREEN)\*--------------------------*/$(NC)"
+	echo "$(GREEN)Compilation successful ✅$(NC)"
 
 
 clean:

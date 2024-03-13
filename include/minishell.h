@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/12 21:49:38 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/13 14:42:02 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,32 +63,23 @@ typedef enum e_tokentype
 
 }	t_tokentype;
 
-// typedef enum e_nodetype
-// {
-// 	NODE_ERROR,
-// 	NODE_CMD,
-// 	NODE_OPERATOR,
-// 	NODE_FILE,
-// }	t_nodetype;
-
 typedef struct s_token
 {
 	int			start;
 	int			len;
 	t_tokentype	type;
 	char		*str;
-}	t_token;
+}				t_token;
 
 typedef struct s_node
 {
-	// t_nodetype		type;
 	t_token			**tokens;
 	struct s_node	*lft;
 	struct s_node	*rgt;
 	char			*inf;
 	char			*outf;
 	int				pfd[2];
-}			t_node;
+}					t_node;
 
 typedef struct s_ms
 {
@@ -97,7 +88,7 @@ typedef struct s_ms
 	t_list	*tokens;
 	t_node	*node;
 	char	*line;
-}		t_ms;
+}			t_ms;
 
 // Lexer
 void		ft_lexer(t_ms *ms);
@@ -107,7 +98,7 @@ t_node		*ft_parser(t_ms *ms);
 
 // Renderer
 void		render_tokens(t_ms *ms);
-void	render_nodes(int depth, t_ms *ms);
+void		render_nodes(int depth, t_node *n);
 
 // Terminate
 void		del_token(void *param);

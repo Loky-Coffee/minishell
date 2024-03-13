@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/12 21:52:32 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/13 11:30:00 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,10 @@ int	main(void)
 		render_tokens(&ms);
 
 		// PARSE IT aka Build TREE
-		ft_parser(&ms);
+		ms.node = ft_parser(&ms);
+
+		// render NODES
+		render_nodes(0, ms.node);
 
 		// EXEXUTE IT
 

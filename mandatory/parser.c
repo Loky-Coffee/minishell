@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:25:37 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/12 21:49:51 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/13 14:42:20 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,15 +56,6 @@ static t_token **create_tokens(t_list *lst, int len)
 	}
 	return (tokens);
 }
-// static t_nodetype	get_node_type(t_token *token)
-// {
-// 	if (is_operator(&token->str[token->start]))
-// 		return (NODE_OPERATOR);
-// 	else if (is_word(&token->str[token->start]))
-// 		return (NODE_CMD);
-// 	//TODO for files return NODE_FILE
-// 	return (NODE_ERROR);
-// }
 
 t_node	*ft_parser(t_ms *ms)
 {
