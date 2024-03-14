@@ -3,17 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/13 11:30:00 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/14 11:36:11 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
+void check_leaks(void)
+{
+	system("leaks minishell");
+}
+
 int	main(void)
 {
+	atexit(check_leaks);
 	static t_ms	ms;
 
 	ms.run = 1;
@@ -25,6 +31,7 @@ int	main(void)
 		else
 			continue ;
 		ft_printf("=> %s\n", ms.line);
+		printf("-------------------------\n");
 
 		// TOKENIZE IT
 		ft_lexer(&ms);
@@ -33,10 +40,11 @@ int	main(void)
 		render_tokens(&ms);
 
 		// PARSE IT aka Build TREE
-		ms.node = ft_parser(&ms);
+		ft_parser(&ms);
+		// ms.node = ft_parser(&ms);
 
 		// render NODES
-		render_nodes(0, ms.node);
+		// render_nodes(0, ms.node);
 
 		// EXEXUTE IT
 
@@ -47,10 +55,9 @@ int	main(void)
 		// FREE line && tokens
 		if (ms.line)
 			free(ms.line);
-		ft_lstclear(&ms.tokens, del_token);
+		ft_token_clear(&ms.tokens, del_token);
 		ms.tokens = NULL;
 	}
-
 	free_ms(&ms);
 	return (0);
 }

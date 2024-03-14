@@ -5,73 +5,100 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/11 18:45:10 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/12 21:51:01 by aalatzas         ###   ########.fr       */
+/*   Created: 2024/03/14 02:30:05 by aalatzas          #+#    #+#             */
+/*   Updated: 2024/03/14 11:27:48 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static int	add_new_token(t_token token_val, t_ms *ms)
+/* ************************************************************************** */
+// add_new_token creates and appends a new token to ms's list,
+// using token type and content. It allocates memory for the token
+// and content, copies content, and handles allocation failures.
+// It returns 0 on success or -1 on failure.
+static int	add_new_token(t_ms *ms, t_tokentype type, char *content)
 {
-	t_token	*token;
+	t_token	*new_token;
 
-	if (token_val.type == TOKEN_NEWLINE)
+	if (type == TOKEN_NEWLINE)
 		return (0);
-	token = (t_token *)malloc(1 * sizeof(t_token));
-	if (token == NULL)
+	new_token = ft_token_new();
+	if (new_token == NULL)
 		return (-1);
-	token->start = token_val.start;
-	token->len = token_val.len;
-	token->type = token_val.type;
-	token->str = ms->line;
-	ft_lstadd_back(&ms->tokens, ft_lstnew((void *)token));
+	new_token->type = type;
+	new_token->content = ft_calloc(ft_strlen(content) + 1, sizeof(char));
+	if (new_token->content == NULL)
+		return (free(new_token), -1);
+	ft_strlcpy(new_token->content, content, strlen(content) + 1);
+	ft_add_token_end(&(ms->tokens), new_token);
 	return (0);
 }
+/* ************************************************************************** */
+// check_tokens identifies special tokens for lexical analysis,
+// such as pipes, redirects, and logical operators. It dynamically
+// allocates memory to store token content, evaluates for
+// triple, double, or single character tokens, and adds
+// them to the ms's token list. After processing a token,
+// it advances the index *i, frees the allocated content memory,
+// and returns 1 for success or 0 if no special token was found.
+static int	check_for_operators(t_ms *ms, int *i, int start)
+{
+	char	*content;
 
-// static int	ft_get_quote(int c)
-// {
-// 	if (c == '\'')
-// 		return ('\'');
-// 	else if (c == '\"')
-// 		return ('\"');
-// 	return (0);
-// }
-
+	content = ft_calloc(4, sizeof(char));
+	if (is_tripple_token(&ms->line[*i]))
+	{
+		ft_strlcpy(content, &ms->line[start], 3 + 1);
+		add_new_token(ms, TOKEN_TLESS, content);
+		*i += 3;
+		return (free(content), 1);
+	}
+	else if (is_double_token(&ms->line[*i]))
+	{
+		ft_strlcpy(content, &ms->line[start], 2 + 1);
+		add_new_token(ms, is_double_token(&ms->line[*i]), content);
+		*i += 2;
+		return (free(content), 1);
+	}
+	else if (is_single_token(ms->line[*i]))
+	{
+		ft_strlcpy(content, &ms->line[start], 1 + 1);
+		add_new_token(ms, is_single_token(ms->line[*i]), content);
+		*i += 1;
+		return (free(content), 1);
+	}
+	return (free(content), 0);
+}
+/* ************************************************************************** */
+// ft_lexer tokenizes the input line in ms, converting it into shell tokens
+// like commands and operators. It groups characters into words or operators,
+// and for each group, calls add_new_token to append it to ms's token list.
+// This breaks the input into tokens for parsing and execution.
 void	ft_lexer(t_ms *ms)
 {
-	int	i;
-	int	start;
-	int	len;
-	// int	cq;
+	int		i;
+	char	*content;
+	int		len;
 
 	i = 0;
-	// cq = 0;
 	while (ms->line && ms->line[i])
 	{
-		start = i;
-		len = 1;
-		if (is_tripple_token(&ms->line[i]))
-		{
-			len += 2;
-			add_new_token((t_token){start, len, TOKEN_TLESS, NULL}, ms);
-		}
-		else if (is_double_token(&ms->line[i]))
-			add_new_token((t_token){start, ++len, is_double_token(&ms->line[i]), NULL}, ms);
-		else if (is_single_token(ms->line[i]))
-		{
-			add_new_token((t_token){start, len, is_single_token(ms->line[i]), NULL}, ms);
-			// if (cq && ft_get_quote(ms->line[i]) && cq != ft_get_quote(ms->line[i]))
-			// 	cq = ft_get_quote(ms->line[i]);
-			// else if (cq && cq == ft_get_quote(ms->line[i]))
-			// 	cq = 0;
-		}
+		if (check_for_operators(ms, &i, i))
+			continue ;
 		else if (ms->line[i] && !ft_isspace(ms->line[i]))
 		{
-			while (ms->line[i + len] && !ft_isspace(ms->line[i + len]) && !is_operator(&ms->line[i + len]) )
+			len = 0;
+			while (ms->line[i + len] && !ft_isspace(ms->line[i + len]) \
+			&& !is_operator(&ms->line[i + len]))
 				len++;
-			add_new_token((t_token){start, len, TOKEN_WORD, NULL}, ms);
+			content = ft_calloc(len + 1, sizeof(char));
+			ft_strlcpy(content, &ms->line[i], len + 1);
+			add_new_token(ms, TOKEN_WORD, content);
+			i += len;
+			free(content);
 		}
-		i += len;
+		else
+			i++;
 	}
 }
