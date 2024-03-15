@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/14 11:35:44 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/15 17:20:01 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,25 +47,25 @@
 // logical operators, and environment variable handling.
 typedef enum e_tokentype
 {
-	NO_TOKEN,		// No token identified
-	TOKEN_WORD,		// A string or command
-	TOKEN_SQUOTE,	// (')Single quote
-	TOKEN_DQUOTE,	// (")Double quote
-	TOKEN_PIPE,		// (|) PIPE
-	TOKEN_LESS,		// (<) Less than symbol, used for input redirection
-	TOKEN_GREATER,	// (>) Greater than symbol, used for output redirection
-	TOKEN_AND,		// (&), sometimes used for background execution
-	TOKEN_DOT,		// (.), used in file paths or commands like source
-	TOKEN_TILDE,	// (~), represents the home directory
-	TOKEN_MINUS,	// (-), used as an option prefix or in commands
-	TOKEN_NEWLINE,	// (\n) New line character , separates commands
-	TOKEN_DLESS,	// (<<) Double less than symbol, used for heredoc
-	TOKEN_DGREATER,	// (>>) used for appending to files
-	TOKEN_DAND,		// (&&), logical AND
-	TOKEN_OR,		// (||), logical OR
-	TOKEN_TLESS,	// (<<<), not commonly used, check if needed
-	TOKEN_VARIABLE,	// e.g., $HOME), denotes environment variable usage
-	TOKEN_DOLLAR,	// ($) Dollar sign , used to denote variables
+	NO_TOKEN,
+	TOKEN_WORD,
+	TOKEN_SQUOTE,
+	TOKEN_DQUOTE,
+	TOKEN_PIPE,
+	TOKEN_LESS,
+	TOKEN_GREATER,
+	TOKEN_AND,
+	TOKEN_DOT,
+	TOKEN_TILDE,
+	TOKEN_MINUS,
+	TOKEN_NEWLINE,
+	TOKEN_DLESS,
+	TOKEN_DGREATER,
+	TOKEN_DAND,
+	TOKEN_OR,
+	TOKEN_TLESS,
+	TOKEN_VARIABLE,
+	TOKEN_DOLLAR,
 } t_tokentype;
 /* ************************************************************************** */
 
@@ -75,11 +75,11 @@ typedef enum e_tokentype
 // operators. These nodes represent the parsed structure of a command line
 // input, allowing for structured interpretation and execution of shell cmd.
 typedef enum e_node_type {
-	NODE_COMMAND,	// e.g., "ls -la", "wc -l", "grep hi".
-	NODE_PIPE,		// "|", used to pass the out of 1 command as in to another.
-	NODE_REDIRECT,	// ">", ">>" for output, and "<", "<<" for input.
-	NODE_AND,		// "&&", exec the next cmd only if the curr one succeeds.
-	NODE_OR			// "||", exec the next cmd only if the curr one fails.
+	NODE_COMMAND,
+	NODE_PIPE,
+	NODE_REDIRECT,
+	NODE_AND,
+	NODE_OR	
 } t_node_type;
 
 /* ************************************************************************** */
@@ -93,9 +93,9 @@ typedef enum e_node_type {
 // an abstract syntax tree (AST) for parsing the shell command.
 typedef struct s_token
 {
-	t_tokentype		type;		// The type of token look t_tokentype enum.
-	char			*content;	// the command name, arg, operator, symbol.
-	struct s_token	*next;		// Pointer to the next token in the list.
+	t_tokentype		type;
+	char			*content;
+	struct s_token	*next;
 }   t_token;
 
 /* ************************************************************************** */
@@ -111,12 +111,10 @@ typedef struct s_token
 // - type: nature of the node (command, operator).
 typedef struct s_node
 {
-	t_token			*tokens;
+	t_token			**tokens;
 	struct s_node	*left;
 	struct s_node	*right;
-	// char			**args_left;
-	// char			**args_right;
-	t_tokentype		operator_type;
+	// t_tokentype		operator_type;
 }					t_node;
 /* ************************************************************************** */
 
@@ -136,14 +134,15 @@ void			ft_lexer(t_ms *ms);
 // Parser
 t_node			*ft_parser(t_ms *ms);
 int				count_nodes(t_ms *ms);
-
+void			ft_parse2(t_token *current_token, t_node **current_node);
 
 // Renderer
 void			render_tokens(t_ms *ms);
-void			render_nodes(int depth, t_node *n);
+void			render_nodes(int depth, t_node *n, char p);
 
 // Terminate
-void			del_token(void *param);
+void			del_token_content(void *param);
+void			free_node(t_node **node);
 void			free_ms(t_ms *ms);
 
 // uToken

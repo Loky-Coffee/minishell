@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_list_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 00:14:48 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/14 05:07:54 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/14 21:10:27 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 02:30:05 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/14 11:27:48 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/15 16:04:37 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,12 @@ static int	add_new_token(t_ms *ms, t_tokentype type, char *content)
 	if (new_token == NULL)
 		return (-1);
 	new_token->type = type;
-	new_token->content = ft_calloc(ft_strlen(content) + 1, sizeof(char));
-	if (new_token->content == NULL)
-		return (free(new_token), -1);
-	ft_strlcpy(new_token->content, content, strlen(content) + 1);
+	new_token->content = content;
+	new_token->next = NULL;
 	ft_add_token_end(&(ms->tokens), new_token);
 	return (0);
 }
+
 /* ************************************************************************** */
 // check_tokens identifies special tokens for lexical analysis,
 // such as pipes, redirects, and logical operators. It dynamically
@@ -52,24 +51,25 @@ static int	check_for_operators(t_ms *ms, int *i, int start)
 		ft_strlcpy(content, &ms->line[start], 3 + 1);
 		add_new_token(ms, TOKEN_TLESS, content);
 		*i += 3;
-		return (free(content), 1);
+		return (1);
 	}
 	else if (is_double_token(&ms->line[*i]))
 	{
 		ft_strlcpy(content, &ms->line[start], 2 + 1);
 		add_new_token(ms, is_double_token(&ms->line[*i]), content);
 		*i += 2;
-		return (free(content), 1);
+		return (1);
 	}
 	else if (is_single_token(ms->line[*i]))
 	{
 		ft_strlcpy(content, &ms->line[start], 1 + 1);
 		add_new_token(ms, is_single_token(ms->line[*i]), content);
 		*i += 1;
-		return (free(content), 1);
+		return (1);
 	}
 	return (free(content), 0);
 }
+
 /* ************************************************************************** */
 // ft_lexer tokenizes the input line in ms, converting it into shell tokens
 // like commands and operators. It groups characters into words or operators,
@@ -96,7 +96,6 @@ void	ft_lexer(t_ms *ms)
 			ft_strlcpy(content, &ms->line[i], len + 1);
 			add_new_token(ms, TOKEN_WORD, content);
 			i += len;
-			free(content);
 		}
 		else
 			i++;

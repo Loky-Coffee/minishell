@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utoken.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:51:40 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/14 07:59:39 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/15 17:20:22 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   renderer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:50:40 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/14 07:58:59 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/15 17:14:14 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,25 +29,35 @@ void	render_tokens(t_ms *ms)
 	}
 }
 
-// void	render_nodes(int depth, t_node *n)
-// {
-// 	int		i;
-// 	char	*str;
+static void	render_doubly_token(t_token **tokens)
+{
+	int		i;
 
-// 	if (n == NULL)
-// 		return;
-// 	i = 0;
-// 	str = NULL;
-// 	while (i++ < depth)
-// 		printf("  ");
-// 	if (n && n->tokens&& n->tokens[0])
-// 		str = ft_substr(n->tokens[0]->str, n->tokens[0]->start, n->tokens[0]->len);
-// 	printf("%s\n", str);
-// 	fflush(stdout);
-// 	if (str)
-// 		free(str);
-// 	if (n->lft)
-// 		render_nodes(depth + 1, n->lft);
-// 	if (n->rgt)
-// 		render_nodes(depth + 1, n->rgt);
-// }
+	if (tokens == NULL)
+		return ;
+	i = 0;
+	while (tokens[i])
+	{
+		printf("%s ", tokens[i]->content);
+		i++;
+	}
+	printf("\n");
+}
+
+void	render_nodes(int depth, t_node *n, char p)
+{
+	int		i;
+
+	if (n == NULL)
+		return;
+	i = 0;
+	while (i++ < depth)
+		printf("  ");
+	printf("(%c) ", p);
+	if (n && n->tokens && n->tokens[0])
+		render_doubly_token(n->tokens);
+	if (n->left)
+		render_nodes(depth + 1, n->left, '<');
+	if (n->right)
+		render_nodes(depth + 1, n->right, '>');
+}

@@ -6,7 +6,7 @@ NC		= \033[0m
 
 NAME	= minishell
 CC		= cc
-CFLAGS	= -Wall -Wextra -Werror 			-g #-fsanitize=address
+CFLAGS	= -Wall -Wextra -Werror 			# -g -fsanitize=address
 
 SRC_DIR	= mandatory/
 OBJ_DIR = mandatory/obj/
@@ -19,7 +19,7 @@ OBJS = $(addprefix $(OBJ_DIR), $(notdir $(SRCS:.c=.o)))
 all: $(NAME)
 
 start:
-	@echo "$(YELLOW)Compiling from source, please wait a moment…$(NC)"
+	echo "$(YELLOW)Compiling from source, please wait a moment…$(NC)"
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	mkdir -p $(OBJ_DIR)
@@ -27,7 +27,7 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	echo "$(RED)Compilation failed ❌$(NC)"
 
 $(NAME): start libft $(OBJS)
-	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME) -lreadline
+	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME) -lreadline
 	echo "$(GREEN)Compilation successful ✅$(NC)"
 
 

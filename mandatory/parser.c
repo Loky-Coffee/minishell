@@ -3,177 +3,112 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:25:37 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/14 11:36:33 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/15 16:11:23 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-
-
-int count_nodes(t_ms *ms)
+static int	get_same_token_len(t_token *token)
 {
-	int i;
-	t_token	*cur_token;
+	t_token	*t;
+	int		len;
 
-	i = 0;
-	cur_token = ms->tokens;
-	while (cur_token)
+	t = token;
+	len = 0;
+	if (t && t->next && t->type != t->next->type)
+		return (1);
+	while (t && t->type == token->type)
 	{
-		if (is_operator(cur_token->content) == 4)
-			i++;
-		cur_token = cur_token->next;
+		t = t->next;
+		len++;
 	}
-	return ((i * 2) + 1);
+	return (len);
 }
 
-// t_node	greate_new_node()
-// {
-
-// }
-
-t_node	*ft_parser(t_ms *ms)
+static t_token	*get_next_token_type(t_token *token)
 {
-	t_node	**node;
-	t_token	*token;
-	t_node	*buffer;
-	int		i;
-	int		nodes_nbr;
+	t_token *t;
+	
+	t = token->next;
+	while (t && t->type == token->type)
+		t = t->next;
+	return (t);
+}
 
-	token =	ms->tokens;
+static t_node	*create_node(t_token *token, struct s_node *left, struct s_node *right)
+{
+	t_node	*n;
+	t_token	*t;
+	int		i;
+
+	n = (t_node *)malloc(1 * sizeof(t_node));
+	if (n == NULL)
+		return (NULL);
+	n->left = left;
+	n->right = right;
+	n->tokens = ft_calloc(get_same_token_len(token), sizeof(t_token));
+	if (n->tokens == NULL)
+			// @TODO clear node.
+			return (NULL);
+	t = token;
 	i = 0;
-	nodes_nbr = count_nodes(ms);
-	printf("note:%d\n", nodes_nbr);
-	node = (t_node **)ft_calloc(nodes_nbr + 1, sizeof(t_node *));
-	while (token)
+	while (t && t->type == token->type)
 	{
-		while (is_operator(token->content))
-		{
-			buffer = (t_node *)token;
-			token = token->next;
-		}
-		node[i] = (t_node *)ft_calloc(1, sizeof(t_node));
-		node[i]->left = buffer;
-		node[i]->right = (t_node *)token->next;
-		// node[i]->args_left = NULL;
-		// node[i]->args_right = NULL;
-		node[i]->operator_type = is_operator(token->content);
-		token = token->next;
+		n->tokens[i] = t;
+		t = t->next;
 		i++;
 	}
-	return(*node);
+	return (n);
 }
-// static t_token **create_tokens(t_list *lst, int len)
-// {
-// 	t_list	*buf;
-// 	t_token	*token;
-// 	t_token **tokens;
 
-// 	if (lst == NULL)
-// 		return (NULL);
-// 	buf = lst;
-// 	token = (t_token *)(buf->content);
-// 	if (token && (token->type == TOKEN_PIPE))
-// 	{
-// 		tokens = (t_token **)ft_calloc(2, sizeof(t_token *));
-// 		tokens[0] = token;
-// 		return (tokens);
-// 	}
-// 	else
-// 	{
-// 		while (token && (token->type != TOKEN_PIPE))
-// 		{
-// 			len++;
-// 			buf = buf->next;
-// 			if (buf)
-// 				token = (t_token *)(buf->content);
-// 			else
-// 				token = NULL;
-// 		}
-// 		tokens = (t_token **)ft_calloc(len + 1, sizeof(t_token *));
-// 		buf = lst;
-// 		token = (t_token *)(buf->content);
-// 		len = 0;
-// 		while (token && (token->type != TOKEN_PIPE))
-// 		{
-// 			tokens[len] = token;
-// 			buf = buf->next;
-// 			if (buf)
-// 				token = (t_token *)(buf->content);
-// 			else
-// 				token = NULL;
-// 			len++;
-// 		}
-// 	}
-// 	return (tokens);
-// }
+void	ft_parse2(t_token *current_token, t_node **current_node)
+{
+	t_token	*next_token;
+	t_node	*new_node;
+	t_node	*next_node;
+	
 
-// t_node	*ft_parser(t_ms *ms)
-// {
-// 	t_list	*clst;
-// 	t_token	*ct;
-// 	t_node	*cnode;
-// 	t_node	*last_node;
-// 	t_node	*last_op;
+	if (current_token == NULL)
+		return ;
+	next_token = current_token->next;
+	while (next_token && next_token->type == current_token->type)
+		next_token = next_token->next;
+	
+	new_node = create_node(current_token, NULL, NULL);
+	next_node = NULL;
+	if (next_token && is_operator(next_token->content))
+		next_node = create_node(next_token, NULL, NULL);
 
-// 	if (ms->tokens == NULL)
-// 		return(NULL);
-// 	last_node = NULL;
-// 	cnode = NULL;
-// 	clst = ms->tokens;
-// 	ct = (t_token *)(clst->content);
-// 	while (clst)
-// 	{
-// 		last_node = cnode;
-// 		if (cnode && is_operator(&cnode->tokens[0]->str[cnode->tokens[0]->start]))
-// 			last_op = cnode;
-// 		else
-// 			last_op = NULL;
-// 		cnode =  (t_node *)malloc(1 * sizeof(t_node));
-// 		if (cnode == NULL)
-// 			// @TODO clear & free all nodes.
-// 			return (NULL);
-// 		// cnode->type = get_node_type(ct);
-// 		if (last_op)
-// 		{
-// 			if (last_op->lft)
-// 				last_op->rgt = cnode;
-// 			cnode->lft = NULL;
-// 			cnode->rgt = NULL;
-// 		}
-// 		else
-// 		{
-// 			cnode->lft = last_node;
-// 			cnode->rgt = NULL;
-// 		}
-// 		cnode->inf = NULL;
-// 		cnode->outf = NULL;
-// 		cnode->pfd[0] = 0;
-// 		cnode->pfd[1] = 0;
-// 		cnode->tokens = create_tokens(clst, 0);
-// 		if (cnode->tokens == NULL)
-// 			// @TODO clear & free all nodes.
-// 			return (NULL);
-// 		if (cnode->tokens[0]->type == TOKEN_PIPE)
-// 		{
-// 			clst = clst->next;
-// 			if (clst)
-// 				ct = (t_token *)(clst->content);
-// 			else
-// 				ct = NULL;
-// 		}
-// 		else
-// 			while (ct && (ct->type != TOKEN_PIPE))
-// 			{
-// 				clst = clst->next;
-// 				if (clst)
-// 					ct = (t_token *)(clst->content);
-// 				else
-// 					ct = NULL;
-// 			}
-// 	}
-// 	return (cnode);
-// }
+	if (current_node && *current_node)
+	{
+		if (next_node)
+		{
+			(*current_node)->right = next_node;
+			next_node->left = new_node;
+			ft_parse2(next_token->next, &next_node->right);
+		}
+		else
+		{
+			(*current_node)->right = new_node;
+			ft_parse2(get_next_token_type(current_token), &new_node->right);
+		}
+	}
+	else
+	{
+		if (next_node)
+		{
+			*current_node = next_node;
+			(*current_node)->left = new_node;
+			ft_parse2(next_token->next, &(*current_node)->right);
+		}
+		else
+		{
+			*current_node = new_node;
+			ft_parse2(get_next_token_type(current_token), &(*current_node)->right);
+		}
+	}
+}

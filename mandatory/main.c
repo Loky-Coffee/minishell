@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/14 11:36:11 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/15 16:05:27 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,13 @@ int	main(void)
 		render_tokens(&ms);
 
 		// PARSE IT aka Build TREE
-		ft_parser(&ms);
+		ft_parse2(ms.tokens, &ms.nodes);
 		// ms.node = ft_parser(&ms);
 
 		// render NODES
-		// render_nodes(0, ms.node);
+		render_nodes(0, ms.nodes, 'R');
 
-		// EXEXUTE IT
+		// EXECUTE IT
 
 		// check for EXIT
 		if (ft_strncmp(ms.line, "exit\0", 5) == 0)
@@ -55,8 +55,9 @@ int	main(void)
 		// FREE line && tokens
 		if (ms.line)
 			free(ms.line);
-		ft_token_clear(&ms.tokens, del_token);
+		ft_token_clear(&ms.tokens, del_token_content);
 		ms.tokens = NULL;
+		free_node(&ms.nodes);
 	}
 	free_ms(&ms);
 	return (0);
