@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/20 20:58:28 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/20 21:44:00 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,6 +133,7 @@ typedef struct s_ms
 	t_token		*tokens;
 	t_node		*nodes;
 	char		*line;
+	char		*prompt;
 	int			exit_code;
 }			t_ms;
 /* ************************************************************************** */
@@ -148,6 +149,9 @@ typedef struct s_cmd
 
 // main
 void			cleanup_ms(t_ms *ms);
+
+// Prompt
+int				create_prompt(t_ms *ms);
 
 // History
 int				dump_history(t_ms *ms);

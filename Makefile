@@ -6,7 +6,7 @@
 #    By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/20 16:47:30 by aalatzas          #+#    #+#              #
-#    Updated: 2024/03/20 20:51:34 by nmihaile         ###   ########.fr        #
+#    Updated: 2024/03/20 21:43:32 by nmihaile         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ CFLAGS	= -Wall -Wextra -Werror 			# -g -fsanitize=address
 SRC_DIR	= mandatory/
 OBJ_DIR = mandatory/obj/
 
-SRCS = main.c history.c terminate.c lexer.c parser.c renderer.c utoken.c token_list_utils.c executer.c path.c error.c builtins.c
+SRCS = main.c prompt.c history.c terminate.c lexer.c parser.c renderer.c utoken.c token_list_utils.c executer.c path.c error.c builtins.c
 OBJS = $(addprefix $(OBJ_DIR), $(notdir $(SRCS:.c=.o)))
 
 .SILENT:

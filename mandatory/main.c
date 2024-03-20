@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/20 20:50:56 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/20 21:45:06 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,9 @@ int	main(int argc, char **argv, char **env)
 	render_ninjashell();
 	while (ms.run)
 	{
-		ms.line = readline(LIGHTGREEN"ninjaSHELL:~$ "RESET);
+		create_prompt(&ms);
+		ms.line = readline(ms.prompt);
+		// ms.line = readline(LIGHTGREEN"ninjaSHELL:~$ "RESET);
 		if (ms.line)
 			dump_history(&ms);
 		else
