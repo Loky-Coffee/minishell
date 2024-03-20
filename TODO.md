@@ -17,3 +17,5 @@ RESOURCES
 -		Abstract syntax tree
 		https://en.wikipedia.org/wiki/Abstract_syntax_tree
 		
+-		COLOR PROMPT ERROR explanation:
+		https://stackoverflow.com/questions/31329952/colorized-readline-prompt-breaks-control-a		
