@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:25:37 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/20 16:19:53 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/20 17:21:59 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static int	get_same_token_len(t_token *token)
 static t_token	*get_next_token_type(t_token *token)
 {
 	t_token *t;
-	
+
 	t = token->next;
 	while (t && t->type == token->type)
 		t = t->next;
@@ -76,13 +76,13 @@ void	ft_parse2(t_token *current_token, t_node **current_node)
 	next_token = current_token->next;
 	while (next_token && next_token->type == current_token->type)
 		next_token = next_token->next;
-	
+
 	new_node = create_node(current_token, NULL, NULL);
 	next_node = NULL;
-	if (next_token && is_operator(next_token->content))
+	if (next_token && is_operator(next_token->str))
 		next_node = create_node(next_token, NULL, NULL);
 
-	if (current_token && is_operator(current_token->content))
+	if (current_token && is_operator(current_token->str))
 	{
 		// we are a operator and have to do diff stuff for | and && and ||
 	}

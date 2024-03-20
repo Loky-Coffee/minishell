@@ -1,3 +1,14 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/03/20 16:47:30 by aalatzas          #+#    #+#              #
+#    Updated: 2024/03/20 17:40:44 by aalatzas         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
 
 GREEN	= \033[0;32m
 YELLOW	= \033[0;33m
@@ -11,7 +22,7 @@ CFLAGS	= -Wall -Wextra -Werror 			# -g -fsanitize=address
 SRC_DIR	= mandatory/
 OBJ_DIR = mandatory/obj/
 
-SRCS = main.c terminate.c lexer.c parser.c renderer.c utoken.c token_list_utils.c
+SRCS = main.c terminate.c lexer.c parser.c renderer.c utoken.c token_list_utils.c executer.c path.c error.c
 OBJS = $(addprefix $(OBJ_DIR), $(notdir $(SRCS:.c=.o)))
 
 .SILENT:

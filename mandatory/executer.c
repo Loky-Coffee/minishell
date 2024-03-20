@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   executer.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
+/*   Updated: 2024/03/20 17:57:58 by aalatzas         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../include/minishell.h"
 
@@ -6,7 +17,7 @@ static char	**create_cmd_args(t_node *node)
 	int		i;
 	int		j;
 	char	**args;
-	
+
 	i = 0;
 	while (node->tokens[i])
 		i++;
@@ -16,7 +27,7 @@ static char	**create_cmd_args(t_node *node)
 	j = 0;
 	while (j < i)
 	{
-		args[j] = ft_substr(node->tokens[j]->str, 0, node->tokens[j]->len);
+		args[j] = node->tokens[j]->str;
 		j++;
 	}
 	return (args);
@@ -35,7 +46,7 @@ int	execute_cmd(int fdr, int fdw, t_node *node, t_ms *ms, int exit_code)
 	int		pid;
 	t_cmd	cmd;
 	int		err;
-	
+
 	if (!is_word(node->tokens[0]->str))
 		return (-1);
 	pid = fork();
@@ -55,7 +66,7 @@ int	execute_cmd(int fdr, int fdw, t_node *node, t_ms *ms, int exit_code)
 		if (cmd.args == NULL)
 			cmd.cmdpth = ft_strdup("");
 		else
-			cmd.cmdpth = ft_substr(node->tokens[0]->str, 0, node->tokens[0]->len);
+			cmd.cmdpth = ft_strdup(node->tokens[0]->str);
 		cmd.path = getenv("PATH");
 		if (cmd.cmdpth[0] == '\0' || (ft_strchr(cmd.cmdpth, '/') == NULL
 			&& ft_prepend_path(&cmd.cmdpth, cmd.path))
@@ -92,24 +103,24 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 		return (-1);
 	exit_code = 1;
 	status = 0;
-	if (node->tokens[0] && tkn_is_operator(node->tokens[0]) == TOKEN_PIPE)
+	if (node->tokens[0] && is_operator(node->tokens[0]->str) == TOKEN_PIPE)
 	{
 		if (pipe(fdp))
 			perror("ninjaSHELL");
-		if (node->lft)
-			status = execute(fdr, fdp[1], node->lft, ms, 0);
+		if (node->left)
+			status = execute(fdr, fdp[1], node->left, ms, 0);
 			// execute_cmd(fdr, fdp[1], ms->node->lft, ms, 1); // is the exit_code right here?? it only has to be 127 at the last cmd
 		if (fdp[1] != STDOUT_FILENO)
 			close(fdp[1]);
-		if (node->rgt)
-			status = execute(fdp[0], fdw, node->rgt, ms, 1);
-			// execute_cmd(fdp[0], fdw, ms->node->rgt, ms, 127); // is the exit_code right here?? it only has to be 127 at the last cmd
+		if (node->right)
+			status = execute(fdp[0], fdw, node->right, ms, 1);
+			// execute_cmd(fdp[0], fdw, ms->node->right, ms, 127); // is the exit_code right here?? it only has to be 127 at the last cmd
 		ft_close_fd(fdr, fdw);
 		ft_close_fd(fdp[0], 0);
 	}
 	else
 	{
-		if (is_rgt && node->rgt == NULL)
+		if (is_rgt && node->right == NULL)
 			exit_code = 127;
 		pid = execute_cmd(fdr, fdw, node, ms, exit_code); // is the exit_code right here?? it only has to be 127 at the last cmd
 		ft_close_fd(fdr, fdw);
@@ -127,15 +138,15 @@ int	exec_manager(t_ms *ms)
 {
 	int	pid;
 	int	status;
-	
-	if (ms->node == NULL)
+
+	if (ms->nodes == NULL)
 		return (-1);
-	if (ms->node->lft == NULL && ms->node->rgt == NULL && (ms->node->tokens && tkn_is_word(ms->node->tokens[0])))
+	if (ms->nodes->left == NULL && ms->nodes->right == NULL && (ms->nodes->tokens && is_word(ms->nodes->tokens[0]->str)))
 	{
-		pid = execute_cmd(STDIN_FILENO, STDOUT_FILENO, ms->node, ms, 1); // is the exit_code right here?? it only has to be 127 at the last cmd
+		pid = execute_cmd(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms, 1); // is the exit_code right here?? it only has to be 127 at the last cmd
 		waitpid(pid, &status, 0);
 	}
 	else
-		status = execute(STDIN_FILENO, STDOUT_FILENO, ms->node, ms, 0);
+		status = execute(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms, 0);
 	return (status);
 }

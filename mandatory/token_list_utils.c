@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_list_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 00:14:48 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/14 21:10:27 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/20 17:22:32 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ t_token	*ft_token_new(void)
 	if (new_token == NULL)
 		return (NULL);
 	new_token->type = NO_TOKEN;
-	new_token->content = NULL;
+	new_token->str = NULL;
 	new_token->next = NULL;
 	return (new_token);
 }
@@ -69,7 +69,7 @@ void	ft_token_clear(t_token **token, void (*del)(void*))
 	while (*token)
 	{
 		buf = (*token)->next;
-		del((*token)->content);
+		del((*token)->str);
 		free(*token);
 		*token = buf;
 	}

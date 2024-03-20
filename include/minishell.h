@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/15 17:20:01 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/20 17:59:11 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,11 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include "../libft/libft.h"
+# include <sys/errno.h>
 /* ************************************************************************** */
 # define FALSE 0
 # define TRUE 1
-
+# define NINJASHELL "ninjaSHELL"
 /* ************************************************************************** */
 # define RED			"\033[0;31m"
 # define GREEN			"\033[0;32m"
@@ -79,7 +80,7 @@ typedef enum e_node_type {
 	NODE_PIPE,
 	NODE_REDIRECT,
 	NODE_AND,
-	NODE_OR	
+	NODE_OR
 } t_node_type;
 
 /* ************************************************************************** */
@@ -94,7 +95,7 @@ typedef enum e_node_type {
 typedef struct s_token
 {
 	t_tokentype		type;
-	char			*content;
+	char			*str;
 	struct s_token	*next;
 }   t_token;
 
@@ -125,7 +126,19 @@ typedef struct s_ms
 	t_token		*tokens;
 	t_node		*nodes;
 	char		*line;
+	int			ac;
+	char		**av;
+	char		**envp;
 }			t_ms;
+/* ************************************************************************** */
+
+typedef struct s_cmd
+{
+	char	*cmdpth;
+	char	**args;
+	char	*path;
+}			t_cmd;
+
 /* ************************************************************************** */
 
 // Lexer
@@ -144,6 +157,9 @@ void			render_nodes(int depth, t_node *n, char p);
 void			del_token_content(void *param);
 void			free_node(t_node **node);
 void			free_ms(t_ms *ms);
+void			free_av(char **av);
+void			ft_close_fd(int fdr, int fdw);
+void			terminate(t_ms *ms, int exit_code);
 
 // uToken
 t_tokentype		is_single_token(char c);
@@ -158,6 +174,21 @@ t_token			*ft_token_last(t_token *token);
 void			ft_add_token_end(t_token **token, t_token *new_token);
 int				tokens_size(t_token *tokens);
 void			ft_token_clear(t_token **token, void (*del)(void*));
+
+// executer
+int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt);
+int	execute_cmd(int fdr, int fdw, t_node *node, t_ms *ms, int exit_code);
+int	exec_manager(t_ms *ms);
+
+// path.c
+
+int	ft_prepend_path(char **cmd, char *envpaths);
+
+// error.c
+
+void	ft_perror(char *str);
+void	ft_cmd_error(char *msg, char *cmd, int error_code);
+
 /* ************************************************************************** */
 
 #endif
