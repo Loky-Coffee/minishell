@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:25:37 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/15 16:11:23 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/20 16:19:53 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,6 @@ void	ft_parse2(t_token *current_token, t_node **current_node)
 	t_token	*next_token;
 	t_node	*new_node;
 	t_node	*next_node;
-	
 
 	if (current_token == NULL)
 		return ;
@@ -83,32 +82,39 @@ void	ft_parse2(t_token *current_token, t_node **current_node)
 	if (next_token && is_operator(next_token->content))
 		next_node = create_node(next_token, NULL, NULL);
 
-	if (current_node && *current_node)
+	if (current_token && is_operator(current_token->content))
 	{
-		if (next_node)
-		{
-			(*current_node)->right = next_node;
-			next_node->left = new_node;
-			ft_parse2(next_token->next, &next_node->right);
-		}
-		else
-		{
-			(*current_node)->right = new_node;
-			ft_parse2(get_next_token_type(current_token), &new_node->right);
-		}
+		// we are a operator and have to do diff stuff for | and && and ||
 	}
 	else
 	{
-		if (next_node)
+		if (current_node && *current_node)
 		{
-			*current_node = next_node;
-			(*current_node)->left = new_node;
-			ft_parse2(next_token->next, &(*current_node)->right);
+			if (next_node)
+			{
+				(*current_node)->right = next_node;
+				next_node->left = new_node;
+				ft_parse2(next_token->next, &next_node->right);
+			}
+			else
+			{
+				(*current_node)->right = new_node;
+				ft_parse2(get_next_token_type(current_token), &new_node->right);
+			}
 		}
 		else
 		{
-			*current_node = new_node;
-			ft_parse2(get_next_token_type(current_token), &(*current_node)->right);
+			if (next_node)
+			{
+				*current_node = next_node;
+				(*current_node)->left = new_node;
+				ft_parse2(next_token->next, &(*current_node)->right);
+			}
+			else
+			{
+				*current_node = new_node;
+				ft_parse2(get_next_token_type(current_token), &(*current_node)->right);
+			}
 		}
 	}
 }
