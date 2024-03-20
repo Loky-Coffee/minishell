@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/20 17:59:11 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/20 20:58:28 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,20 @@
 
 # include <unistd.h>
 # include <stdio.h>
+# include <sys/errno.h>
+# include <sys/wait.h>
+# include <fcntl.h>
 # include <string.h>
 # include <stdlib.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include "../libft/libft.h"
-# include <sys/errno.h>
 /* ************************************************************************** */
+# define NINJASHELL "ninjaSHELL"
+# define HISTORY_FILE "ninjaSHELL.history"
 # define FALSE 0
 # define TRUE 1
-# define NINJASHELL "ninjaSHELL"
+
 /* ************************************************************************** */
 # define RED			"\033[0;31m"
 # define GREEN			"\033[0;32m"
@@ -121,14 +125,15 @@ typedef struct s_node
 
 typedef struct s_ms
 {
+	int			ac;
+	char		**av;
+	char		**envp;
 	int			run;
 	int			error;
 	t_token		*tokens;
 	t_node		*nodes;
 	char		*line;
-	int			ac;
-	char		**av;
-	char		**envp;
+	int			exit_code;
 }			t_ms;
 /* ************************************************************************** */
 
@@ -141,6 +146,13 @@ typedef struct s_cmd
 
 /* ************************************************************************** */
 
+// main
+void			cleanup_ms(t_ms *ms);
+
+// History
+int				dump_history(t_ms *ms);
+int				restore_history(void);
+
 // Lexer
 void			ft_lexer(t_ms *ms);
 
@@ -152,6 +164,7 @@ void			ft_parse2(t_token *current_token, t_node **current_node);
 // Renderer
 void			render_tokens(t_ms *ms);
 void			render_nodes(int depth, t_node *n, char p);
+void			render_ninjashell(void);
 
 // Terminate
 void			del_token_content(void *param);
@@ -176,18 +189,20 @@ int				tokens_size(t_token *tokens);
 void			ft_token_clear(t_token **token, void (*del)(void*));
 
 // executer
-int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt);
-int	execute_cmd(int fdr, int fdw, t_node *node, t_ms *ms, int exit_code);
-int	exec_manager(t_ms *ms);
+int				execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt);
+int				execute_cmd(int fdr, int fdw, t_node *node, t_ms *ms, int exit_code);
+int				exec_manager(t_ms *ms);
+
+// builtins
+int				builtins(t_ms *ms);
 
 // path.c
-
-int	ft_prepend_path(char **cmd, char *envpaths);
+int				ft_prepend_path(char **cmd, char *envpaths);
 
 // error.c
-
-void	ft_perror(char *str);
-void	ft_cmd_error(char *msg, char *cmd, int error_code);
+void			ft_error(char *str);
+void			ft_perror(char *str);
+void			ft_cmd_error(char *msg, char *cmd, int error_code);
 
 /* ************************************************************************** */
 

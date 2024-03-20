@@ -3,26 +3,38 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 18:56:31 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/20 17:40:23 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/20 21:03:26 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
+void	ft_error(char *str)
+{
+	ft_putstr_fd(LIGHTRED NINJASHELL": ", 2);
+	if (str)
+		ft_putstr_fd(str, 2);
+	ft_putstr_fd("\n"RESET, 2);
+}
+
 void	ft_perror(char *str)
 {
-	printf(LIGHTRED NINJASHELL": ");
+	ft_putstr_fd(LIGHTRED NINJASHELL": ", 2);
 	if (str)
-		printf("%s: ", str);
-	printf("%s\n"RESET, strerror(errno));
+	{
+		ft_putstr_fd(str, 2);
+		ft_putstr_fd(": ", 2);
+	}
+	ft_putstr_fd(strerror(errno), 2);
+	ft_putstr_fd("\n"RESET, 2);
 }
 
 void	ft_cmd_error(char *msg, char *cmd, int error_code)
 {
-	fprintf(stderr, LIGHTRED);
+	ft_putstr_fd(LIGHTRED, 2);
 	ft_putstr_fd(msg, 2);
 	ft_putstr_fd(": ", 2);
 	if (cmd != NULL)

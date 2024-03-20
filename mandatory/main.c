@@ -3,34 +3,47 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/20 18:15:53 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/20 20:50:56 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void check_leaks(void)
+// void check_leaks(void)
+// {
+// 	system("leaks minishell");
+// }
+// 	atexit(check_leaks);
+
+void	cleanup_ms(t_ms *ms)
 {
-	system("leaks minishell");
+	if (ms->line)
+		free(ms->line);
+	ft_token_clear(&ms->tokens, del_token_content);
+	ms->tokens = NULL;
+	free_node(&ms->nodes);
 }
 
 int	main(int argc, char **argv, char **env)
 {
-	atexit(check_leaks);
 	static t_ms	ms;
+	int			exit_code;
 
 	ms.ac = argc;
 	ms.av = argv;
 	ms.envp = env;
 	ms.run = 1;
+
+	restore_history();
+	render_ninjashell();
 	while (ms.run)
 	{
-		ms.line = readline(LIGHTGREEN"minishell:~$ "RESET);
+		ms.line = readline(LIGHTGREEN"ninjaSHELL:~$ "RESET);
 		if (ms.line)
-			add_history(ms.line);
+			dump_history(&ms);
 		else
 			continue ;
 
@@ -40,6 +53,7 @@ int	main(int argc, char **argv, char **env)
 			ms.run = FALSE;
 			continue ;
 		}
+
 
 		// TOKENIZE IT
 		ft_lexer(&ms);
@@ -54,16 +68,25 @@ int	main(int argc, char **argv, char **env)
 		// render NODES
 		// render_nodes(0, ms.nodes, 'R');
 
-		// EXECUTE IT
-		exec_manager(&ms);
+		// BUILDINS
+		if (builtins(&ms))
+		{
+			cleanup_ms(&ms);
+			continue ;
+		}
 
+		// EXECUTE IT
+		exit_code = exec_manager(&ms);
+		ms.exit_code = WEXITSTATUS(exit_code);
+		printf(YELLOW"=> %i\n"RESET, ms.exit_code);
+
+
+		// Clear and ninjaSHELL
+		if (ft_strncmp(ms.line, "ninjashell\0", 5) == 0 || ft_strncmp(ms.line, "clear\0", 5) == 0)
+			render_ninjashell();
 
 		// FREE line && tokens
-		if (ms.line)
-			free(ms.line);
-		ft_token_clear(&ms.tokens, del_token_content);
-		ms.tokens = NULL;
-		free_node(&ms.nodes);
+		cleanup_ms(&ms);
 	}
 	terminate(&ms, 0);
 	return (0);

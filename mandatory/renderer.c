@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   renderer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:50:40 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/20 17:22:09 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/20 20:12:40 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,4 +60,15 @@ void	render_nodes(int depth, t_node *n, char p)
 		render_nodes(depth + 1, n->left, '<');
 	if (n->right)
 		render_nodes(depth + 1, n->right, '>');
+}
+
+void	render_ninjashell(void)
+{
+	ft_printf(LIGHTRED
+		"        •  •  ┏┓┓┏┏┓┓ ┓       \n"
+		"      ┏┓┓┏┓┓┏┓┗┓┣┫┣ ┃ ┃       \n"
+		"━━━━━━┛┗┗┛┗┃┗┻┗┛┛┗┗┛┗┛┗┛━━━━━━\n"
+		"           ┛                  \n"
+		RESET);
+	ft_printf("\n");
 }
