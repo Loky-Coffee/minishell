@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/20 21:45:06 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/21 07:22:56 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,13 +48,15 @@ int	main(int argc, char **argv, char **env)
 			dump_history(&ms);
 		else
 			continue ;
-
+		// if(ft_strncmp(ms.line, "\n\0" , 5) == 0)
 		// check for EXIT
 		if (ft_strncmp(ms.line, "exit\0", 5) == 0)
 		{
 			ms.run = FALSE;
 			continue ;
 		}
+		if (ft_strncmp(ms.line, "\0", 1) == 0)
+			continue ;
 
 
 		// TOKENIZE IT
@@ -78,14 +80,17 @@ int	main(int argc, char **argv, char **env)
 		}
 
 		// EXECUTE IT
-		exit_code = exec_manager(&ms);
 		ms.exit_code = WEXITSTATUS(exit_code);
-		printf(YELLOW"=> %i\n"RESET, ms.exit_code);
+		// printf(YELLOW"=> %i\n"RESET, ms.exit_code);
 
 
 		// Clear and ninjaSHELL
-		if (ft_strncmp(ms.line, "ninjashell\0", 5) == 0 || ft_strncmp(ms.line, "clear\0", 5) == 0)
+		if (ft_strncmp(ms.line, "ninjashell\0", 5) == 0)
+		{
 			render_ninjashell();
+			continue ;
+		}
+		exit_code = exec_manager(&ms);
 
 		// FREE line && tokens
 		cleanup_ms(&ms);

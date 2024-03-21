@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/20 21:44:00 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/21 08:56:29 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 # define HISTORY_FILE "ninjaSHELL.history"
 # define FALSE 0
 # define TRUE 1
+# define PATH_MAX 4096
 
 /* ************************************************************************** */
 # define RED			"\033[0;31m"
@@ -199,6 +200,8 @@ int				exec_manager(t_ms *ms);
 
 // builtins
 int				builtins(t_ms *ms);
+//	ft_cd.c
+int ft_cd(t_ms *ms);
 
 // path.c
 int				ft_prepend_path(char **cmd, char *envpaths);
