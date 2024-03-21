@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/21 15:56:45 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/21 19:31:33 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ int	main(int argc, char **argv, char **env)
 	{
 		create_prompt(&ms);
 		ms.line = readline(ms.prompt);
-		// ms.line = readline(LIGHTGREEN"ninjaSHELL:~$ "RESET);
 		if (ms.line)
 			dump_history(&ms);
 		else
@@ -71,7 +70,7 @@ int	main(int argc, char **argv, char **env)
 		// render_tokens(&ms);
 
 		// PARSE IT aka Build TREE
-		ft_parse2(ms.tokens, &ms.nodes);
+		ft_parse(ms.tokens, &ms.nodes);
 		// ms.node = ft_parser(&ms);
 
 		// render NODES

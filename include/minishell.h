@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/21 18:09:52 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/21 19:29:56 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,9 +162,7 @@ int				restore_history(void);
 void			ft_lexer(t_ms *ms);
 
 // Parser
-t_node			*ft_parser(t_ms *ms);
-int				count_nodes(t_ms *ms);
-void			ft_parse2(t_token *current_token, t_node **current_node);
+void			ft_parse(t_token *current_token, t_node **current_node);
 
 // Renderer
 void			render_tokens(t_ms *ms);

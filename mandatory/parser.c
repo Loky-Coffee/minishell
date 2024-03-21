@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:25:37 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/20 17:21:59 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/21 19:29:44 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ static t_node	*create_node(t_token *token, struct s_node *left, struct s_node *r
 	return (n);
 }
 
-void	ft_parse2(t_token *current_token, t_node **current_node)
+void	ft_parse(t_token *current_token, t_node **current_node)
 {
 	t_token	*next_token;
 	t_node	*new_node;
@@ -94,12 +94,12 @@ void	ft_parse2(t_token *current_token, t_node **current_node)
 			{
 				(*current_node)->right = next_node;
 				next_node->left = new_node;
-				ft_parse2(next_token->next, &next_node->right);
+				ft_parse(next_token->next, &next_node->right);
 			}
 			else
 			{
 				(*current_node)->right = new_node;
-				ft_parse2(get_next_token_type(current_token), &new_node->right);
+				ft_parse(get_next_token_type(current_token), &new_node->right);
 			}
 		}
 		else
@@ -108,12 +108,12 @@ void	ft_parse2(t_token *current_token, t_node **current_node)
 			{
 				*current_node = next_node;
 				(*current_node)->left = new_node;
-				ft_parse2(next_token->next, &(*current_node)->right);
+				ft_parse(next_token->next, &(*current_node)->right);
 			}
 			else
 			{
 				*current_node = new_node;
-				ft_parse2(get_next_token_type(current_token), &(*current_node)->right);
+				ft_parse(get_next_token_type(current_token), &(*current_node)->right);
 			}
 		}
 	}
