@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 00:41:52 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/21 08:56:56 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/21 18:17:24 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ static int	ft_cd2(t_ms *ms)
 			}
 		}
 		else if (chdir(ms->tokens->str) != 0)
-			return (perror("cd Fehler"), 1);
+			return (ft_double_perror("cd", ms->tokens->str), 1);
 	}
 	return (0);
 }
@@ -77,27 +77,28 @@ int	ft_cd(t_ms *ms)
 {
 	static char	current_cwd[PATH_MAX] = {0};
 	static char	old_cwd[PATH_MAX] = {0};
-	const char	*home_dir;
+	char		*home_dir;
 
-	if (ms->tokens->next && ft_strncmp(ms->tokens->next->str, "-", 1) == 0)
+	if (ms->tokens->next && ft_strncmp(ms->tokens->next->str, "-\0", 2) == 0)
 	{
-		if (strlen(old_cwd) == 0)
-			return (perror("cd"), 1);
+		if (ft_strlen(old_cwd) == 0)
+			return (ft_perror("cd"), 1);
 		getcwd(current_cwd, sizeof(current_cwd));
 		if (chdir(old_cwd) != 0)
-			return (perror("cd"), 1);
+			return (ft_perror("cd"), 1);
 		ft_strlcpy(old_cwd, current_cwd, ft_strlen(current_cwd) + 1);
 		return (0);
+	}
+	else if (ms->tokens->next == NULL || (ms->tokens->next && ft_strncmp(ms->tokens->next->str, "~\0", 2) == 0))
+	{
+		home_dir = getenv("HOME");
+		if (chdir(home_dir) != 0)
+			return (ft_double_perror("cd", home_dir), 1);
+		return (1);
 	}
 	getcwd(current_cwd, sizeof(current_cwd));
 	ft_strlcpy(old_cwd, current_cwd, ft_strlen(current_cwd) + 1);
 	if (ms->tokens->next && ms->tokens->next->str)
 		ft_cd2(ms);
-	else if (!ms->tokens->next)
-	{
-		home_dir = getenv("HOME");
-		if (chdir(home_dir) != 0)
-			return (perror("cd Fehler"), 1);
-	}
 	return (0);
 }

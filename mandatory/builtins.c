@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 20:33:21 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/21 08:56:37 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/21 16:11:40 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,11 @@ int	builtins(t_ms *ms)
 {
 	char	current_cwd[PATH_MAX];
 
+	if (ms->tokens == NULL)
+		return (0);
 	if (ft_strncmp(ms->tokens->str, "echo", 4) == 0)
 		printf("echo<----\n");
-	else if (ft_strncmp(ms->tokens->str, "cd", 2) == 0)
+	else if (ft_strncmp(ms->tokens->str, "cd\0", 3) == 0)
 		ft_cd(ms);
 	else if (ft_strncmp(ms->tokens->str, "pwd", 3) == 0)
 		printf("%s\n", getcwd(current_cwd, sizeof(current_cwd)));

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/20 17:57:58 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/21 19:12:30 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,15 +106,13 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 	if (node->tokens[0] && is_operator(node->tokens[0]->str) == TOKEN_PIPE)
 	{
 		if (pipe(fdp))
-			perror("ninjaSHELL");
+			perror(NINJASHELL);
 		if (node->left)
 			status = execute(fdr, fdp[1], node->left, ms, 0);
-			// execute_cmd(fdr, fdp[1], ms->node->lft, ms, 1); // is the exit_code right here?? it only has to be 127 at the last cmd
 		if (fdp[1] != STDOUT_FILENO)
 			close(fdp[1]);
 		if (node->right)
 			status = execute(fdp[0], fdw, node->right, ms, 1);
-			// execute_cmd(fdp[0], fdw, ms->node->right, ms, 127); // is the exit_code right here?? it only has to be 127 at the last cmd
 		ft_close_fd(fdr, fdw);
 		ft_close_fd(fdp[0], 0);
 	}
@@ -122,7 +120,7 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 	{
 		if (is_rgt && node->right == NULL)
 			exit_code = 127;
-		pid = execute_cmd(fdr, fdw, node, ms, exit_code); // is the exit_code right here?? it only has to be 127 at the last cmd
+		pid = execute_cmd(fdr, fdw, node, ms, exit_code);
 		ft_close_fd(fdr, fdw);
 		if (exit_code == 127)
 		{
@@ -143,7 +141,7 @@ int	exec_manager(t_ms *ms)
 		return (-1);
 	if (ms->nodes->left == NULL && ms->nodes->right == NULL && (ms->nodes->tokens && is_word(ms->nodes->tokens[0]->str)))
 	{
-		pid = execute_cmd(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms, 1); // is the exit_code right here?? it only has to be 127 at the last cmd
+		pid = execute_cmd(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms, 127);
 		waitpid(pid, &status, 0);
 	}
 	else

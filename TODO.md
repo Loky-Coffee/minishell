@@ -3,6 +3,32 @@
 -		parser
 -		executer
 -		built-ins
+		-	exit -42
+		- exit abc def
+		- exit 12 34  (geht bis long_max)
+
+-		lsss
+		+> 127
+
+- 		own env
+		- execve use own env
+
+cd -
+cd ~
+cd ~/Documents
+unset OLDPWD
+==> check exit_codes
+
+bash-3.2$ cat << EOF
+> hallo
+> $USER
+> '$USER'
+> "$USER"
+> EOF
+hallo
+nmihaile
+'nmihaile'
+"nmihaile"
 
 --------------------------------------------------------------------------------
 

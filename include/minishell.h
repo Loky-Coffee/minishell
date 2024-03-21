@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/21 08:56:29 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/21 18:09:52 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,10 +173,10 @@ void			render_ninjashell(void);
 
 // Terminate
 void			del_token_content(void *param);
-void			free_node(t_node **node);
 void			free_ms(t_ms *ms);
 void			free_av(char **av);
 void			ft_close_fd(int fdr, int fdw);
+void			free_nodetree(t_node **n);
 void			terminate(t_ms *ms, int exit_code);
 
 // uToken
@@ -209,6 +209,7 @@ int				ft_prepend_path(char **cmd, char *envpaths);
 // error.c
 void			ft_error(char *str);
 void			ft_perror(char *str);
+void			ft_double_perror(char *s1, char *s2);
 void			ft_cmd_error(char *msg, char *cmd, int error_code);
 
 /* ************************************************************************** */

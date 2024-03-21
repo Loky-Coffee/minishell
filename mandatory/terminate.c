@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   terminate.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:48:38 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/20 18:13:05 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/21 15:57:40 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,23 +24,14 @@ void	del_token_content(void *param)
 		free(str);
 }
 
-void	free_node(t_node **node)
-{
-	if ((*node)->left)
-		free_node(&(*node)->left);
-	if ((*node)->right)
-		free_node(&(*node)->right);
-	if (*node)
-		free(*node);
-	*node = NULL;
-}
-
 /* ************************************************************************** */
 // free_ms initiates the cleanup of the entire ms structure, specifically
 // clearing the token list using ft_token_clear and del_token for each token.
 void	free_ms(t_ms *ms)
 {
 	ft_token_clear(&ms->tokens, del_token_content);
+	
+	// free all
 }
 
 void	free_av(char **av)
@@ -60,6 +51,7 @@ void	ft_close_fd(int fdr, int fdw)
 	if (fdw != STDOUT_FILENO && fdw != STDIN_FILENO)
 		close(fdw);
 }
+
 void	free_nodetree(t_node **n)
 {
 	if (*n == NULL)
