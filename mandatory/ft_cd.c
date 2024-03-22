@@ -3,19 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 00:41:52 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/21 18:17:24 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/22 02:08:44 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-// Counts the number of consecutive dots in the token string.
-// It moves to the next token if it exists and then iterates the characters
-// of the token string. If two dots are found, it increments the dot
-// counter. Finally, it returns the total number of consecutive dots found.
 static int	count_dots(t_ms *ms)
 {
 	int	i;
@@ -37,13 +33,31 @@ static int	count_dots(t_ms *ms)
 	}
 	return (dots);
 }
+static int is_tilde(char *old_cwd, t_ms *ms)
+{
+	char *home_dir;
+	static char *full_path;
+	int result;
 
-// Changes the current directory based on the token string.
-// If the next token exists and is not NULL, it counts the number of  dots
-// using the count_dots function. If there are dots, it moves up the dir tree
-// by calling chdir("..")for each dot.If there are no dots,it directly changes
-// the directory to the path specified by the token string using chdir.
-static int	ft_cd2(t_ms *ms)
+	result = 0;
+	getcwd(old_cwd, PATH_MAX);
+	home_dir = getenv("HOME");
+	if (!home_dir)
+		return (ft_perror("cd"),1);
+	if (ms->tokens->next->next && is_word(ms->tokens->next->next->str))
+	{
+		full_path = ft_strjoin(home_dir, ms->tokens->next->next->str);
+		home_dir = full_path;
+	}
+	result = chdir(home_dir);
+	if (result != 0)
+		result = (ft_double_perror("cd", home_dir) ,1);
+	if (full_path)
+		free(full_path);
+	return result;
+}
+
+static int	handle_direct_cd(t_ms *ms)
 {
 	int	i;
 	int	dots;
@@ -77,7 +91,6 @@ int	ft_cd(t_ms *ms)
 {
 	static char	current_cwd[PATH_MAX] = {0};
 	static char	old_cwd[PATH_MAX] = {0};
-	char		*home_dir;
 
 	if (ms->tokens->next && ft_strncmp(ms->tokens->next->str, "-\0", 2) == 0)
 	{
@@ -89,16 +102,11 @@ int	ft_cd(t_ms *ms)
 		ft_strlcpy(old_cwd, current_cwd, ft_strlen(current_cwd) + 1);
 		return (0);
 	}
-	else if (ms->tokens->next == NULL || (ms->tokens->next && ft_strncmp(ms->tokens->next->str, "~\0", 2) == 0))
-	{
-		home_dir = getenv("HOME");
-		if (chdir(home_dir) != 0)
-			return (ft_double_perror("cd", home_dir), 1);
-		return (1);
-	}
+	else if (ms->tokens->next && is_single_token(*ms->tokens->next->str) == TOKEN_TILDE)
+		return is_tilde(old_cwd, ms);
 	getcwd(current_cwd, sizeof(current_cwd));
 	ft_strlcpy(old_cwd, current_cwd, ft_strlen(current_cwd) + 1);
 	if (ms->tokens->next && ms->tokens->next->str)
-		ft_cd2(ms);
+		return (handle_direct_cd(ms));
 	return (0);
 }

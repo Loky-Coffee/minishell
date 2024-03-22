@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utoken.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:51:40 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/15 17:20:22 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/22 02:09:11 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,9 @@ t_tokentype	is_single_token(char c)
 	// not required:
 	// => ;  \n&~$.
 	// -&|><~*?$!\'"^.=\\:
-	tokens = "\'\"|<>";
+	// I inserted the tilde into single quotes so that I could handle the path following ~/Desktop...
+	// otherwise, everything was treated as one string.
+	tokens = "\'\"|<>~";
 	while (*tokens)
 		if (c == *tokens++)
 			return (ft_get_stokentype(c));
