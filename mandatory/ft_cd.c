@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 00:41:52 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/22 02:08:44 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/22 19:14:35 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static int is_tilde(char *old_cwd, t_ms *ms)
 	return result;
 }
 
-static int	handle_direct_cd(t_ms *ms)
+static int	handle_direct_cd(t_ms *ms, char *current_cwd, char *old_cwd)
 {
 	int	i;
 	int	dots;
@@ -73,6 +73,8 @@ static int	handle_direct_cd(t_ms *ms)
 				chdir("..");
 				i++;
 			}
+			printf("current_cwd%s\n", current_cwd);
+			printf("old_cwd%s\n", old_cwd);
 		}
 		else if (chdir(ms->tokens->str) != 0)
 			return (ft_double_perror("cd", ms->tokens->str), 1);
@@ -92,7 +94,14 @@ int	ft_cd(t_ms *ms)
 	static char	current_cwd[PATH_MAX] = {0};
 	static char	old_cwd[PATH_MAX] = {0};
 
-	if (ms->tokens->next && ft_strncmp(ms->tokens->next->str, "-\0", 2) == 0)
+	if (ft_strncmp(ms->tokens->str, "cd", 2) == 0 && !ms->tokens->next)
+	{
+		getcwd(old_cwd, sizeof(old_cwd));
+		if (chdir(getenv("HOME")) != 0)
+			return (ft_perror("cd"), 1);
+		getcwd(current_cwd, sizeof(current_cwd));
+	}
+	else if (ms->tokens->next && ft_strncmp(ms->tokens->next->str, "-\0", 2) == 0)
 	{
 		if (ft_strlen(old_cwd) == 0)
 			return (ft_perror("cd"), 1);
@@ -102,11 +111,13 @@ int	ft_cd(t_ms *ms)
 		ft_strlcpy(old_cwd, current_cwd, ft_strlen(current_cwd) + 1);
 		return (0);
 	}
-	else if (ms->tokens->next && is_single_token(*ms->tokens->next->str) == TOKEN_TILDE)
+	else if ((ms->tokens->next && is_single_token(*ms->tokens->next->str) == TOKEN_TILDE))
 		return is_tilde(old_cwd, ms);
 	getcwd(current_cwd, sizeof(current_cwd));
-	ft_strlcpy(old_cwd, current_cwd, ft_strlen(current_cwd) + 1);
 	if (ms->tokens->next && ms->tokens->next->str)
-		return (handle_direct_cd(ms));
+	{
+		ft_strlcpy(old_cwd, current_cwd, ft_strlen(current_cwd) + 1);
+		return (handle_direct_cd(ms, current_cwd, old_cwd));
+	}
 	return (0);
 }
