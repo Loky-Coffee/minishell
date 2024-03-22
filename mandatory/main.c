@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/22 15:34:57 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/22 19:09:38 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,10 @@ int	main(int argc, char **argv, char **env)
 	ms.ac = argc;
 	ms.av = argv;
 	ms.envp = env;
+	ms.historypath = getenv("PWD");
 	ms.run = 1;
 
-	restore_history();
+	restore_history(&ms);
 	render_ninjashell();
 	while (ms.run)
 	{
