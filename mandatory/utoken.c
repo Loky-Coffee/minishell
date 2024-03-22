@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utoken.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:51:40 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/22 02:09:11 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/22 15:55:52 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,5 +142,17 @@ t_tokentype is_word(char *str)
 {
 	if (str && !ft_isspace(str[0]) && !is_operator(str))
 		return (TOKEN_WORD);
+	return (NO_TOKEN);
+}
+
+t_tokentype tkn_is_redirect(t_token *token)
+{
+
+	if (token == NULL)
+		return (NO_TOKEN);
+	if (token->type == TOKEN_LESS || token->type == TOKEN_GREATER
+		|| token->type == TOKEN_DLESS || token->type == TOKEN_DGREATER
+		|| token->type == TOKEN_TLESS)
+		return (token->type);
 	return (NO_TOKEN);
 }

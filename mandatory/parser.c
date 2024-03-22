@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:25:37 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/21 19:29:44 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/22 15:58:11 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,11 @@ void	ft_parse(t_token *current_token, t_node **current_node)
 
 	if (current_token && is_operator(current_token->str))
 	{
-		// we are a operator and have to do diff stuff for | and && and ||
+		// we are a operator and have to do diff stuff for | and && and || and < and > and << and >>
+		if (current_token->type == TOKEN_LESS)
+		{
+			
+		}
 	}
 	else
 	{

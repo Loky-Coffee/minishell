@@ -28,6 +28,7 @@
 				❌ Must take the path from our environment. Use environmental variables for path resolution.
 				❌ handeln cd $PATH Navigate using environment variable paths.
 				❌ handeln cd ../Desktop : Support relative path navigation.
+				❌ handeln "cd" 	=> cds into Home_Directory
 			}
 			pwd
 			{

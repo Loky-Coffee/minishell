@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/21 19:29:56 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/22 12:38:36 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ typedef enum e_tokentype
 	TOKEN_TLESS,
 	TOKEN_VARIABLE,
 	TOKEN_DOLLAR,
-} t_tokentype;
+}	t_tokentype;
 /* ************************************************************************** */
 
 // Defines the types of nodes in the Abstract Syntax Tree (AST) for shell
@@ -86,7 +86,7 @@ typedef enum e_node_type {
 	NODE_REDIRECT,
 	NODE_AND,
 	NODE_OR
-} t_node_type;
+}	t_node_type;
 
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ typedef struct s_token
 	t_tokentype		type;
 	char			*str;
 	struct s_token	*next;
-}   t_token;
+}					t_token;
 
 /* ************************************************************************** */
 
@@ -136,7 +136,7 @@ typedef struct s_ms
 	char		*line;
 	char		*prompt;
 	int			exit_code;
-}			t_ms;
+}				t_ms;
 /* ************************************************************************** */
 
 typedef struct s_cmd
@@ -183,6 +183,7 @@ t_tokentype		is_double_token(char *s);
 t_tokentype		is_tripple_token(char *s);
 t_tokentype 	is_operator(char *s);
 t_tokentype 	is_word(char *str);
+t_tokentype 	tkn_is_redirect(t_token *token);
 
 // token_list_utils
 t_token			*ft_token_new(void);

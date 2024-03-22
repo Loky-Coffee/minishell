@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/21 19:24:43 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/22 15:26:55 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,27 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 	{
 		if (pipe(fdp))
 			perror(NINJASHELL);
+		if (node->left)
+			status = execute(fdr, fdp[1], node->left, ms, 0);
+		if (fdp[1] != STDOUT_FILENO)
+			close(fdp[1]);
+		if (node->right)
+			status = execute(fdp[0], fdw, node->right, ms, 1);
+		ft_close_fd(fdr, fdw);
+		ft_close_fd(fdp[0], 0);
+	}
+	else if (tkn_is_redirect(node->tokens[0]) && node->tokens[1])
+	{
+		if (node->tokens[0]->type == TOKEN_LESS)
+		{
+			close (fdr);
+			fdr = open(node->tokens[1]->str, O_RDONLY | O_CREAT, 0644);
+			if (fdr != -1)
+			{
+				dup2(fdr, STDIN_FILENO);
+				close(fdr);
+			}
+		}
 		if (node->left)
 			status = execute(fdr, fdp[1], node->left, ms, 0);
 		if (fdp[1] != STDOUT_FILENO)
