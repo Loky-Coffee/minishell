@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/22 12:38:36 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/22 21:35:33 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ typedef enum e_tokentype
 	TOKEN_TLESS,
 	TOKEN_VARIABLE,
 	TOKEN_DOLLAR,
+	TOKEN_DDOT
 }	t_tokentype;
 /* ************************************************************************** */
 
@@ -129,6 +130,7 @@ typedef struct s_ms
 	int			ac;
 	char		**av;
 	char		**envp;
+	char		*historypath;
 	int			run;
 	int			error;
 	t_token		*tokens;
@@ -156,7 +158,7 @@ int				create_prompt(t_ms *ms);
 
 // History
 int				dump_history(t_ms *ms);
-int				restore_history(void);
+int				restore_history(t_ms *ms);
 
 // Lexer
 void			ft_lexer(t_ms *ms);

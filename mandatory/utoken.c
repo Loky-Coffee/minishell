@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utoken.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:51:40 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/22 15:55:52 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/22 22:03:21 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,6 @@ static t_tokentype	ft_get_stokentype(char c)
 		return (TOKEN_TILDE);
 	else if (c == '$')
 		return (TOKEN_DOLLAR);
-	else if (c == '.')
-		return (TOKEN_DOT);
-	else if (c == '-')
-		return (TOKEN_MINUS);
 	return (NO_TOKEN);
 }
 
