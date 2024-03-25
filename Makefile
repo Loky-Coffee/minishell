@@ -6,7 +6,7 @@
 #    By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/20 16:47:30 by aalatzas          #+#    #+#              #
-#    Updated: 2024/03/24 20:59:55 by nmihaile         ###   ########.fr        #
+#    Updated: 2024/03/25 17:24:19 by nmihaile         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,8 @@ SRC_DIR	= mandatory/
 OBJ_DIR = mandatory/obj/
 
 SRCS = main.c prompt.c history.c terminate.c lexer.c parser.c renderer.c \
-utoken.c token_list_utils.c executer.c path.c error.c builtins.c ft_cd.c
+utoken.c token_list_utils.c executer.c path.c error.c builtins.c ft_cd.c \
+environment.c
 OBJS = $(addprefix $(OBJ_DIR), $(notdir $(SRCS:.c=.o)))
 
 .SILENT:
