@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/22 21:35:33 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/25 04:57:31 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@
 # define FALSE 0
 # define TRUE 1
 # define PATH_MAX 4096
+# define OLD_CWD 1
+# define CUR_CWD 2
 
 /* ************************************************************************** */
 # define RED			"\033[0;31m"
@@ -201,8 +203,9 @@ int				exec_manager(t_ms *ms);
 
 // builtins
 int				builtins(t_ms *ms);
+
 //	ft_cd.c
-int ft_cd(t_ms *ms);
+int				ft_cd(t_ms *ms);
 
 // path.c
 int				ft_prepend_path(char **cmd, char *envpaths);
@@ -212,6 +215,13 @@ void			ft_error(char *str);
 void			ft_perror(char *str);
 void			ft_double_perror(char *s1, char *s2);
 void			ft_cmd_error(char *msg, char *cmd, int error_code);
+
+// environment.c
+
+int				ft_unset(t_ms *ms);
+int				ft_export(t_ms *ms);
+void			load_env(t_ms *ms, char **env);
+void			ft_get_env_value(t_ms *ms, char *str, char *key);
 
 /* ************************************************************************** */
 

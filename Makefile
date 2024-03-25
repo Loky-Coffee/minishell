@@ -6,7 +6,7 @@
 #    By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/20 16:47:30 by aalatzas          #+#    #+#              #
-#    Updated: 2024/03/21 06:22:43 by aalatzas         ###   ########.fr        #
+#    Updated: 2024/03/25 02:33:10 by aalatzas         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,13 +17,14 @@ NC		= \033[0m
 
 NAME	= minishell
 CC		= cc
-CFLAGS	= -Wall -Wextra -Werror 			# -g -fsanitize=address
+CFLAGS	= -Wall -Wextra -Werror 		 -g	# -fsanitize=address
 
 SRC_DIR	= mandatory/
 OBJ_DIR = mandatory/obj/
 
 SRCS = main.c prompt.c history.c terminate.c lexer.c parser.c renderer.c \
-utoken.c token_list_utils.c executer.c path.c error.c builtins.c ft_cd.c
+utoken.c token_list_utils.c executer.c path.c error.c builtins.c ft_cd.c \
+environment.c
 OBJS = $(addprefix $(OBJ_DIR), $(notdir $(SRCS:.c=.o)))
 
 .SILENT:

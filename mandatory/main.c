@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/22 22:06:08 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/25 04:30:16 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 // 	system("leaks minishell");
 // }
 // 	atexit(check_leaks);
-
 void	cleanup_ms(t_ms *ms)
 {
 	if (ms->line)
@@ -29,15 +28,20 @@ void	cleanup_ms(t_ms *ms)
 
 int	main(int argc, char **argv, char **env)
 {
+
+
 	static t_ms	ms;
 	int			exit_code;
 
 	ms.ac = argc;
 	ms.av = argv;
-	ms.envp = env;
+	ms.envp = NULL;
 	ms.historypath = getenv("PWD");
 	ms.run = 1;
 
+	// while (*(env) != NULL)
+	// 	printf("%s\n", *env++);
+	load_env(&ms, env);
 	restore_history(&ms);
 	render_ninjashell();
 	while (ms.run)

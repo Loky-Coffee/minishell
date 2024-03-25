@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:25:37 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/22 17:54:01 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/25 02:38:26 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ void	ft_parse(t_token *current_token, t_node **current_node)
 		// we are a operator and have to do diff stuff for | and && and || and < and > and << and >>
 		if (current_token->type == TOKEN_LESS)
 		{
-			
+
 		}
 	}
 	else

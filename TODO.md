@@ -3,6 +3,19 @@
 - ✅		getting started
 - ✅		lexer
 
+
+### && Problem :
+export var=hello && echo $var | wc -l
+ist the same|
+export var=hello; echo $var | echo $var
+	no fork			fork		fork
+
+if 1 command and not built in --> fork
+if 1 command and built in --> no fork
+if multiple commands --> fork
+
+### first Expander and then parser!!!!!!!!!
+
 - *		parser
 			* redirects
 			* prescedance && || |
@@ -19,36 +32,36 @@
 				❌ Handling of command-line arguments.
 				❌ Interpretation of escape sequences (optional, depends on shell specifications).
 			}
-			cd
+			cd ✅
 			{
 				✅	cd - Switch to the previous directory and update OLDPWD and PWD environment variables.
 				✅	cd ~ Switch to the user's home directory (use the HOME environment variable).
 				✅	cd ~/Documents Navigate to a directory relative to the home directory.
 				✅	==> check exit_codes Ensure correct exit status on success/failure.
-				❌ Must take the path from our environment. Use environmental variables for path resolution.
-				❌ handeln cd $PATH Navigate using environment variable paths.
-				❌ handeln cd ../Desktop : Support relative path navigation.
+				✅ Must take the path from our environment. Use environmental variables for path resolution.
+				❌ handeln cd $PATH Navigate using environment variable paths. // NEED expander
+				✅ handeln cd ../Desktop : Support relative path navigation.
 				✅ handeln "cd" 	=> cds into Home_Directory
 			}
-			pwd
+			pwd ✅
 			{
-				❌ Must take the path from our environment.  Ensure the output reflects the current directory from the environment, not just the working directory.
+				✅ Must take the path from our environment.  Ensure the output reflects the current directory from the environment, not just the working directory.
 			}
 			export
 			{
 				❌ export PATH=$PATH:/Users/aalatzas/Desktop/mein_git/minishell  check with which minishell or minishell from other directory
-				❌ Must take the path from our environment. Properly handle environment variable assignment and modification.
+				✅ Must take the path from our environment. Properly handle environment variable assignment and modification.
 
 			}
 			unset
 			{
 				❌ unset OLDPWD Ensure ability to remove environment variables, specifically OLDPWD.
 			}
-			env
+			env ✅
 			{
-				❌ Use execve with its own environment.
-				❌ on load create linked-list of env-variables
-				❌ use everyweher the builtin env-lst
+				✅ Use execve with its own environment.
+				✅ on load create Array-list of env-variables
+				✅ use everyweher the builtin env-lst
 			}
 			exit
 			{
