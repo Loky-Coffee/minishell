@@ -10,6 +10,8 @@
 -		executer
 			* expander
 			* redirects
+			* Test for /bin/lss => no file fount
+			  lss => cmd not found
 
 -		built-ins:
 		{

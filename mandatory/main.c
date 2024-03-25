@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/22 22:06:08 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/25 14:08:06 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ int	main(int argc, char **argv, char **env)
 		// ms.node = ft_parser(&ms);
 
 		// render NODES
-		// render_nodes(0, ms.nodes, 'R');
+		render_nodes(0, ms.nodes, 'R');
 
 		// BUILDINS
 		if (builtins(&ms))

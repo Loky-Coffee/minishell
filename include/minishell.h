@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/22 21:35:33 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/25 15:07:54 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <stdio.h>
 # include <sys/errno.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 # include <fcntl.h>
 # include <string.h>
 # include <stdlib.h>
@@ -55,24 +56,23 @@ typedef enum e_tokentype
 {
 	NO_TOKEN,
 	TOKEN_WORD,
-	TOKEN_SQUOTE,
-	TOKEN_DQUOTE,
-	TOKEN_PIPE,
-	TOKEN_LESS,
-	TOKEN_GREATER,
-	TOKEN_AND,
-	TOKEN_DOT,
-	TOKEN_TILDE,
-	TOKEN_MINUS,
-	TOKEN_NEWLINE,
-	TOKEN_DLESS,
-	TOKEN_DGREATER,
-	TOKEN_DAND,
-	TOKEN_OR,
-	TOKEN_TLESS,
-	TOKEN_VARIABLE,
-	TOKEN_DOLLAR,
-	TOKEN_DDOT
+	TOKEN_SQUOTE,	// 		'
+	TOKEN_DQUOTE,	// 		"
+	TOKEN_DOLLAR,	//		$
+	TOKEN_PIPE,		//		|
+	TOKEN_AND,		//		&
+	TOKEN_DAND,		//		&&
+	TOKEN_OR,		//		||
+	// TOKEN_DOT,		//		.
+	TOKEN_TILDE,	//		~
+	TOKEN_LESS,		//		<
+	TOKEN_GREATER,	//		>
+	TOKEN_DLESS,	//		<<
+	TOKEN_DGREATER,	//		>>
+	TOKEN_TLESS,	//		<<<
+	TOKEN_NEWLINE,	//		\n
+	// TOKEN_VARIABLE,
+	// TOKEN_DDOT		//		.
 }	t_tokentype;
 /* ************************************************************************** */
 
@@ -81,13 +81,14 @@ typedef enum e_tokentype
 // shell command syntax, including commands, pipes, redirections, and logical
 // operators. These nodes represent the parsed structure of a command line
 // input, allowing for structured interpretation and execution of shell cmd.
-typedef enum e_node_type {
+typedef enum e_nodetype {
+	NO_NODE,
 	NODE_COMMAND,
 	NODE_PIPE,
 	NODE_REDIRECT,
 	NODE_AND,
 	NODE_OR
-}	t_node_type;
+}	t_nodetype;
 
 /* ************************************************************************** */
 
@@ -121,7 +122,7 @@ typedef struct s_node
 	t_token			**tokens;
 	struct s_node	*left;
 	struct s_node	*right;
-	// t_tokentype		operator_type;
+	// t_nodetype		type;
 }					t_node;
 /* ************************************************************************** */
 
@@ -164,7 +165,7 @@ int				restore_history(t_ms *ms);
 void			ft_lexer(t_ms *ms);
 
 // Parser
-void			ft_parse(t_token *current_token, t_node **current_node);
+int				ft_parse(t_token *ct, t_node **cn); // t_token *current_token, t_node **current_node
 
 // Renderer
 void			render_tokens(t_ms *ms);
@@ -185,6 +186,8 @@ t_tokentype		is_double_token(char *s);
 t_tokentype		is_tripple_token(char *s);
 t_tokentype 	is_operator(char *s);
 t_tokentype 	is_word(char *str);
+t_tokentype 	tkn_is_word(t_token *token);
+t_tokentype 	tkn_is_operator(t_token *token);
 t_tokentype 	tkn_is_redirect(t_token *token);
 
 // token_list_utils
