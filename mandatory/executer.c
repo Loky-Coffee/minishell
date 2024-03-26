@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/25 16:43:33 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/26 22:28:22 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 		return (-1);
 	exit_code = 1;
 	status = 0;
-	if (node->tokens[0] && is_operator(node->tokens[0]->str) == TOKEN_PIPE)
+	if (node->tokens[0] && node->tokens[0]->type == TOKEN_PIPE)
 	{
 		if (pipe(fdp))
 			perror(NINJASHELL);

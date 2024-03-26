@@ -3,20 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/25 17:23:39 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/25 21:51:24 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-// void check_leaks(void)
-// {
-// 	system("leaks minishell");
-// }
-// 	atexit(check_leaks);
+void check_leaks(void)
+{
+	system("leaks minishell");
+}
 void	cleanup_ms(t_ms *ms)
 {
 	if (ms->line)
@@ -30,6 +29,7 @@ int	main(int argc, char **argv, char **env)
 {
 
 
+	atexit(check_leaks);
 	static t_ms	ms;
 	int			exit_code;
 
@@ -72,7 +72,7 @@ int	main(int argc, char **argv, char **env)
 		ft_lexer(&ms);
 
 		// render TOKENS
-		// render_tokens(&ms);
+		render_tokens(&ms);
 
 		// PARSE IT aka Build TREE
 		ft_parse(ms.tokens, &ms.nodes);

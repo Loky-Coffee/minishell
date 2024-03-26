@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 13:57:42 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/25 04:29:38 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/26 18:27:44 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,27 +39,7 @@ int	ft_unset(t_ms *ms)
 	return (0);
 }
 
-int ft_export(t_ms *ms)
-{
-	int i = 0;
-	int j = 0;
 
-	char **new_envp;
-
-	while (ms->envp[i] != NULL)
-		i++;
-	new_envp = ft_calloc(i + 2, sizeof(char *));
-	if (!new_envp)
-		return (-1);
-	while (j < i)
-	{
-		new_envp[j] = ms->envp[j];
-		j++;
-	}
-	new_envp[i] = ft_strdup(ms->tokens->next->str);
-	ms->envp = new_envp;
-	return (0);
-}
 
 void	load_env(t_ms *ms, char **env)
 {
