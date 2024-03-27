@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 00:41:52 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/25 19:30:56 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/27 01:07:43 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static int	ft_chdir(t_ms *ms, char *dir)
 
 	i = 0;
 	if (chdir(dir) != 0)
-		return (ft_perror("cd"), 1);
+		return (1);
 	if (!getcwd(str, PATH_MAX))
 		return (1);
 	while (ms->envp[i] && ft_strncmp(ms->envp[i],"PWD", 3) != 0)
@@ -47,7 +47,7 @@ static int is_tilde(char *old_cwd, t_ms *ms)
 	getcwd(old_cwd, PATH_MAX);
 	home_dir = getenv("HOME");
 	if (!home_dir)
-		return (ft_perror("cd"),1);
+		return (ft_perror("cd4"),1);
 	if (ms->tokens->next->next && is_word(ms->tokens->next->next->str))
 	{
 		full_path = ft_strjoin(home_dir, ms->tokens->next->next->str);
@@ -55,7 +55,7 @@ static int is_tilde(char *old_cwd, t_ms *ms)
 	}
 	result = ft_chdir(ms, home_dir);
 	if (result != 0)
-		result = (ft_double_perror("cd", home_dir) ,1);
+		result = (ft_double_perror("cd5", home_dir) ,1);
 	free(full_path);
 	full_path = NULL;
 	return (result);
@@ -85,10 +85,10 @@ int	ft_cd(t_ms *ms)
 	else if (ms->tokens->next && ft_strncmp(ms->tokens->next->str, "-\0", 2) == 0)
 	{
 		if (ft_strlen(old_cwd) == 0)
-			return (ft_perror("cd"), 1);
+			return (ft_printf("\n"), 1);
 		ft_get_env_value(ms, current_cwd, "PWD");
 		if (ft_chdir(ms, old_cwd) != 0)
-			return (ft_perror("cd"), 1);
+			return (ft_double_perror("cd", old_cwd), 1);
 		ft_strlcpy(old_cwd, current_cwd, ft_strlen(current_cwd) + 1);
 		return (0);
 	}

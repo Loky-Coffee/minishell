@@ -6,17 +6,16 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/26 22:01:12 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/27 01:05:25 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-// void check_leaks(void)
-// {
-// 	system("leaks minishell");
-// }
-// 	atexit(check_leaks);
+void check_leaks(void)
+{
+	system("leaks minishell");
+}
 void	cleanup_ms(t_ms *ms)
 {
 	if (ms->line)
@@ -30,6 +29,7 @@ int	main(int argc, char **argv, char **env)
 {
 
 
+	atexit(check_leaks);
 	static t_ms	ms;
 	int			exit_code;
 

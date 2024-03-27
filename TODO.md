@@ -54,7 +54,6 @@ if multiple commands --> fork
 			{
 				❌ export PATH=$PATH:/Users/aalatzas/Desktop/mein_git/minishell  check with which minishell or minishell from other directory
 				✅ Must take the path from our environment. Properly handle environment variable assignment and modification.
-
 			}
 			unset
 			{
@@ -66,7 +65,7 @@ if multiple commands --> fork
 				✅ on load create Array-list of env-variables
 				✅ use everyweher the builtin env-lst
 			}
-			exit
+			exit ✅
 			{
 				exit -42
 				exit abc def

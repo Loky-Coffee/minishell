@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 02:30:05 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/20 17:21:35 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/26 23:29:08 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ void	ft_lexer(t_ms *ms)
 	int		i;
 	char	*str;
 	int		len;
+	char	q;
 
 	i = 0;
 	while (ms->line && ms->line[i])
@@ -89,9 +90,23 @@ void	ft_lexer(t_ms *ms)
 		else if (ms->line[i] && !ft_isspace(ms->line[i]))
 		{
 			len = 0;
-			while (ms->line[i + len] && !ft_isspace(ms->line[i + len]) \
-			&& !is_operator(&ms->line[i + len]))
+			if (ms->line[i + len] == '\"' || ms->line[i + len] == '\'')
+			{
+				q = ms->line[i + len++];
+				while(ms->line[i + len] && ms->line[i + len] != q)
+				{
+					if (ms->line[i + len] == '\\' && ms->line[i + len + 1] == q)
+						len++;
+					len++;
+				}
 				len++;
+			}
+			else
+			{
+				while (ms->line[i + len] && !ft_isspace(ms->line[i + len]) \
+				&& !is_not_word(&ms->line[i + len]))
+					len++;
+			}
 			str = ft_calloc(len + 1, sizeof(char));
 			ft_strlcpy(str, &ms->line[i], len + 1);
 			add_new_token(ms, TOKEN_WORD, str);

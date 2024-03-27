@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/26 21:09:52 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/27 01:05:52 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,11 +186,12 @@ void			terminate(t_ms *ms, int exit_code);
 t_tokentype		is_single_token(char c);
 t_tokentype		is_double_token(char *s);
 t_tokentype		is_tripple_token(char *s);
-t_tokentype 	is_operator(char *s);
-t_tokentype 	is_word(char *str);
-t_tokentype 	tkn_is_word(t_token *token);
-t_tokentype 	tkn_is_operator(t_token *token);
-t_tokentype 	tkn_is_redirect(t_token *token);
+t_tokentype		is_operator(char *s);
+t_tokentype		is_word(char *str);
+t_tokentype		is_not_word(char *s);
+t_tokentype		tkn_is_word(t_token *token);
+t_tokentype		tkn_is_operator(t_token *token);
+t_tokentype		tkn_is_redirect(t_token *token);
 
 // token_list_utils
 t_token			*ft_token_new(void);
@@ -225,6 +226,10 @@ int				ft_unset(t_ms *ms);
 int				ft_export(t_ms *ms);
 void			load_env(t_ms *ms, char **env);
 void			ft_get_env_value(t_ms *ms, char *str, char *key);
+
+//export.c
+
+int ft_export(t_ms *ms);
 
 /* ************************************************************************** */
 

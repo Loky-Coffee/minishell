@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:51:40 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/26 22:13:44 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/27 01:07:18 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,11 @@
 // handling basic shell symbols like quotes,pipe,redirects,special characters.
 static t_tokentype	ft_get_stokentype(char c)
 {
-	if (c == '\'')
-		return (TOKEN_SQUOTE);
-	else if (c == '"')
-		return (TOKEN_DQUOTE);
-	else if (c == '|')
+	// if (c == '\'')
+	// 	return (TOKEN_SQUOTE);
+	// else if (c == '"')
+	// 	return (TOKEN_DQUOTE);
+	if (c == '|')
 		return (TOKEN_PIPE);
 	else if (c == '<')
 		return (TOKEN_LESS);
@@ -70,7 +70,7 @@ t_tokentype	is_single_token(char c)
 	// -&|><~*?$!\'"^.=\\:
 	// I inserted the tilde into single quotes so that I could handle the path following ~/Desktop...
 	// otherwise, everything was treated as one string.
-	tokens = "\'\"|<>~";
+	tokens = "|<>~";
 	while (*tokens)
 		if (c == *tokens++)
 			return (ft_get_stokentype(c));
@@ -125,6 +125,18 @@ t_tokentype is_operator(char *s)
 		return (is_tripple_token(s));
 	else if (is_double_token(s))
 		return (is_double_token(s));
+	else if (is_single_token(*s) == TOKEN_PIPE || is_single_token(*s) == TOKEN_LESS \
+	|| is_single_token(*s) == TOKEN_GREATER)
+		return (is_single_token(*s));
+	return (NO_TOKEN);
+}
+
+t_tokentype is_not_word(char *s)
+{
+	if (is_tripple_token(s))
+		return (is_tripple_token(s));
+	else if (is_double_token(s))
+		return (is_double_token(s));
 	else if (is_single_token(*s))
 		return (is_single_token(*s));
 	return (NO_TOKEN);
@@ -136,7 +148,7 @@ t_tokentype is_operator(char *s)
 // It returns TOKEN_WORD if the criteria are met, otherwise NO_TOKEN.
 t_tokentype is_word(char *str)
 {
-	if (str && !ft_isspace(str[0]) && !is_operator(str))
+	if (str && !ft_isspace(str[0]) && !is_not_word(str))
 		return (TOKEN_WORD);
 	return (NO_TOKEN);
 }
@@ -150,8 +162,11 @@ t_tokentype tkn_is_word(t_token *token)
 
 t_tokentype tkn_is_operator(t_token *token)
 {
-	if (token && (token->type == TOKEN_PIPE || token->type == TOKEN_DAND
-		|| token->type == TOKEN_OR || token->type == TOKEN_DOLLAR))
+
+	if (token == NULL)
+		return (NO_TOKEN);
+	if (token->type == TOKEN_PIPE || token->type == TOKEN_DAND
+		|| token->type == TOKEN_OR)
 		return (token->type);
 	return (NO_TOKEN);
 }
