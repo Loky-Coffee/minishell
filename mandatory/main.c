@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/27 01:37:22 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/27 15:01:26 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,8 @@ int	main(int argc, char **argv, char **env)
 		// render TOKENS
 		render_tokens(&ms);
 
+		expander(&ms);
+
 		// PARSE IT aka Build TREE
 		ft_parse(ms.tokens, &ms.nodes);
 
@@ -82,7 +84,7 @@ int	main(int argc, char **argv, char **env)
 		render_nodes(0, ms.nodes, 'R');
 
 		// BUILDINS
-		if (builtins(&ms))
+		if (builtins(&ms) && tkn_is_operator(ms.tokens) == NO_TOKEN)
 		{
 			cleanup_ms(&ms);
 			continue ;

@@ -1,25 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   export.c                                           :+:      :+:    :+:   */
+/*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 18:27:30 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/26 19:04:53 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/27 02:51:30 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-int	search_path(t_ms *ms)
+static int	search_path(t_ms *ms)
 {
 	int i;
 
 	i = 0;
 	while (ms->tokens->next->str[i] != '=')
 		i++;
-	// i++;
 	return (i);
 }
 

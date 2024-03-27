@@ -10,8 +10,8 @@ ist the same|
 export var=hello; echo $var | echo $var
 	no fork			fork		fork
 
-if 1 command and not built in --> fork
 if 1 command and built in --> no fork
+if 1 command and not built in --> fork
 if multiple commands --> fork
 
 ### first Expander and then parser!!!!!!!!!
@@ -19,7 +19,7 @@ if multiple commands --> fork
 - *		parser
 			* redirects
 			* prescedance && || |
-			< mandatory | cat 
+			< mandatory | cat
 
 -		executer
 			* expander
@@ -42,9 +42,9 @@ if multiple commands --> fork
 				✅	cd ~/Documents Navigate to a directory relative to the home directory.
 				✅	==> check exit_codes Ensure correct exit status on success/failure.
 				✅ Must take the path from our environment. Use environmental variables for path resolution.
-				❌ handeln cd $PATH Navigate using environment variable paths. // NEED expander
 				✅ handeln cd ../Desktop : Support relative path navigation.
 				✅ handeln "cd" 	=> cds into Home_Directory
+				❌ handeln cd $PATH Navigate using environment variable paths. // NEED expander
 			}
 			pwd ✅
 			{
@@ -52,12 +52,12 @@ if multiple commands --> fork
 			}
 			export
 			{
-				❌ export PATH=$PATH:/Users/aalatzas/Desktop/mein_git/minishell  check with which minishell or minishell from other directory
 				✅ Must take the path from our environment. Properly handle environment variable assignment and modification.
+				❌ export PATH=$PATH:/Users/aalatzas/Desktop/mein_git/minishell  check with which minishell or minishell from other directory
 			}
 			unset
 			{
-				❌ unset OLDPWD Ensure ability to remove environment variables, specifically OLDPWD.
+				✅ unset OLDPWD Ensure ability to remove environment variables, specifically OLDPWD.
 			}
 			env ✅
 			{
@@ -123,3 +123,62 @@ RESOURCES
 
 -		SHELL Language explanation:
 		https://pubs.opengroup.org/onlinepubs/009695399/utilities/xcu_chap02.html
+
+
+
+### EXPANDER:
+
+fangt der string mit " und ist in die mitte ' so werden die aussen ' enfern und alles expenden.
+bash-3.2$ echo "a'lala'LALA'a"
+a'lala'LALA'a
+bash-3.2$
+		1				1 2					2		3 4			3   4
+echo 	"	$USER		" 'lala$USER		'LALA	' "$USERa	'a	"
+			aalatzas	  'lalaaalatzas		'LALA	'			'a
+bash-3.2$
+
+2. Implementierung der Grundlagen
+a. Eingabeverarbeitung
+Lesen der Eingabe: Entwickeln Sie eine Methode zum Lesen der Benutzereingabe. Dies könnte das Parsen einer Kommandozeile oder das Lesen einer Datei (für Skripte) umfassen.
+b. Tokenisierung
+Aufteilung in Tokens: Teilen Sie die Eingabe in sinnvolle Einheiten (Tokens) auf, wie Wörter, Operatoren, und Anführungszeichen. Dies ist grundlegend für die spätere Verarbeitung.
+3. Implementierung spezifischer Expansionen
+c. Variablenexpansion
+Erkennen von Variablen: Implementieren Sie die Logik, um Variablen in der Eingabe zu erkennen ($VAR_NAME).
+Auflösung von Variablen: Entwickeln Sie eine Funktion, um den Wert einer Variablen zu ermitteln und den Verweis auf die Variable durch diesen Wert zu ersetzen.
+d. Anführungszeichen-Handling
+Anführungszeichen: Implementieren Sie eine einfache Logik zum korrekten Umgang mit einfachen (') und doppelten Anführungszeichen ("), um festzulegen, welche Teile der Eingabe buchstäblich zu nehmen sind und welche Expansionen zulassen.
+e. Tilde-Expansion
+Tilde-Expansion: Fügen Sie die Unterstützung für die Ersetzung von ~ durch das Home-Verzeichnis des Benutzers hinzu.
+4. Erweiterte Features
+Sobald die grundlegenden Funktionen implementiert sind, können Sie komplexere Features hinzufügen:
+
+Globbing (Wildcard-Expansion)
+Arithmetische Expansion
+Befehlssubstitution
+Escape-Zeichen
+
+
+1) Anführungszeichen: Beginnen Sie mit der Behandlung von Anführungszeichen, da diese die Interpretation aller anderen Zeichen beeinflussen können. Das korrekte Verarbeiten von einfachen (') und doppelten Anführungszeichen (") ist grundlegend, um zu entscheiden, ob Expansionen durchgeführt werden sollten oder nicht.
+
+2) Escape-Zeichen: Als Nächstes behandeln Sie Escape-Zeichen (\), da diese in direktem Zusammenhang mit Anführungszeichen stehen und bestimmen können, ob Zeichen wörtlich genommen oder speziell behandelt werden.
+
+3) Tilde-Expansion: Die Tilde-Expansion ist relativ einfach zu implementieren und wird oft vor anderen Expansionen durchgeführt, da sie meist unabhängig von diesen ist.
+
+4) Variablenexpansion: Variablen sind ein zentraler Bestandteil von Bash-Scripts. Die Fähigkeit, Variablen durch ihre Werte zu ersetzen, ist essentiell und sollte früh implementiert werden.
+
+5) Arithmetische Expansion: Dies erfordert möglicherweise ein Parsing und eine Auswertung von Ausdrücken, kann aber wichtig sein, um die Flexibilität von Scripten zu erhöhen.
+
+6) Befehlssubstitution: Dies ermöglicht es, die Ausgabe von Befehlen in Argumente und andere Konstrukte einzubetten, und ist eine der leistungsfähigeren Features von Bash.
+
+7) Globbing (Dateinamenserweiterung): Die Expansion von Mustern zu Dateinamen ist wichtig für die Interaktion mit dem Dateisystem und sollte nach den grundlegenden Textexpansionsmechanismen implementiert werden.
+
+8) Prozesssubstitution: Da dies eine komplexere Form der Befehlssubstitution ist und temporäre Dateinamen erfordert, sollte sie zu einem späteren Zeitpunkt angegangen werden.
+
+9) Wortteilung (Word Splitting): Dies ist wichtig für die korrekte Behandlung von Eingaben und Argumenten und hängt von der vorherigen Behandlung von Anführungszeichen und Escape-Zeichen ab.
+
+10) Bedingte Expansion: Ermöglicht die Ausführung von Expansionen basierend auf Bedingungen. Dies erfordert ein tieferes Verständnis von Bash-Zuständen und könnte komplexer in der Implementierung sein.
+
+11) Zuweisungserweiterung: Dies ist nützlich für dynamische Zuweisungen in Skripten und könnte in Kombination mit Variablenexpansion implementiert werden.
+
+12) Entfernung von Anführungszeichen: Schlussendlich sollten Anführungszeichen entfernt werden, wenn sie nicht mehr benötigt werden, was nach allen anderen Expansionsarten erfolgen sollte.

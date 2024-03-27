@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 20:33:21 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/25 04:25:58 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/27 04:36:42 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	builtins(t_ms *ms)
 	if (ms->tokens == NULL)
 		return (0);
 	if (ft_strncmp(ms->tokens->str, "echo\0", 5) == 0)
-		printf("echo<----\n");
+		ft_echo(ms);
 	else if (ft_strncmp(ms->tokens->str, "cd\0", 3) == 0)
 		ft_cd(ms);
 	else if (ft_strncmp(ms->tokens->str, "pwd\0", 4) == 0)

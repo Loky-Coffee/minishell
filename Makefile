@@ -6,7 +6,7 @@
 #    By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/20 16:47:30 by aalatzas          #+#    #+#              #
-#    Updated: 2024/03/26 18:27:57 by aalatzas         ###   ########.fr        #
+#    Updated: 2024/03/27 06:09:20 by aalatzas         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ OBJ_DIR = mandatory/obj/
 
 SRCS = main.c prompt.c history.c terminate.c lexer.c parser.c renderer.c \
 utoken.c token_list_utils.c executer.c path.c error.c builtins.c ft_cd.c \
-environment.c export.c
+environment.c ft_export.c ft_unset.c ft_echo.c expander.c
 OBJS = $(addprefix $(OBJ_DIR), $(notdir $(SRCS:.c=.o)))
 
 .SILENT:

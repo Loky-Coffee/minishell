@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/27 01:34:02 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/27 06:07:26 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+#include <stdbool.h>
 # include <unistd.h>
 # include <stdio.h>
 # include <sys/errno.h>
@@ -166,6 +167,10 @@ int				restore_history(t_ms *ms);
 // Lexer
 void			ft_lexer(t_ms *ms);
 
+// expender.c
+
+int				expander(t_ms *ms);
+
 // Parser
 int				ft_parse(t_token *ct, t_node **cn); // t_token *current_token, t_node **current_node
 
@@ -211,6 +216,18 @@ int				builtins(t_ms *ms);
 //	ft_cd.c
 int				ft_cd(t_ms *ms);
 
+// ft_export.c
+
+int 			ft_export(t_ms *ms);
+
+// ft_unset.c
+
+int				ft_unset(t_ms *ms);
+
+// ft_echo.c
+
+int	ft_echo(t_ms *ms);
+
 // path.c
 int				ft_prepend_path(char **cmd, char *envpaths);
 
@@ -227,9 +244,6 @@ int				ft_export(t_ms *ms);
 void			load_env(t_ms *ms, char **env);
 void			ft_get_env_value(t_ms *ms, char *str, char *key);
 
-//export.c
-
-int ft_export(t_ms *ms);
 
 /* ************************************************************************** */
 

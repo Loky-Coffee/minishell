@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 02:30:05 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/26 23:29:08 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/27 10:06:13 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,9 +80,10 @@ void	ft_lexer(t_ms *ms)
 	int		i;
 	char	*str;
 	int		len;
-	char	q;
+	bool	stop;
 
 	i = 0;
+	stop = 0;
 	while (ms->line && ms->line[i])
 	{
 		if (check_for_operators(ms, &i, i))
@@ -92,10 +93,14 @@ void	ft_lexer(t_ms *ms)
 			len = 0;
 			if (ms->line[i + len] == '\"' || ms->line[i + len] == '\'')
 			{
-				q = ms->line[i + len++];
-				while(ms->line[i + len] && ms->line[i + len] != q)
+				while(ms->line[i + len])
 				{
-					if (ms->line[i + len] == '\\' && ms->line[i + len + 1] == q)
+					if (is_operator(&ms->line[i + len]) != NO_TOKEN && ms->line[i + len + 1] == ' ' && ms->line[i + len - 1] == ' ')
+					{
+						len--;
+						break;
+					}
+					if (ms->line[i + len] == '\\')
 						len++;
 					len++;
 				}

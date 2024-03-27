@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 13:57:42 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/26 18:27:44 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/27 02:52:24 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +32,6 @@
 // 	dest[i] = 0;
 // 	return (dest);
 // }
-
-int	ft_unset(t_ms *ms)
-{
-	printf("ICH BIN MUDE!!! GUTE NACHT!!%d\n", ms->run);
-	return (0);
-}
-
-
 
 void	load_env(t_ms *ms, char **env)
 {
