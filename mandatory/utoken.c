@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:51:40 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/25 14:45:29 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/26 22:13:44 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,33 +143,25 @@ t_tokentype is_word(char *str)
 
 t_tokentype tkn_is_word(t_token *token)
 {
-
-	if (token == NULL)
-		return (NO_TOKEN);
-	if (token->type == TOKEN_WORD)
+	if (token && token->type == TOKEN_WORD)
 		return (TOKEN_WORD);
 	return (NO_TOKEN);
 }
 
 t_tokentype tkn_is_operator(t_token *token)
 {
-
-	if (token == NULL)
-		return (NO_TOKEN);
-	if (token->type == TOKEN_PIPE || token->type == TOKEN_DAND
-		|| token->type == TOKEN_OR || token->type == TOKEN_DOLLAR)
+	if (token && (token->type == TOKEN_PIPE || token->type == TOKEN_DAND
+		|| token->type == TOKEN_OR || token->type == TOKEN_DOLLAR))
 		return (token->type);
 	return (NO_TOKEN);
 }
 
 t_tokentype tkn_is_redirect(t_token *token)
 {
-
-	if (token == NULL)
-		return (NO_TOKEN);
-	if (token->type == TOKEN_LESS || token->type == TOKEN_GREATER
+	if (token && (token->type == TOKEN_LESS || token->type == TOKEN_GREATER
 		|| token->type == TOKEN_DLESS || token->type == TOKEN_DGREATER
-		|| token->type == TOKEN_TLESS)
+		|| token->type == TOKEN_TLESS))
 		return (token->type);
 	return (NO_TOKEN);
 }
+	

@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/25 16:43:33 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/25 19:17:45 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,8 @@ int	execute_cmd(int fdr, int fdw, t_node *node, t_ms *ms, int exit_code)
 		else
 			cmd.cmdpth = ft_strdup(node->tokens[0]->str);
 		cmd.path = getenv("PATH");
-		if (cmd.cmdpth[0] == '\0' || ft_cmd_is_dir(cmd.cmdpth, &exit_code)
+		if (cmd.cmdpth[0] == '\0'
+			|| ft_cmd_is_dir(cmd.cmdpth, &exit_code)
 			|| ft_prepend_path(&cmd.cmdpth, cmd.path)
 			|| ft_exec_permissions(cmd.cmdpth, &exit_code))
 		{
@@ -114,7 +115,7 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 		return (-1);
 	exit_code = 1;
 	status = 0;
-	if (node->tokens[0] && is_operator(node->tokens[0]->str) == TOKEN_PIPE)
+	if (node->tokens[0] && tkn_is_operator(node->tokens[0]) == TOKEN_PIPE)
 	{
 		if (pipe(fdp))
 			perror(NINJASHELL);
@@ -131,13 +132,15 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 	{
 		if (node->tokens[0]->type == TOKEN_LESS)
 		{
+			printf("###########################################\n\n\n\n\n\n\n\n\n\n");
 			int	fdr_new;
 			fdr_new = open(node->tokens[1]->str, O_RDONLY | O_CREAT, 0644);
 			if (fdr_new != -1)
 			{
 				dup2(fdr_new, STDIN_FILENO);
-				close(fdr_new);
+				// close(fdr_new);
 				close (fdr);
+				fdr = fdr_new;
 			}
 		}
 		if (node->left)

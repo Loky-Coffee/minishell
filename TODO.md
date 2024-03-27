@@ -19,6 +19,7 @@ if multiple commands --> fork
 - *		parser
 			* redirects
 			* prescedance && || |
+			< mandatory | cat 
 
 -		executer
 			* expander
