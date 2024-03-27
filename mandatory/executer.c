@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/27 01:05:08 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/27 01:22:08 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,13 +186,13 @@ int	exec_manager(t_ms *ms)
 {
 	int	pid;
 	int	status;
-	int	std_fds[2];
+	// int	std_fds[2];
 	// struct stat stdin;
 	// struct stat stdout;
 
 	// fstat(STDIN_FILENO, &stdin);
 	// fstat(STDIN_FILENO, &stdin);
-	save_stdfds(std_fds);
+	// save_stdfds(std_fds);
 	if (ms->nodes == NULL)
 		return (-1);
 	if (ms->nodes->left == NULL && ms->nodes->right == NULL && (ms->nodes->tokens && is_word(ms->nodes->tokens[0]->str)))
@@ -203,5 +203,5 @@ int	exec_manager(t_ms *ms)
 	else
 		status = execute(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms, 0);
 	return (status);
-	set_stdfds(std_fds);
+	// set_stdfds(std_fds);
 }
