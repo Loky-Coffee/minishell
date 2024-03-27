@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/27 01:22:08 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/27 01:37:51 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ int	execute_cmd(int fdr, int fdw, t_node *node, t_ms *ms, int exit_code)
 			cmd.cmdpth = ft_strdup("");
 		else
 			cmd.cmdpth = ft_strdup(node->tokens[0]->str);
-		cmd.path = getenv("PATH");
+		ft_get_env_value(ms, cmd.path, "PATH");
 		if (cmd.cmdpth[0] == '\0'
 			|| ft_cmd_is_dir(cmd.cmdpth, &exit_code)
 			|| ft_prepend_path(&cmd.cmdpth, cmd.path)
@@ -168,19 +168,19 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 	return (status);
 }
 
-static void save_stdfds(int *fds)
-{
-	dup2(STDIN_FILENO, fds[0]);
-	dup2(STDOUT_FILENO, fds[1]);
-}
+// static void save_stdfds(int *fds)
+// {
+// 	dup2(STDIN_FILENO, fds[0]);
+// 	dup2(STDOUT_FILENO, fds[1]);
+// }
 
-static void set_stdfds(int *fds)
-{
-	dup2(fds[0], STDIN_FILENO);
-	dup2(fds[1], STDOUT_FILENO);
-	close(fds[0]);
-	close(fds[1]);
-}
+// static void set_stdfds(int *fds)
+// {
+// 	dup2(fds[0], STDIN_FILENO);
+// 	dup2(fds[1], STDOUT_FILENO);
+// 	close(fds[0]);
+// 	close(fds[1]);
+// }
 
 int	exec_manager(t_ms *ms)
 {

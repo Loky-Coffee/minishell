@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/27 01:05:52 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/27 01:34:02 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,7 @@ typedef struct s_cmd
 {
 	char	*cmdpth;
 	char	**args;
-	char	*path;
+	char	path[PATH_MAX];
 }			t_cmd;
 
 /* ************************************************************************** */
