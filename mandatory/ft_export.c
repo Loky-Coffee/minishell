@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 18:27:30 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/28 20:01:32 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/28 20:03:38 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static int	add_new_env_var(t_ms *ms, int i)
 	}
 	new_envp[i] = tkn_to_str(ms->tokens->next); //ft_strdup(ms->tokens->next->str);
 printf("%s\n", new_envp[i]);
-pri ntf(" FIX THE EXPORT QUOTE STUFF "); // => export NAME="Now we are talking"
+pri ntf(" FIX THE EXPORT QUOTE STUFF "); // => export NAME="Now we are talking "
 	free(ms->envp);
 	ms->envp = new_envp;
 	return (0);
