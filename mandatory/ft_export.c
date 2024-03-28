@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 18:27:30 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/27 02:51:30 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/28 20:01:32 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static int	search_path(t_ms *ms)
+static int	search_env_var(t_ms *ms)
 {
 	int i;
 
@@ -22,7 +22,13 @@ static int	search_path(t_ms *ms)
 	return (i);
 }
 
-static int	path_not_exist(t_ms *ms, int i)
+static char	*tkn_to_str(t_token *token)
+{
+	expand_tkn(token);
+	return (ft_strdup(token->str));
+}
+
+static int	add_new_env_var(t_ms *ms, int i)
 {
 	char **new_envp;
 	int j;
@@ -37,7 +43,10 @@ static int	path_not_exist(t_ms *ms, int i)
 		new_envp[j] = ms->envp[j];
 		j++;
 	}
-	new_envp[i] = ft_strdup(ms->tokens->next->str);
+	new_envp[i] = tkn_to_str(ms->tokens->next); //ft_strdup(ms->tokens->next->str);
+printf("%s\n", new_envp[i]);
+pri ntf(" FIX THE EXPORT QUOTE STUFF "); // => export NAME="Now we are talking"
+	free(ms->envp);
 	ms->envp = new_envp;
 	return (0);
 }
@@ -45,20 +54,18 @@ static int	path_not_exist(t_ms *ms, int i)
 int ft_export(t_ms *ms)
 {
 	int i;
-	int j;
 
 	i = 0;
-	j = 0;
 	while (ms->envp[i] != NULL && ft_strncmp(ms->envp[i], \
-	 ms->tokens->next->str, search_path(ms)) != 0)
+	 ms->tokens->next->str, search_env_var(ms)) != 0)
 		i++;
-	if (!ms->envp[i])
-		path_not_exist(ms, i);
+	if (ms->envp[i] == NULL)
+		add_new_env_var(ms, i);
 	else
 	{
 		free(ms->envp[i]);
 		//@TODO: Expand the str first
-		ms->envp[i] = ft_strdup(ms->tokens->next->str);
+		ms->envp[i] = tkn_to_str(ms->tokens->next); // ft_strdup(ms->tokens->next->str);
 	}
 	return (0);
 }

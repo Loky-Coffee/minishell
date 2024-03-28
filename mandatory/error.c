@@ -6,17 +6,27 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 18:56:31 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/21 18:09:31 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/28 14:13:44 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	ft_error(char *str)
+void	ft_error(char *s1, char *s2, char *s3)
 {
 	ft_putstr_fd(LIGHTRED NINJASHELL": ", 2);
-	if (str)
-		ft_putstr_fd(str, 2);
+	if (s1)
+		ft_putstr_fd(s1, 2);
+	if (s2)
+	{
+		ft_putstr_fd(": ", 2);
+		ft_putstr_fd(s2, 2);
+	}
+	if (s3)
+	{
+		ft_putstr_fd(": ", 2);
+		ft_putstr_fd(s3, 2);
+	}
 	ft_putstr_fd("\n"RESET, 2);
 }
 

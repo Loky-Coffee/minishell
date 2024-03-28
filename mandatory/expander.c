@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 05:50:33 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/27 15:30:47 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/28 15:52:51 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,18 +25,17 @@ static int search_path(char **str)
 	return (i);
 }
 
-char *replace_dollar(int len, t_token *token, int pos)
+char	*replace_dollar(int len, t_token *token, int pos)
 {
 	printf("len: %d\n", len);
 	printf("token->str: %s\n", token->str);
 	printf("pos: %d\n", pos);
-
-	return(0);
+	return (NULL);
 }
 
-int expander(t_ms *ms)
+int expand_tkn(t_token *token)
 {
-	char	str[PATH_MAX];
+	char	str[FT_PATH_MAX];
 	int		i;
 	int		j;
 	char	quote_mode = '\0';
@@ -44,32 +43,48 @@ int expander(t_ms *ms)
 	i = 0;
 	j = 0;
 	ft_memset(str, 0, sizeof(str));
-	while (ms->tokens->next && ms->tokens->next->str[i] != '\0')
+	while (token && token->str[i] != '\0')
 	{
-		if (ms->tokens->next->str[i] == '\"' || ms->tokens->next->str[i] == '\'')
+		if (token->str[i] == '\"' || token->str[i] == '\'')
 		{
 			if (quote_mode == '\0')
-				quote_mode = ms->tokens->next->str[i];
-			else if (quote_mode == ms->tokens->next->str[i])
+				quote_mode = token->str[i];
+			else if (quote_mode == token->str[i])
 				quote_mode = '\0';
 			else
-				str[j++] = ms->tokens->next->str[i];
+				str[j++] = token->str[i];
 		}
-		else if (ms->tokens->next->str[i] == '$' && quote_mode != '\'')
-			replace_dollar(search_path(&ms->tokens->next->str), ms->tokens->next, i);
+		else if (token->str[i] == '$' && quote_mode != '\'')
+			replace_dollar(search_path(&token->str), token, i);
 		else
-			str[j++] = ms->tokens->next->str[i];
+			str[j++] = token->str[i];
 		i++;
 	}
 	if (j != i)
 	{
-		free(ms->tokens->next->str);
-		ms->tokens->next->str = ft_calloc((j + 1), sizeof(char));
-		if (ms->tokens->next->str == NULL)
+		free(token->str);
+		token->str = ft_calloc((j + 1), sizeof(char));
+		if (token->str == NULL)
 			return (1);
-		ft_strlcpy(ms->tokens->next->str, str, j + 1);
+		ft_strlcpy(token->str, str, j + 1);
 	}
 	if (quote_mode != '\0')
-		ft_error("Syntax error: Unclosed quote detected.\n");
-	return (NO_TOKEN);
+		return (ft_error("Syntax error: Unclosed quote detected.", NULL, NULL), 1);
+	return (0);
+}
+
+int	expand_node(t_node *node)
+{
+	t_token	*token;
+
+	if (node == NULL || node->tokens == NULL)
+		return (1);
+	token = node->tokens[0];
+	while (token)
+	{
+		if (expand_tkn(token))
+			return (1);
+		token = token->next;
+	}
+	return (0);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   renderer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:50:40 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/24 16:30:52 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/28 19:13:18 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,10 +65,21 @@ void	render_nodes(int depth, t_node *n, char p)
 void	render_ninjashell(void)
 {
 	ft_printf(LIGHTRED
-		"        •  •  ┏┓┓┏┏┓┓ ┓       \n"
-		"      ┏┓┓┏┓┓┏┓┗┓┣┫┣ ┃ ┃       \n"
-		"━━━━━━┛┗┗┛┗┃┗┻┗┛┛┗┗┛┗┛┗┛━━━━━━\n"
-		"           ┛                  \n"
+		"        •  •  ┏┓┓┏┏┓┓ ┓                                                         \n"
+		"      ┏┓┓┏┓┓┏┓┗┓┣┫┣ ┃ ┃                                           Hack it away …\n"
+		"━━━━━━┛┗┗┛┗┃┗┻┗┛┛┗┗┛┗┛┗┛━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+		"           ┛                                                                    \n"
 		RESET);
 	ft_printf("\n");
 }
+
+// void	render_ninjashell(void)
+// {
+// 	ft_printf(LIGHTRED
+// 		"        •  •  ┏┓┓┏┏┓┓ ┓       \n"
+// 		"      ┏┓┓┏┓┓┏┓┗┓┣┫┣ ┃ ┃       \n"
+// 		"━━━━━━┛┗┗┛┗┃┗┻┗┛┛┗┗┛┗┛┗┛━━━━━━\n"
+// 		"           ┛                  \n"
+// 		RESET);
+// 	ft_printf("\n");
+// }

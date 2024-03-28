@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:48:38 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/21 15:57:40 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/28 16:50:03 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,9 @@ void	free_nodetree(t_node **n)
 {
 	if (*n == NULL)
 		return ;
+	// if ((*n)->tokens)
+	// 	free((*n)->tokens);
+	// (*n)->tokens = NULL;
 	if ((*n)->left)
 		free_nodetree(&(*n)->left);
 	if ((*n)->right)
@@ -64,13 +67,18 @@ void	free_nodetree(t_node **n)
 	*n = NULL;
 }
 
-void	terminate(t_ms *ms, int exit_code)
+void	terminate(t_ms *ms, t_cmd *cmd, int exit_code)
 {
 	rl_clear_history();
-	if (ms->line)
-		free(ms->line);
-	// ft_lstclear(&ms->tokens, del_token);
-	ft_token_clear(&ms->tokens, del_token_content);
+	if (cmd)
+		free_cmd(cmd);
+	// {
+	// 	free(cmd->cmdpth);
+	// 	free_av(cmd->args);		
+	// }
+	free_line(ms);
+	if (ms->tokens)
+		ft_token_clear(&ms->tokens, del_token_content);
 	ms->tokens = NULL;
 	free_nodetree(&ms->nodes);
 	free_ms(ms);

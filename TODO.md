@@ -4,6 +4,11 @@
 - ✅		lexer
 
 
+TESTs
+
+| Hello
+
+
 ### && Problem :
 export var=hello && echo $var | wc -l
 ist the same|
@@ -20,6 +25,7 @@ if multiple commands --> fork
 			* redirects
 			* prescedance && || |
 			< mandatory | cat
+			
 
 -		executer
 			* expander
@@ -77,14 +83,15 @@ if multiple commands --> fork
 		=> 127
 
 -		exit should return the correct arguments and exit_code
-			* exit -42			=> prints "exit"	=> 214
-			* exit 123 456		=> prints "exit" then prints "bash: exit: too many arguments"	=>	doesn't exit
-			* exit abc			=> prints "exit" then prints "bash: exit: abc: numeric argument required"	=>	exit_code: 255
-			* exit ab 12		=> prints "exit" then prints "bash: exit: abc: numeric argument required"	=>	exit_code: 255
-			* exit 127 cd		=> prints "exit" then prints "bash: exit: too many arguments"	=>	doesn't exit
-			* exit 1			=> prints "exit"	=>	1
-			* exit 0			=> prints "exit"	=>	0
-			* exit				=> prints "exit"	=>	0
+			* exit 123 456		=> prints "exit" then prints "bash: exit: too many arguments"				=> x	return 1
+			* exit 127 cd		=> prints "exit" then prints "bash: exit: too many arguments"				=> x	return 1
+
+			* exit ab 12		=> prints "exit" then prints "bash: exit: abc: numeric argument required"	=> ✓	exit_code: 255
+			* exit abc			=> prints "exit" then prints "bash: exit: abc: numeric argument required"	=> ✓	exit_code: 255
+			* exit 1			=> prints "exit"															=> ✓	1
+			* exit 0			=> prints "exit"															=> ✓	0
+			* exit				=> prints "exit"															=> ✓	0
+			* exit -42			=> prints "exit"															=> ✓	214
 
 -		Here_doc
 			bash-3.2$ cat << EOF

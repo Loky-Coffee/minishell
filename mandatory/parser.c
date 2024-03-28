@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:25:37 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/26 22:00:33 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/28 16:11:56 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,11 +109,12 @@ static t_node	*make_redirect(t_token **ct)
 	n->left = NULL;
 	n->right = NULL;
 	n->tokens[0] = *ct;
-	{
 	if (i == 2)
+	{
 		*ct = (*ct)->next;
 		n->tokens[1] = *ct;
 	}
+
 	*ct = (*ct)->next;
 	return (n);
 }

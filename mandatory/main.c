@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/27 15:01:26 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/28 16:34:59 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,42 @@
 // }
 // atexit(check_leaks);
 
-void	cleanup_ms(t_ms *ms)
+void	free_line(t_ms *ms)
 {
 	if (ms->line)
-		free(ms->line);
+	{
+		free(ms->line);	
+		ms->line = NULL;
+	}
+}
+
+// void	free_tkn_av(t_token **tokens)
+// {
+// 	int	i;
+
+// 	i = 0;
+// 	while (tokens[i])
+// 		free(tokens[i++]);
+// 	free(tokens);	
+// }
+
+void	free_cmd(t_cmd *cmd)
+{
+	if (cmd->tokens)
+		free(cmd->tokens);
+	cmd->tokens = NULL;
+		// free_tkn_av(cmd->tokens);
+	if (cmd->cmdpth)
+		free(cmd->cmdpth);
+	cmd->cmdpth = NULL;
+	if (cmd->args)
+		free(cmd->args);
+	cmd->args = NULL;
+}
+
+void	cleanup_ms(t_ms *ms)
+{
+	free_line(ms);
 	ft_token_clear(&ms->tokens, del_token_content);
 	ms->tokens = NULL;
 	free_nodetree(&ms->nodes);
@@ -29,19 +61,16 @@ void	cleanup_ms(t_ms *ms)
 
 int	main(int argc, char **argv, char **env)
 {
-
-
 	static t_ms	ms;
 	int			exit_code;
 
 	ms.ac = argc;
 	ms.av = argv;
 	ms.envp = NULL;
+	// We should probably get rid of the HISTORY FILE for evaluation
 	ms.historypath = getenv("PWD");
 	ms.run = 1;
 
-	// while (*(env) != NULL)
-	// 	printf("%s\n", *env++);
 	load_env(&ms, env);
 	restore_history(&ms);
 	render_ninjashell();
@@ -53,42 +82,29 @@ int	main(int argc, char **argv, char **env)
 			dump_history(&ms);
 		else
 			continue ;
-		// check for EXIT
-		if (ft_strncmp(ms.line, "exit\0", 5) == 0)
-		{
-			ms.run = FALSE;
-			continue ;
-		}
 		if (ft_strncmp(ms.line, "\0", 1) == 0)
 			continue ;
-
-		//  ninjaSHELL
-		if (ft_strncmp(ms.line, "ninjashell\0", 5) == 0)
-		{
-			render_ninjashell();
-			continue ;
-		}
 
 		// TOKENIZE IT
 		ft_lexer(&ms);
 
 		// render TOKENS
-		render_tokens(&ms);
+		// render_tokens(&ms);
 
-		expander(&ms);
+		// expande_tkn(&ms);
 
 		// PARSE IT aka Build TREE
 		ft_parse(ms.tokens, &ms.nodes);
 
 		// render NODES
-		render_nodes(0, ms.nodes, 'R');
+		// render_nodes(0, ms.nodes, 'R');
 
 		// BUILDINS
-		if (builtins(&ms) && tkn_is_operator(ms.tokens) == NO_TOKEN)
-		{
-			cleanup_ms(&ms);
-			continue ;
-		}
+		// if (builtins(&ms) && tkn_is_operator(ms.tokens) == NO_TOKEN)
+		// {
+		// 	cleanup_ms(&ms);
+		// 	continue ;
+		// }
 
 		// EXECUTE IT
 		exit_code = exec_manager(&ms);
@@ -98,6 +114,6 @@ int	main(int argc, char **argv, char **env)
 		// FREE line && tokens
 		cleanup_ms(&ms);
 	}
-	terminate(&ms, 0);
+	terminate(&ms, NULL, 0);
 	return (0);
 }

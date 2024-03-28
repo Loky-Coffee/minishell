@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 00:41:52 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/27 01:07:43 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/03/28 16:00:51 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,13 @@
 static int	ft_chdir(t_ms *ms, char *dir)
 {
 	int i;
-	char str[PATH_MAX];
+	char str[FT_PATH_MAX];
 	char *new_pwd;
 
 	i = 0;
 	if (chdir(dir) != 0)
 		return (1);
-	if (!getcwd(str, PATH_MAX))
+	if (!getcwd(str, FT_PATH_MAX))
 		return (1);
 	while (ms->envp[i] && ft_strncmp(ms->envp[i],"PWD", 3) != 0)
 		i++;
@@ -44,7 +44,7 @@ static int is_tilde(char *old_cwd, t_ms *ms)
 	int result;
 
 	result = 0;
-	getcwd(old_cwd, PATH_MAX);
+	getcwd(old_cwd, FT_PATH_MAX);
 	home_dir = getenv("HOME");
 	if (!home_dir)
 		return (ft_perror("cd4"),1);
@@ -67,13 +67,15 @@ static int is_tilde(char *old_cwd, t_ms *ms)
 // environment variable. If there is a token and it's not "-", it calls ft_cd2
 // function to handle the dir change based on the token string. It also updates
 // the current and old directory paths stored in current_cwd and old_cwd.
-int	ft_cd(t_ms *ms)
+int	ft_cd(t_cmd *cmd, t_ms *ms)
 {
-	static char	current_cwd[PATH_MAX] = {0};
-	static char	old_cwd[PATH_MAX] = {0};
-	static char	home[PATH_MAX] = {0};
+	static char	current_cwd[FT_PATH_MAX] = {0};
+	static char	old_cwd[FT_PATH_MAX] = {0};
+	static char	home[FT_PATH_MAX] = {0};
 
-	if (ft_strncmp(ms->tokens->str, "cd\0", 3) == 0 && !ms->tokens->next)
+	// replace all ms->token with cmd->token
+
+	if (ft_strncmp((cmd->tokens[0])->str, "cd\0", 3) == 0 && !ms->tokens->next)
 	{
 		ft_get_env_value(ms, old_cwd, "PWD");
 		ft_get_env_value(ms, home, "HOME");

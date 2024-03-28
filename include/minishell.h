@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/27 06:07:26 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/28 16:26:28 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <fcntl.h>
 # include <string.h>
 # include <stdlib.h>
+# include <limits.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include "../libft/libft.h"
@@ -30,7 +31,7 @@
 # define HISTORY_FILE "ninjaSHELL.history"
 # define FALSE 0
 # define TRUE 1
-# define PATH_MAX 4096
+# define FT_PATH_MAX 4096
 # define OLD_CWD 1
 # define CUR_CWD 2
 
@@ -93,6 +94,18 @@ typedef enum e_nodetype {
 	NODE_OR
 }	t_nodetype;
 
+typedef enum e_builtin
+{
+	NO_BUILTIN,
+	BI_ECHO,
+	BI_CD,
+	BI_PWD,
+	BI_EXPORT,
+	BI_UNSET,
+	BI_ENV,
+	BI_EXIT
+}	t_builtin;
+
 /* ************************************************************************** */
 
 // Defines the structure of a token in the shell
@@ -147,14 +160,18 @@ typedef struct s_ms
 
 typedef struct s_cmd
 {
+	t_token	**tokens;
 	char	*cmdpth;
 	char	**args;
-	char	path[PATH_MAX];
+	char	path[FT_PATH_MAX];
 }			t_cmd;
 
 /* ************************************************************************** */
 
 // main
+void			free_line(t_ms *ms);
+void			free_tkn_av(t_token **tokens);
+void			free_cmd(t_cmd *cmd);
 void			cleanup_ms(t_ms *ms);
 
 // Prompt
@@ -168,8 +185,8 @@ int				restore_history(t_ms *ms);
 void			ft_lexer(t_ms *ms);
 
 // expender.c
-
-int				expander(t_ms *ms);
+int				expand_tkn(t_token *token);
+int				expand_node(t_node *node);
 
 // Parser
 int				ft_parse(t_token *ct, t_node **cn); // t_token *current_token, t_node **current_node
@@ -185,7 +202,7 @@ void			free_ms(t_ms *ms);
 void			free_av(char **av);
 void			ft_close_fd(int fdr, int fdw);
 void			free_nodetree(t_node **n);
-void			terminate(t_ms *ms, int exit_code);
+void			terminate(t_ms *ms, t_cmd *cmd, int exit_code);
 
 // uToken
 t_tokentype		is_single_token(char c);
@@ -211,28 +228,20 @@ int				execute_cmd(int fdr, int fdw, t_node *node, t_ms *ms, int exit_code);
 int				exec_manager(t_ms *ms);
 
 // builtins
-int				builtins(t_ms *ms);
-
-//	ft_cd.c
-int				ft_cd(t_ms *ms);
-
-// ft_export.c
-
+int				exec_builtin(t_builtin builtin, t_cmd *cmd, t_ms *ms, int in_pipe);
+int				ft_echo(t_ms *ms);
+int				ft_cd(t_cmd *cmd, t_ms *ms);
+int				ft_pwd(void);
 int 			ft_export(t_ms *ms);
-
-// ft_unset.c
-
 int				ft_unset(t_ms *ms);
-
-// ft_echo.c
-
-int	ft_echo(t_ms *ms);
+int				ft_env(t_ms *ms);
+unsigned char	ft_exit(t_cmd *cmd, t_ms *ms);
 
 // path.c
 int				ft_prepend_path(char **cmd, char *envpaths);
 
 // error.c
-void			ft_error(char *str);
+void			ft_error(char *s1, char *s2, char *s3);
 void			ft_perror(char *str);
 void			ft_double_perror(char *s1, char *s2);
 void			ft_cmd_error(char *msg, char *cmd, int error_code);

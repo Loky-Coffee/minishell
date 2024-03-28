@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   environment.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 13:57:42 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/27 02:52:24 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/28 16:47:57 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,21 +48,22 @@ void	load_env(t_ms *ms, char **env)
 	}
 	ms->envp[i] = NULL;
 }
+
 void	ft_get_env_value(t_ms *ms, char *str, char *key)
 {
 	int i;
 	int key_length;
-	char real_key[PATH_MAX];
+	char real_key[FT_PATH_MAX];
 
 	i = 0;
-	ft_memset(real_key, 0, PATH_MAX);
-	ft_strlcat(real_key, key, PATH_MAX);
-	ft_strlcat(real_key, "=", PATH_MAX);
+	ft_memset(real_key, 0, FT_PATH_MAX);
+	ft_strlcat(real_key, key, FT_PATH_MAX);
+	ft_strlcat(real_key, "=", FT_PATH_MAX);
 	while (ms->envp[i] != NULL && strncmp(ms->envp[i], real_key, ft_strlen(real_key)) != 0)
 		i++;
 	if (ms->envp[i] == NULL)
 	{
-		ft_memset(str, 0, PATH_MAX);
+		ft_memset(str, 0, FT_PATH_MAX);
 		return;
 	}
 	key_length = ft_strlen(real_key);

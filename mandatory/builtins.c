@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 20:33:21 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/27 04:36:42 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/03/28 16:12:31 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,28 +21,26 @@
 //◦ unset with no options ❌
 //◦ env with no options or arguments ✅
 //◦ exit with no options ✅
-int	builtins(t_ms *ms)
+int	exec_builtin(t_builtin builtin, t_cmd *cmd, t_ms *ms, int in_pipe)
 {
-	char	current_cwd[PATH_MAX];
-	int		i;
+	int		exit_code;
 
-	i = 0;
-	if (ms->tokens == NULL)
-		return (0);
-	if (ft_strncmp(ms->tokens->str, "echo\0", 5) == 0)
-		ft_echo(ms);
-	else if (ft_strncmp(ms->tokens->str, "cd\0", 3) == 0)
-		ft_cd(ms);
-	else if (ft_strncmp(ms->tokens->str, "pwd\0", 4) == 0)
-		printf("%s\n", getcwd(current_cwd, sizeof(current_cwd)));
-	else if (ft_strncmp(ms->tokens->str, "export\0", 7) == 0)
-		ft_export(ms);
-	else if (ft_strncmp(ms->tokens->str, "unset\0", 6) == 0)
-		ft_unset(ms);
-	else if (ft_strncmp(ms->tokens->str, "env\0", 4) == 0)
-		while (ms->envp[i] != NULL)
-			printf("%s\n", ms->envp[i++]);
-	else
-		return (0);
-	return (1);
+	exit_code = 1;
+	if (builtin == BI_ECHO)
+		exit_code = ft_echo(ms);
+	else if (builtin == BI_CD)
+		exit_code = ft_cd(cmd, ms);
+	else if (builtin == BI_PWD)
+		exit_code = ft_pwd();
+	else if (builtin == BI_EXPORT)
+		exit_code = ft_export(ms);
+	else if (builtin == BI_UNSET)
+		exit_code = ft_unset(ms);
+	else if (builtin == BI_ENV)
+		exit_code = ft_env(ms);
+	else if (builtin == BI_EXIT)
+		exit_code = ft_exit(cmd, ms);
+	if (in_pipe)
+		terminate(ms, cmd, exit_code);
+	return (exit_code);
 }
