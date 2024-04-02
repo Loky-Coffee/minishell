@@ -77,13 +77,13 @@ static int	ft_atol(char *str)
 		n = n * 10 + d;
 		str++;
 	}	
-	return (1);
+	return (n * sign);
 }
 
 unsigned char	ft_exit(t_cmd *cmd, t_ms *ms)
 {
-	int				ac;
-	unsigned char	exit_code;
+	int		ac;
+	long	exit_code;
 
 	exit_code = 0;
 	ac = get_ac(cmd->args);
@@ -105,6 +105,7 @@ unsigned char	ft_exit(t_cmd *cmd, t_ms *ms)
 		}
 	}
 	ms->run = 0;
+	ms->shell_exit_code = exit_code;
 	return (exit_code);
 	// The Below value have to be veryfied
 }

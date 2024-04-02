@@ -43,9 +43,10 @@ static int	add_new_env_var(t_ms *ms, int i)
 		new_envp[j] = ms->envp[j];
 		j++;
 	}
+printf("%s\n", ms->tokens->next->str);
 	new_envp[i] = tkn_to_str(ms->tokens->next); //ft_strdup(ms->tokens->next->str);
 printf("%s\n", new_envp[i]);
-pri ntf(" FIX THE EXPORT QUOTE STUFF "); // => export NAME="Now we are talking "
+// pri ntf(" FIX THE EXPORT QUOTE STUFF "); // => export NAME="Now we are talking "
 	free(ms->envp);
 	ms->envp = new_envp;
 	return (0);

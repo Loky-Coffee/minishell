@@ -69,7 +69,7 @@ void	free_nodetree(t_node **n)
 
 void	terminate(t_ms *ms, t_cmd *cmd, int exit_code)
 {
-	rl_clear_history();
+	clear_history();
 	if (cmd)
 		free_cmd(cmd);
 	// {

@@ -114,6 +114,6 @@ int	main(int argc, char **argv, char **env)
 		// FREE line && tokens
 		cleanup_ms(&ms);
 	}
-	terminate(&ms, NULL, 0);
+	terminate(&ms, NULL, ms.shell_exit_code);
 	return (0);
 }

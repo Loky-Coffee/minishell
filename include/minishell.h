@@ -155,6 +155,7 @@ typedef struct s_ms
 	char		*line;
 	char		*prompt;
 	int			exit_code;
+	unsigned char	shell_exit_code;
 }				t_ms;
 /* ************************************************************************** */
 

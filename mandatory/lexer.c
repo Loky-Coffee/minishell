@@ -90,21 +90,36 @@ void	ft_lexer(t_ms *ms)
 		else if (ms->line[i] && !ft_isspace(ms->line[i]))
 		{
 			len = 0;
-			if (ms->line[i + len] == '\"' || ms->line[i + len] == '\'')
+			while (ms->line[i + len] && !ft_isspace(ms->line[i + len]) \
+			&& !is_not_word(&ms->line[i + len]))
 			{
-				quote_mode = ms->line[i + len];
-				len++;
-				while (ms->line[i + len] && ms->line[i + len] != quote_mode)
+				if (ms->line[i + len] == '\"' || ms->line[i + len] == '\'')
+				{
+					quote_mode = ms->line[i + len];
 					len++;
-				if (ms->line[i + len])
+					while (ms->line[i + len] && ms->line[i + len] != quote_mode)
+						len++;
+					if (ms->line[i + len])
+						len++;
+				}
+				else
 					len++;
 			}
-			else
-			{
-				while (ms->line[i + len] && !ft_isspace(ms->line[i + len]) \
-				&& !is_not_word(&ms->line[i + len]))
-					len++;
-			}
+			// if (ms->line[i + len] == '\"' || ms->line[i + len] == '\'')
+			// {
+			// 	quote_mode = ms->line[i + len];
+			// 	len++;
+			// 	while (ms->line[i + len] && ms->line[i + len] != quote_mode)
+			// 		len++;
+			// 	if (ms->line[i + len])
+			// 		len++;
+			// }
+			// else
+			// {
+			// 	while (ms->line[i + len] && !ft_isspace(ms->line[i + len]) \
+			// 	&& !is_not_word(&ms->line[i + len]))
+			// 		len++;
+			// }
 			str = ft_calloc(len + 1, sizeof(char));
 			ft_strlcpy(str, &ms->line[i], len + 1);
 			add_new_token(ms, TOKEN_WORD, str);
