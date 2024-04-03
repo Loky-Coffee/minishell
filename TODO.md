@@ -21,11 +21,15 @@ if multiple commands --> fork
 
 ### first Expander and then parser!!!!!!!!!
 
+- *		expander
+			$ Behandeln. in replace_dollar.
+
+
 - *		parser
 			* redirects
 			* prescedance && || |
 			< mandatory | cat
-			
+
 
 -		executer
 			* expander
@@ -43,6 +47,7 @@ if multiple commands --> fork
 			}
 			cd ✅
 			{
+				TODO=Use cmd struct .
 				✅	cd - Switch to the previous directory and update OLDPWD and PWD environment variables.
 				✅	cd ~ Switch to the user's home directory (use the HOME environment variable).
 				✅	cd ~/Documents Navigate to a directory relative to the home directory.
@@ -189,3 +194,53 @@ Escape-Zeichen
 11) Zuweisungserweiterung: Dies ist nützlich für dynamische Zuweisungen in Skripten und könnte in Kombination mit Variablenexpansion implementiert werden.
 
 12) Entfernung von Anführungszeichen: Schlussendlich sollten Anführungszeichen entfernt werden, wenn sie nicht mehr benötigt werden, was nach allen anderen Expansionsarten erfolgen sollte.
+
+
+
+
+--------------------------------------------------------------------------------
+
+FIRST HALF OF THE DRAGON BOOK
+(https://www.youtube.com/watch?v=fIPO4G42wYE&t=95s from 00:00 to ~45:00)
+
+a > b + c * d + 3
+
+parse_leaf(ct):
+	next = get_next_token(ct)
+
+	if is_string_literal(next)	return make_string(next, ct)
+	if is_word(next)			return make_word(next, ct)
+	if is_operator				return make_operator(next, ct)
+
+	report_error("Unhandled input.)
+
+
+parse_increasing_precedence(left, min_prec, ct):
+	next = get_next_token(ct)
+	if !is_binary_operator(next)
+		return left
+	next_prec = get_precedence(next)
+	if next_prec <= min_prec
+	{
+		return left
+	}
+	else
+	{
+		right = parse_expression(next_prec)
+		return make_binary(left, to_operator(next), right)
+	}
+
+
+parse_expression(ct, min_prec)
+	left = parse_leaf(ct)
+
+	while (true)
+	{
+		node = parse_increasing_precedence(left, min_prec, ct)
+		if node == left
+			break
+		left = node
+	}
+	return left
+
+and than the caller attaches it to the graeter than ( > )

@@ -3,35 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   environment.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 13:57:42 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/28 16:47:57 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/03 19:39:11 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
-
-// char *re_alloc(char *str, int size)
-// {
-// 	int		i;
-// 	int		x;
-// 	char	*dest;
-
-
-// 	i = 0;
-// 	x = 0;
-// 	dest = NULL;
-// 	x = ft_strlen(str);
-// 	dest = ft_calloc(x + size + 1, sizeof(char *));
-// 	while (str[i])
-// 	{
-// 		dest[i] = str[i];
-// 		i++;
-// 	}
-// 	dest[i] = 0;
-// 	return (dest);
-// }
 
 void	load_env(t_ms *ms, char **env)
 {

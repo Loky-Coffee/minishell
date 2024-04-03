@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/28 16:34:59 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/03 19:58:51 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,27 +22,16 @@ void	free_line(t_ms *ms)
 {
 	if (ms->line)
 	{
-		free(ms->line);	
+		free(ms->line);
 		ms->line = NULL;
 	}
 }
-
-// void	free_tkn_av(t_token **tokens)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	while (tokens[i])
-// 		free(tokens[i++]);
-// 	free(tokens);	
-// }
 
 void	free_cmd(t_cmd *cmd)
 {
 	if (cmd->tokens)
 		free(cmd->tokens);
 	cmd->tokens = NULL;
-		// free_tkn_av(cmd->tokens);
 	if (cmd->cmdpth)
 		free(cmd->cmdpth);
 	cmd->cmdpth = NULL;
@@ -67,7 +56,6 @@ int	main(int argc, char **argv, char **env)
 	ms.ac = argc;
 	ms.av = argv;
 	ms.envp = NULL;
-	// We should probably get rid of the HISTORY FILE for evaluation
 	ms.historypath = getenv("PWD");
 	ms.run = 1;
 
@@ -91,20 +79,11 @@ int	main(int argc, char **argv, char **env)
 		// render TOKENS
 		// render_tokens(&ms);
 
-		// expande_tkn(&ms);
-
 		// PARSE IT aka Build TREE
 		ft_parse(ms.tokens, &ms.nodes);
 
 		// render NODES
 		// render_nodes(0, ms.nodes, 'R');
-
-		// BUILDINS
-		// if (builtins(&ms) && tkn_is_operator(ms.tokens) == NO_TOKEN)
-		// {
-		// 	cleanup_ms(&ms);
-		// 	continue ;
-		// }
 
 		// EXECUTE IT
 		exit_code = exec_manager(&ms);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 10:24:09 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/28 12:33:44 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/03 20:08:22 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static int	is_long(char *str)
 			return (0);
 		n = n * 10 + d;
 		str++;
-	}	
+	}
 	return (1);
 }
 
@@ -76,7 +76,7 @@ static int	ft_atol(char *str)
 			return (0);
 		n = n * 10 + d;
 		str++;
-	}	
+	}
 	return (n * sign);
 }
 

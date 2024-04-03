@@ -3,19 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   renderer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:50:40 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/28 19:13:18 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/03 19:56:10 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-/* ************************************************************************** */
-// The render_tokens function iterates through the token list in ms,
-// printing each token's type and str to the console. It provides a
-// visual representation of the parsed tokens for debugging or inspection.
 void	render_tokens(t_ms *ms)
 {
 	t_token	*token;

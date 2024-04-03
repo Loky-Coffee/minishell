@@ -3,20 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 02:30:05 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/27 16:29:12 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/03 19:55:43 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-/* ************************************************************************** */
-// add_new_token creates and appends a new token to ms's list,
-// using token type and str. It allocates memory for the token
-// and str, copies str, and handles allocation failures.
-// It returns 0 on success or -1 on failure.
 static int	add_new_token(t_ms *ms, t_tokentype type, char *str)
 {
 	t_token	*new_token;
@@ -33,14 +28,6 @@ static int	add_new_token(t_ms *ms, t_tokentype type, char *str)
 	return (0);
 }
 
-/* ************************************************************************** */
-// check_tokens identifies special tokens for lexical analysis,
-// such as pipes, redirects, and logical operators. It dynamically
-// allocates memory to store token str, evaluates for
-// triple, double, or single character tokens, and adds
-// them to the ms's token list. After processing a token,
-// it advances the index *i, frees the allocated str memory,
-// and returns 1 for success or 0 if no special token was found.
 static int	check_for_operators(t_ms *ms, int *i, int start)
 {
 	char	*str;
@@ -70,11 +57,6 @@ static int	check_for_operators(t_ms *ms, int *i, int start)
 	return (free(str), 0);
 }
 
-/* ************************************************************************** */
-// ft_lexer tokenizes the input line in ms, converting it into shell tokens
-// like commands and operators. It groups characters into words or operators,
-// and for each group, calls add_new_token to append it to ms's token list.
-// This breaks the input into tokens for parsing and execution.
 void	ft_lexer(t_ms *ms)
 {
 	int		i;
@@ -105,21 +87,6 @@ void	ft_lexer(t_ms *ms)
 				else
 					len++;
 			}
-			// if (ms->line[i + len] == '\"' || ms->line[i + len] == '\'')
-			// {
-			// 	quote_mode = ms->line[i + len];
-			// 	len++;
-			// 	while (ms->line[i + len] && ms->line[i + len] != quote_mode)
-			// 		len++;
-			// 	if (ms->line[i + len])
-			// 		len++;
-			// }
-			// else
-			// {
-			// 	while (ms->line[i + len] && !ft_isspace(ms->line[i + len]) \
-			// 	&& !is_not_word(&ms->line[i + len]))
-			// 		len++;
-			// }
 			str = ft_calloc(len + 1, sizeof(char));
 			ft_strlcpy(str, &ms->line[i], len + 1);
 			add_new_token(ms, TOKEN_WORD, str);

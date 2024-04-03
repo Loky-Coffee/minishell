@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/28 18:40:17 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/03 19:54:55 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,32 +66,25 @@ static int	ft_strncmp_ignorecase(const char *s1, const char *s2, size_t n)
 		s2++;
 		n--;
 	}
-	return ((unsigned char)ft_tolower(*s1) - (unsigned char)ft_tolower(*s2));	
+	return ((unsigned char)ft_tolower(*s1) - (unsigned char)ft_tolower(*s2));
 }
 
 // static t_builtin	is_builtin(t_token *token, t_cmd *cmd, t_ms *ms)
 static t_builtin	is_builtin(t_token *token)
 {
 	if (ft_strncmp_ignorecase(token->str, "echo", 5) == 0)
-		// exec_builtin(BI_ECHO, cmd, ms);
 		return (BI_ECHO);
 	if (ft_strncmp_ignorecase(token->str, "cd", 3) == 0)
-		// exec_builtin(BI_CD, cmd, ms);
 		return (BI_CD);
 	if (ft_strncmp_ignorecase(token->str, "pwd", 4) == 0)
-		// exec_builtin(BI_PWD, cmd, ms);
 		return (BI_PWD);
 	if (ft_strncmp_ignorecase(token->str, "export", 7) == 0)
-		// exec_builtin(BI_EXPORT, cmd, ms);
 		return (BI_EXPORT);
 	if (ft_strncmp_ignorecase(token->str, "unset", 6) == 0)
-		// exec_builtin(BI_UNSET, cmd, ms);
 		return (BI_UNSET);
 	if (ft_strncmp_ignorecase(token->str, "env", 4) == 0)
-		// exec_builtin(BI_ENV, cmd, ms);
 		return (BI_ENV);
 	if (ft_strncmp_ignorecase(token->str, "exit", 5) == 0)
-		// exec_builtin(BI_EXIT, cmd, ms);
 		return (BI_EXIT);
 	return (NO_BUILTIN);
 }

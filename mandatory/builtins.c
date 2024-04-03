@@ -3,24 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 20:33:21 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/28 16:12:31 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/03 19:52:28 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-//• Your shell must implement the following builtins:
-//
-//◦ echo with option -n ❌
-//◦ cd with only a relative or absolute path ✅
-//◦ pwd with no options ✅
-//◦ export with no options ❌
-//◦ unset with no options ❌
-//◦ env with no options or arguments ✅
-//◦ exit with no options ✅
 int	exec_builtin(t_builtin builtin, t_cmd *cmd, t_ms *ms, int in_pipe)
 {
 	int		exit_code;

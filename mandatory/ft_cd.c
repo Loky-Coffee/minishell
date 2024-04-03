@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 00:41:52 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/28 16:00:51 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/03 19:43:27 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,12 +61,6 @@ static int is_tilde(char *old_cwd, t_ms *ms)
 	return (result);
 }
 
-// Changes the current directory based on the provided arguments.
-// If the next token is "-",changes to the previous directory stored in old_cwd.
-// If there is no next token, it changes to the home directory by the HOME
-// environment variable. If there is a token and it's not "-", it calls ft_cd2
-// function to handle the dir change based on the token string. It also updates
-// the current and old directory paths stored in current_cwd and old_cwd.
 int	ft_cd(t_cmd *cmd, t_ms *ms)
 {
 	static char	current_cwd[FT_PATH_MAX] = {0};
