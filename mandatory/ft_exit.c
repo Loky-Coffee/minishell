@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 10:24:09 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/03 20:27:26 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/04 16:48:38 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,13 @@ static int	is_long(char *str)
 	int		sign;
 	int		d;
 
+	if (str == NULL || *str == '\0')
+		return (0);
 	n = 0;
 	sign = 1;
 	if (*str == '-' || *str == '+')
-	{
-		if (*str == '-')
+		if (*str++ == '-')
 			sign = -1;
-		str++;
-	}
 	while (*str)
 	{
 		if (ft_isdigit(*str) == 0)
@@ -57,14 +56,13 @@ static int	ft_atol(char *str)
 	int		sign;
 	int		d;
 
+	if (str == NULL || *str == '\0')
+		return (0);
 	n = 0;
 	sign = 1;
 	if (*str == '-' || *str == '+')
-	{
-		if (*str == '-')
+		if (*str++ == '-')
 			sign = -1;
-		str++;
-	}
 	while (*str)
 	{
 		if (ft_isdigit(*str) == 0)
@@ -87,6 +85,7 @@ unsigned char	ft_exit(t_cmd *cmd, t_ms *ms)
 
 	exit_code = 0;
 	ac = get_ac(cmd->args);
+	printf("exit\n");
 	if (ac > 1)
 	{
 		if (is_long(cmd->args[1]))
@@ -104,12 +103,15 @@ unsigned char	ft_exit(t_cmd *cmd, t_ms *ms)
 			exit_code = 255;
 		}
 	}
-	printf("exit\n");
 	ms->run = 0;
 	ms->shell_exit_code = exit_code;
 	return (exit_code);
 	// The Below value have to be veryfied
 }
+
+//	#############################
+//  @TODO  exit $?
+//	#############################
 
 // x exit 123 456		=> prints "exit" then prints "bash: exit: too many arguments"				=> x	return 1
 // x exit 127 cd		=> prints "exit" then prints "bash: exit: too many arguments"				=> x	return 1
