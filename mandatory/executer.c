@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/03 19:54:55 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/04 22:31:39 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,15 +178,15 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 	{
 		if (node->tokens[0]->type == TOKEN_LESS)
 		{
-			printf("###########################################\n\n\n\n\n\n\n\n\n\n");
+			// printf("###########################################\n\n\n\n\n\n\n\n\n\n");
 			int	fdr_new;
 			fdr_new = open(node->tokens[1]->str, O_RDONLY | O_CREAT, 0644);
 			if (fdr_new != -1)
 			{
 				dup2(fdr_new, STDIN_FILENO);
-				// close(fdr_new);
-				close (fdr);
-				fdr = fdr_new;
+				close(fdr_new);
+				// close (fdr);
+				// fdr = fdr_new;
 			}
 		}
 		if (node->left)
@@ -235,12 +235,8 @@ int	exec_manager(t_ms *ms)
 	int			status;
 	t_cmd		cmd;
 	t_builtin	builtin;
-	// int	std_fds[2];
-	// struct stat stdin;
-	// struct stat stdout;
+	// int			std_fds[2];
 
-	// fstat(STDIN_FILENO, &stdin);
-	// fstat(STDIN_FILENO, &stdin);
 	// save_stdfds(std_fds);
 	if (ms->nodes == NULL)
 		return (-1);

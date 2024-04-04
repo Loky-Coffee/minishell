@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/04 13:11:44 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/04 22:28:09 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,12 +58,16 @@ int	main(int argc, char **argv, char **env)
 	ms.envp = NULL;
 	ms.historypath = getenv("PWD");
 	ms.run = 1;
+	int i = 0;
 
 	load_env(&ms, env);
 	restore_history(&ms);
 	render_ninjashell();
 	while (ms.run)
 	{
+		if (i > 2)
+			ms.run = 0;
+		i++;
 		create_prompt(&ms);
 		ms.line = readline(ms.prompt);
 		if (ms.line)
@@ -77,7 +81,7 @@ int	main(int argc, char **argv, char **env)
 		ft_lexer(&ms);
 
 		// render TOKENS
-		// render_tokens(&ms);
+		render_tokens(&ms);
 
 		// PARSE IT aka Build TREE
 		ft_parse(ms.tokens, &ms.nodes);
