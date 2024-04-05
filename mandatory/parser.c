@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:25:37 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/04 22:41:28 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/05 17:14:35 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,29 +121,6 @@ static t_node	*make_redirect(t_token **ct)
 
 
 
-// static t_node	*make_pipe(t_node *node)
-// {
-// 	t_node pipe_node;
-
-// 	if (create_node(ct, &n))
-// 		return (NULL);
-// 	n->tokens = (t_token **)ft_calloc(2, sizeof(t_token));
-// 	if (n->tokens == NULL)
-// 	{
-// 		free(n);
-// 		return (NULL);
-// 	}
-// 	n->left = NULL;
-// 	n->right = NULL;
-// 	n->tokens[0] = *ct;
-// 	*ct = (*ct)->next;
-
-// 	return (pipe_node);
-// }
-
-
-
-
 static t_node	*parse_leaf(t_token **ct)
 {
 	t_node	*n;
@@ -160,11 +137,18 @@ static t_node	*parse_leaf(t_token **ct)
 	return (n);
 }
 
-static void	set_root_node(t_node **root, t_node *node, t_node *lft, t_node *rgt)
+static void	set_root_node(t_node **root, t_node *node, t_node *rgt)
 {
-	node->left = lft;
-	node->right = rgt;
-	(*root) = node;
+	if (node && node_is_redirect(node))
+	{
+		node->right = rgt;
+		(*root) = node;
+	}
+	else
+	{
+		node->left = rgt;
+		(*root) = node;
+	}
 }
 
 static void	set_node_left(t_node **node, t_node *curr, t_node *next)
@@ -193,8 +177,16 @@ static void	set_node_right(t_node **node, t_node *left, t_node *next)
 	}
 	else
 	{
-		(*node)->right = left;
-		left->left = next;
+		if (left && node_is_redirect(left))
+		{
+			(*node)->right = left;
+			left->right = next;
+		}
+		else
+		{
+			(*node)->right = left;
+			left->left = next;
+		}
 		*node = left;
 	}
 }
@@ -204,6 +196,7 @@ int	ft_parse(t_token *ct, t_node **cn)
 	t_node	*curr;
 	t_node	*next;
 	t_node	*node;
+	t_node	*buff;
 
 	node = *cn;
 	while (ct)
@@ -217,27 +210,43 @@ int	ft_parse(t_token *ct, t_node **cn)
 		{
 			if (curr && node_is_redirect(curr) && next && node_is_redirect(next))
 			{
-				set_root_node(&node, curr, NULL, next);
+				set_root_node(&node, curr, next);
 				*cn = curr;
 				node = next;
 			}
-			else if (next && !node_is_word(next))
-				set_root_node(&node, next, curr, NULL);
+			else if (next && !node_is_word(next) && !node_is_redirect(curr))
+				set_root_node(&node, next, curr);
 			else
-			{
-				if (node_is_redirect(curr))
-					set_root_node(&node, curr, NULL, next);
-				else
-					set_root_node(&node, curr, next, NULL);
-			}
+					set_root_node(&node, curr, next);
 			if (*cn == NULL)
 				*cn = node;
 		}
 		else
 		{
-			if (node_is_redirect(curr))
+			if (node_is_redirect(curr) && next && node_is_word(next))
 				set_node_right(&node, curr, next);
-			else if (node->left == NULL)
+			else if (node_is_redirect(curr) && next && node_is_redirect(next))
+			{
+				buff = node->right;
+				node->right = curr;
+				curr->right = next;
+				next->right = buff;
+				node = next;
+			}
+			else if (node_is_redirect(curr))
+			{
+				buff = node->right;
+				node->right = curr;
+				curr->right = buff;
+				node = node->right;
+			}
+			else if (node_is_word(curr) && next && node_is_redirect(next))
+			{
+				node->right = next;
+				next->right = curr;
+				node = node->right;
+			}
+			else if (node->left == NULL && !node_is_redirect(node))
 				set_node_left(&node, curr, next);
 			else
 				set_node_right(&node, curr, next);

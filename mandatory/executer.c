@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/04 22:31:39 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/05 20:36:56 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,6 +150,31 @@ int	execute_cmd(int fdr, int fdw, t_node *node, t_ms *ms, int exit_code)
 	return (pid);
 }
 
+int	execute_heredoc(int old_fdw, int *fdp, char *lim, t_ms *ms)
+{
+	int	pid;
+	int	status;
+
+	printf("fdp[0] => |%d|\n", fdp[0]);
+	printf("fdp[1] => |%d|\n", fdp[1]);
+	fflush(stdout);
+
+	status = 0;
+	pid = fork();
+	if (pid == 0)
+	{
+		ft_close_fd(old_fdw, 0);
+		status = ft_heredoc(fdp[1], lim);
+		ft_close_fd(fdp[0], fdp[1]);
+
+		printf("----terminate her_doc child\n");
+		fflush(stdout);
+
+		terminate(ms, NULL, status);
+	}
+	return (status);
+}
+
 int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 {
 	int	fdp[2];
@@ -174,29 +199,55 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 		ft_close_fd(fdr, fdw);
 		ft_close_fd(fdp[0], 0);
 	}
-	else if (tkn_is_redirect(node->tokens[0]) && node->tokens[1])
+	else if (node->tokens && tkn_is_redirect(node->tokens[0]) && node->tokens[1])
 	{
-		if (node->tokens[0]->type == TOKEN_LESS)
+		if (node->tokens[0]->type == TOKEN_DLESS)
 		{
-			// printf("###########################################\n\n\n\n\n\n\n\n\n\n");
-			int	fdr_new;
-			fdr_new = open(node->tokens[1]->str, O_RDONLY | O_CREAT, 0644);
-			if (fdr_new != -1)
+			// HERE_DOC
+			if (pipe(fdp))
+				perror(NINJASHELL);
+			ft_close_fd(fdr, 0);
+
+			status = execute_heredoc(fdw, fdp, node->tokens[1]->str, ms);
+			// ft_close_fd(0, fdp[1]);
+			close(fdp[1]);
+
+			if (node->right)
+				status = execute(fdp[0], fdw, node->right, ms, 1);
+			ft_close_fd(0, fdw);
+			ft_close_fd(fdp[0], 0);
+		}
+		else if (node->tokens[0]->type == TOKEN_LESS)
+		{
+			// NEW STD_IN
+			fdp[0] = open(node->tokens[1]->str, O_RDONLY | O_CREAT, 0644);
+			if (fdp[0] != -1)
 			{
-				dup2(fdr_new, STDIN_FILENO);
-				close(fdr_new);
-				// close (fdr);
-				// fdr = fdr_new;
+				dup2(fdp[0], STDIN_FILENO);
+				ft_close_fd(fdr, 0);
+				fdr = fdp[0];
+				ft_close_fd(fdp[0], 0);
+			}
+		}
+		else if (node->tokens[0]->type == TOKEN_GREATER)
+		{
+			// NEW STD_OUT
+			fdp[1] = open(node->tokens[1]->str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			if (fdp[1] != -1)
+			{
+				dup2(fdp[1], STDOUT_FILENO);
+				ft_close_fd(fdw, 0);
+				fdw = fdp[1];
+				ft_close_fd(fdp[1], 0);
 			}
 		}
 		if (node->left)
-			status = execute(fdr, fdp[1], node->left, ms, 0);
-		if (fdp[1] != STDOUT_FILENO)
-			close(fdp[1]);
+			status = execute(fdr, fdw, node->left, ms, 0);
+		// ft_close_fd(0, fdw);
 		if (node->right)
-			status = execute(fdp[0], fdw, node->right, ms, 1);
-		ft_close_fd(fdr, fdw);
-		ft_close_fd(fdp[0], 0);
+			status = execute(fdr, fdw, node->right, ms, 1);
+		// ft_close_fd(fdr, fdw);
+		// ft_close_fd(fdp[0], 0);
 	}
 	else
 	{
@@ -215,19 +266,19 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 	return (status);
 }
 
-// static void save_stdfds(int *fds)
-// {
-// 	dup2(STDIN_FILENO, fds[0]);
-// 	dup2(STDOUT_FILENO, fds[1]);
-// }
+static void save_stdfds(int *fds)
+{
+	fds[0] = dup(STDIN_FILENO);
+	fds[1] = dup(STDOUT_FILENO);
+}
 
-// static void set_stdfds(int *fds)
-// {
-// 	dup2(fds[0], STDIN_FILENO);
-// 	dup2(fds[1], STDOUT_FILENO);
-// 	close(fds[0]);
-// 	close(fds[1]);
-// }
+static void reset_stdfds(int *fds)
+{
+	dup2(fds[0], STDIN_FILENO);
+	dup2(fds[1], STDOUT_FILENO);
+	close(fds[0]);
+	close(fds[1]);
+}
 
 int	exec_manager(t_ms *ms)
 {
@@ -235,9 +286,9 @@ int	exec_manager(t_ms *ms)
 	int			status;
 	t_cmd		cmd;
 	t_builtin	builtin;
-	// int			std_fds[2];
+	int			std_fds[2];
 
-	// save_stdfds(std_fds);
+	save_stdfds(std_fds);
 	if (ms->nodes == NULL)
 		return (-1);
 	if (ms->nodes->left == NULL && ms->nodes->right == NULL && (ms->nodes->tokens && is_word(ms->nodes->tokens[0]->str)))
@@ -258,6 +309,6 @@ int	exec_manager(t_ms *ms)
 	}
 	else
 		status = execute(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms, 0);
+	reset_stdfds(std_fds);
 	return (status);
-	// set_stdfds(std_fds);
 }

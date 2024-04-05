@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/28 16:26:28 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/05 19:11:34 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,6 +227,9 @@ void			ft_token_clear(t_token **token, void (*del)(void*));
 int				execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt);
 int				execute_cmd(int fdr, int fdw, t_node *node, t_ms *ms, int exit_code);
 int				exec_manager(t_ms *ms);
+
+// here_doc
+int				ft_heredoc(int fd_write, char *lim);
 
 // builtins
 int				exec_builtin(t_builtin builtin, t_cmd *cmd, t_ms *ms, int in_pipe);
