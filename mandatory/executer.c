@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/05 20:36:56 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/05 21:17:16 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,23 +155,16 @@ int	execute_heredoc(int old_fdw, int *fdp, char *lim, t_ms *ms)
 	int	pid;
 	int	status;
 
-	printf("fdp[0] => |%d|\n", fdp[0]);
-	printf("fdp[1] => |%d|\n", fdp[1]);
-	fflush(stdout);
-
 	status = 0;
 	pid = fork();
 	if (pid == 0)
 	{
 		ft_close_fd(old_fdw, 0);
 		status = ft_heredoc(fdp[1], lim);
-		ft_close_fd(fdp[0], fdp[1]);
-
-		printf("----terminate her_doc child\n");
-		fflush(stdout);
-
+		ft_close_fd(fdp[0], 0);
 		terminate(ms, NULL, status);
 	}
+	waitpid(pid, &status, 0);
 	return (status);
 }
 
@@ -209,8 +202,8 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 			ft_close_fd(fdr, 0);
 
 			status = execute_heredoc(fdw, fdp, node->tokens[1]->str, ms);
-			// ft_close_fd(0, fdp[1]);
-			close(fdp[1]);
+			ft_close_fd(0, fdp[1]);
+			// close(fdp[1]);
 
 			if (node->right)
 				status = execute(fdp[0], fdw, node->right, ms, 1);

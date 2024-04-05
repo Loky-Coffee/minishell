@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 19:03:23 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/05 20:32:27 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/05 21:17:30 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,11 @@ int	ft_heredoc(int fd_write, char *lim)
 		line = get_next_line(STDIN_FILENO);
 		if (line == NULL)
 		{
-			printf("LALA-1 \n");
-			fflush(stdout);
 			close(fd_write);
 			return (1);
 		}
 		if (ft_strncmp(line, lim, ft_strlen(lim)) == 0)
 		{
-			printf("LULU-2\n");
-			fflush(stdout);
 			free(line);
 			close(fd_write);
 			return (0);
