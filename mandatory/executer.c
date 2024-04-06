@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/05 21:17:16 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/06 14:59:43 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,10 +205,14 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 			ft_close_fd(0, fdp[1]);
 			// close(fdp[1]);
 
-			if (node->right)
-				status = execute(fdp[0], fdw, node->right, ms, 1);
-			ft_close_fd(0, fdw);
-			ft_close_fd(fdp[0], 0);
+			if (node_is_word(node->right))
+			{
+				pid = execute_cmd(fdp[0], fdw, node->right, ms, 127);
+				ft_close_fd(fdp[0], fdw);
+				waitpid(pid, &status, 0);
+				return (status);
+			}
+			ft_close_fd(fdp[0], fdw);
 		}
 		else if (node->tokens[0]->type == TOKEN_LESS)
 		{

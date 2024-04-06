@@ -6,13 +6,13 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:25:37 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/05 17:14:35 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/06 14:43:30 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static t_tokentype	node_is_word(t_node *node)
+t_tokentype	node_is_word(t_node *node)
 {
 	if (node && node->tokens)
 		return (tkn_is_word(node->tokens[0]));

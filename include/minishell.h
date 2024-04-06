@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/05 19:11:34 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/06 14:44:29 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,6 +190,7 @@ int				expand_tkn(t_token *token);
 int				expand_node(t_node *node);
 
 // Parser
+t_tokentype		node_is_word(t_node *node);
 int				ft_parse(t_token *ct, t_node **cn); // t_token *current_token, t_node **current_node
 
 // Renderer
