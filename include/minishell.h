@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/06 15:31:49 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/06 21:03:28 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,13 +186,21 @@ int				restore_history(t_ms *ms);
 void			ft_lexer(t_ms *ms);
 
 // expender.c
-int				expand_tkn(t_token *token);
-int				expand_node(t_node *node);
+int				expand_tkn(t_token *token, t_ms *ms);
+int				expand_node(t_node *node, t_ms *ms);
 
-// Parser
+// Node_Utils1
 t_tokentype		node_is_word(t_node *node);
 t_tokentype		node_is_pipe(t_node *node);
 t_tokentype		node_is_redirect(t_node *node);
+
+// Node_Utils2
+int				create_node(t_token **token, t_node **node);
+t_node			*make_word(t_token **ct);
+t_node			*make_operator(t_token **ct);
+t_node			*make_redirect(t_token **ct);
+
+// Parser
 int				ft_parse(t_token *ct, t_node **cn); // t_token *current_token, t_node **current_node
 
 // Renderer

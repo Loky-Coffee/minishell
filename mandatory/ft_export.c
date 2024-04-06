@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 18:27:30 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/03 19:52:10 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/06 18:57:56 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@ static int	search_env_var(t_ms *ms)
 	return (i);
 }
 
-static char	*tkn_to_str(t_token *token)
+static char	*tkn_to_str(t_token *token, t_ms *ms)
 {
-	expand_tkn(token);
+	expand_tkn(token, ms);
 	return (ft_strdup(token->str));
 }
 
@@ -43,7 +43,7 @@ static int	add_new_env_var(t_ms *ms, int i)
 		new_envp[j] = ms->envp[j];
 		j++;
 	}
-	new_envp[i] = tkn_to_str(ms->tokens->next);
+	new_envp[i] = tkn_to_str(ms->tokens->next, ms);
 	free(ms->envp);
 	ms->envp = new_envp;
 	return (0);
@@ -62,7 +62,7 @@ int ft_export(t_ms *ms)
 	else
 	{
 		free(ms->envp[i]);
-		ms->envp[i] = tkn_to_str(ms->tokens->next);
+		ms->envp[i] = tkn_to_str(ms->tokens->next, ms);
 	}
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/06 15:36:22 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/06 21:38:40 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,6 @@ static int	ft_strncmp_ignorecase(const char *s1, const char *s2, size_t n)
 	return ((unsigned char)ft_tolower(*s1) - (unsigned char)ft_tolower(*s2));
 }
 
-// static t_builtin	is_builtin(t_token *token, t_cmd *cmd, t_ms *ms)
 static t_builtin	is_builtin(t_token *token)
 {
 	if (ft_strncmp_ignorecase(token->str, "echo", 5) == 0)
@@ -120,17 +119,7 @@ int	execute_cmd(int fdr, int fdw, t_node *node, t_ms *ms, int exit_code)
 			dup2(fdw, STDOUT_FILENO);
 			close(fdw);
 		}
-		// cmd.tokens = node->tokens;
-		// cmd.args = create_cmd_args(node);
-		// if (cmd.args == NULL)
-		// 	cmd.cmdpth = ft_strdup("");
-		// else
-		// 	cmd.cmdpth = ft_strdup(node->tokens[0]->str);
 		create_cmd(&cmd, node);
-
-		// Buildin check
-		// is_builtin(node->tokens[0]);
-
 		ft_get_env_value(ms, cmd.path, "PATH");
 		if (cmd.cmdpth[0] == '\0'
 			|| ft_cmd_is_dir(cmd.cmdpth, &exit_code)
@@ -200,11 +189,8 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 			if (pipe(fdp))
 				perror(NINJASHELL);
 			ft_close_fd(fdr, 0);
-
 			status = execute_heredoc(fdw, fdp, node->tokens[1]->str, ms);
 			ft_close_fd(0, fdp[1]);
-			// close(fdp[1]);
-
 			if (node_is_word(node->right))
 			{
 				pid = execute_cmd(fdp[0], fdw, node->right, ms, 127);
@@ -212,7 +198,6 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 				waitpid(pid, &status, 0);
 				return (status);
 			}
-			// ft_close_fd(fdp[0], fdw);
 			fdr = fdp[0];
 		}
 		else if (node->tokens[0]->type == TOKEN_LESS)
@@ -227,10 +212,13 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 				ft_close_fd(fdp[0], 0);
 			}
 		}
-		else if (node->tokens[0]->type == TOKEN_GREATER)
+		else if (node->tokens[0]->type == TOKEN_GREATER || node->tokens[0]->type == TOKEN_DGREATER)
 		{
 			// NEW STD_OUT
-			fdp[1] = open(node->tokens[1]->str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			if (node->tokens[0]->type == TOKEN_DGREATER)
+				fdp[1] = open(node->tokens[1]->str, O_WRONLY | O_CREAT | O_APPEND, 0644);
+			else
+				fdp[1] = open(node->tokens[1]->str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 			if (fdp[1] != -1)
 			{
 				dup2(fdp[1], STDOUT_FILENO);
@@ -246,7 +234,7 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 	{
 		if (is_rgt && node->right == NULL)
 			exit_code = 127;
-		expand_node(node);
+		expand_node(node, ms);
 		pid = execute_cmd(fdr, fdw, node, ms, exit_code);
 		ft_close_fd(fdr, fdw);
 		if (exit_code == 127)
@@ -290,13 +278,13 @@ int	exec_manager(t_ms *ms)
 		if (builtin)
 		{
 			if (builtin != BI_EXPORT)
-				expand_node(ms->nodes);
+				expand_node(ms->nodes, ms);
 			create_cmd(&cmd, ms->nodes);
 			status = exec_builtin(builtin, &cmd, ms, 0);
 			free_cmd(&cmd);
 			return (status);
 		}
-		expand_node(ms->nodes);
+		expand_node(ms->nodes, ms);
 		pid = execute_cmd(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms, 127);
 		waitpid(pid, &status, 0);
 	}

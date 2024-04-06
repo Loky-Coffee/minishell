@@ -22,8 +22,7 @@ if multiple commands --> fork
 ### first Expander and then parser!!!!!!!!!
 
 - *		expander
-			$ Behandeln. in replace_dollar.
-
+			❌	$ Behandeln. in (OLD: replace_dollar NOW: expand_variable).
 
 - *		parser
 			* redirects
@@ -63,8 +62,10 @@ if multiple commands --> fork
 			}
 			export
 			{
-				✅ Must take the path from our environment. Properly handle environment variable assignment and modification.
-				❌ export PATH=$PATH:/Users/aalatzas/Desktop/mein_git/minishell  check with which minishell or minishell from other directory
+				✅	Must take the path from our environment. Properly handle environment variable assignment and modification.
+				❌	export 1num=Hello
+					=> bash: export: `1num=Hello': not a valid identifier
+				❌	export PATH=$PATH:/Users/aalatzas/Desktop/mein_git/minishell  check with which minishell or minishell from other directory
 			}
 			unset
 			{
@@ -78,9 +79,12 @@ if multiple commands --> fork
 			}
 			exit ✅
 			{
-				exit -42
-				exit abc def
-				exit 12 34  (geht bis long_max)
+				✅	exit
+				✅	exit 0
+				✅	exit 1
+				✅	exit -42
+				✅	exit abc def
+				✅	exit 12 34  (geht bis long_max)
 			}
 		}
 

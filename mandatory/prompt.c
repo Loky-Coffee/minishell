@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 23:53:16 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/21 11:41:43 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/06 16:24:47 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	create_prompt(t_ms *ms)
 	char	*last_slash;
 
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
-		return (ft_perror("Fehler bei getcwd"), 1);
+		return (ft_perror("can't locate current directory."), 1); // or change msg to "getcwd"
 	last_slash = ft_strrchr(cwd, '/');
 	if (last_slash != NULL)
 		last_slash++;
