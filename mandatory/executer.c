@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/06 14:59:43 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/06 15:36:22 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,7 +179,7 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 		return (-1);
 	exit_code = 1;
 	status = 0;
-	if (node->tokens[0] && node->tokens[0]->type == TOKEN_PIPE)
+	if (node_is_pipe(node) == TOKEN_PIPE)
 	{
 		if (pipe(fdp))
 			perror(NINJASHELL);
@@ -192,7 +192,7 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 		ft_close_fd(fdr, fdw);
 		ft_close_fd(fdp[0], 0);
 	}
-	else if (node->tokens && tkn_is_redirect(node->tokens[0]) && node->tokens[1])
+	else if (node_is_redirect(node))
 	{
 		if (node->tokens[0]->type == TOKEN_DLESS)
 		{
@@ -212,7 +212,8 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 				waitpid(pid, &status, 0);
 				return (status);
 			}
-			ft_close_fd(fdp[0], fdw);
+			// ft_close_fd(fdp[0], fdw);
+			fdr = fdp[0];
 		}
 		else if (node->tokens[0]->type == TOKEN_LESS)
 		{
@@ -238,13 +239,8 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 				ft_close_fd(fdp[1], 0);
 			}
 		}
-		if (node->left)
-			status = execute(fdr, fdw, node->left, ms, 0);
-		// ft_close_fd(0, fdw);
 		if (node->right)
 			status = execute(fdr, fdw, node->right, ms, 1);
-		// ft_close_fd(fdr, fdw);
-		// ft_close_fd(fdp[0], 0);
 	}
 	else
 	{

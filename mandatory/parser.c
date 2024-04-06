@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:25:37 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/06 14:43:30 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/06 15:30:01 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,14 @@ t_tokentype	node_is_word(t_node *node)
 	return (NO_TOKEN);
 }
 
-static t_tokentype	node_is_redirect(t_node *node)
+t_tokentype	node_is_pipe(t_node *node)
+{
+	if (node && node->tokens && node->tokens[0] && node->tokens[0]->type == TOKEN_PIPE)
+		return (TOKEN_PIPE);
+	return (NO_TOKEN);
+}
+
+t_tokentype	node_is_redirect(t_node *node)
 {
 	if (node && node->tokens)
 		return (tkn_is_redirect(node->tokens[0]));
@@ -245,6 +252,14 @@ int	ft_parse(t_token *ct, t_node **cn)
 				node->right = next;
 				next->right = curr;
 				node = node->right;
+			}
+			else if (node_is_pipe(curr) && node_is_word(next))
+			{
+				buff = node->right;
+				node->right = curr;
+				curr->left = buff;
+				curr->right = next;
+				node = next;
 			}
 			else if (node->left == NULL && !node_is_redirect(node))
 				set_node_left(&node, curr, next);
