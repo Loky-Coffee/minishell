@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 05:50:33 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/07 00:00:22 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/07 00:14:14 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,8 @@
 
 static int	expand_variable(int pos, t_token *token, t_ms *ms)
 {
-	
+	if (pos || token || ms) {;}
+	return (0);
 }
 
 int expand_tkn(t_token *token, t_ms *ms)
@@ -102,7 +103,13 @@ int expand_tkn(t_token *token, t_ms *ms)
 	ft_memset(str, 0, sizeof(str));
 	while (token && token->str[i] != '\0')
 	{
-		if (token->str[i] == '\"' || token->str[i] == '\'')
+		if (token->str[i] == '\\')
+		{
+			i++;
+			if (token->str[i])
+				str[j++] = token->str[i];
+		}
+		else if (token->str[i] == '\"' || token->str[i] == '\'')
 		{
 			if (quote_mode == '\0')
 				quote_mode = token->str[i];
@@ -113,6 +120,7 @@ int expand_tkn(t_token *token, t_ms *ms)
 		}
 		else if (token->str[i] == '$' && quote_mode != '\'')
 		{
+			str[j++] = token->str[i];
 			expand_variable(i, token, ms);
 		}
 		else
