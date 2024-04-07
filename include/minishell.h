@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/06 21:03:28 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/07 15:54:57 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,6 +193,7 @@ int				expand_node(t_node *node, t_ms *ms);
 t_tokentype		node_is_word(t_node *node);
 t_tokentype		node_is_pipe(t_node *node);
 t_tokentype		node_is_redirect(t_node *node);
+t_tokentype		node_is_andor(t_node *node);
 
 // Node_Utils2
 int				create_node(t_token **token, t_node **node);

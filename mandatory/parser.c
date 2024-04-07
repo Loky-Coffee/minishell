@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:25:37 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/06 17:01:57 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/07 16:51:06 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,29 +58,59 @@ static void	set_node_left(t_node **node, t_node *curr, t_node *next)
 	}
 }
 
-static void	set_node_right(t_node **node, t_node *left, t_node *next)
+static void	set_node_right(t_node **node, t_node *curr, t_node *next)
 {
 	if (next && !node_is_word(next))
 	{
 		(*node)->right = next;
-		next->left = left;
+		next->left = curr;
 		*node = next;
 	}
 	else
 	{
-		if (left && node_is_redirect(left))
+		if (curr && node_is_redirect(curr))
 		{
-			(*node)->right = left;
-			left->right = next;
+			(*node)->right = curr;
+			curr->right = next;
 		}
 		else
 		{
-			(*node)->right = left;
-			left->left = next;
+			(*node)->right = curr;
+			curr->left = next;
 		}
-		*node = left;
+		*node = curr;
 	}
 }
+
+static void	add_right_right(t_node **node, t_node *curr, t_node *next)
+{
+	t_node	*buff;
+	
+	buff = (*node)->right;
+	(*node)->right = curr;
+	if (next)
+	{
+		curr->right = next;
+		next->right = buff;
+	}
+	else
+		curr->right = buff;
+	(*node) = next;
+}
+
+// static void	flip_add_right_right(t_node **node, t_node *curr, t_node *next)
+// {
+// 	(*node)->right = next;
+// 	next->right = curr;
+// 	(*node) = curr;
+// }
+
+// static void	add_left_right(t_node **node, t_node *curr, t_node *next)
+// {
+// 	(*node)->left = curr;
+// 	(*node)->right = next;
+// 	(*node) = next;
+// }
 
 int	ft_parse(t_token *ct, t_node **cn)
 {
@@ -114,18 +144,21 @@ int	ft_parse(t_token *ct, t_node **cn)
 		}
 		else
 		{
-			if (node_is_redirect(curr) && next && node_is_word(next))
-				set_node_right(&node, curr, next);
-			else if (node_is_redirect(curr) && next && node_is_redirect(next))
+			if (node_is_redirect(curr) && node_is_word(next))
+				// set_node_right(&node, curr, next);
+				add_right_right(&node, curr, next);
+			else if (node_is_redirect(curr) && node_is_redirect(next))
 			{
-				buff = node->right;
-				node->right = curr;
-				curr->right = next;
-				next->right = buff;
-				node = next;
+				// buff = node->right;
+				// node->right = curr;
+				// curr->right = next;
+				// next->right = buff;
+				// node = next;
+				add_right_right(&node, curr, next);
 			}
-			else if (node_is_redirect(curr))
+			else if (node_is_redirect(curr) )
 			{
+				// add_right_right(&node, curr, next);
 				buff = node->right;
 				node->right = curr;
 				curr->right = buff;

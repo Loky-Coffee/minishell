@@ -43,6 +43,8 @@ if multiple commands --> fork
 				❌ Basic output functionality.
 				❌ Handling of command-line arguments.
 				❌ Interpretation of escape sequences (optional, depends on shell specifications).
+				❌ echo -nnnnnnnnnnnnnn "Hello world"
+				❌ echo -nnnnnnnnnnnnnnX "Hello world"
 			}
 			cd ✅
 			{
