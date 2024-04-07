@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 05:50:33 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/07 18:05:19 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/07 19:50:51 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,20 @@ static int	expand_variable(int *pos, t_token *token, char *str, t_ms *ms)
 {
 	char	key[FT_PATH_MAX];
 	char	value[FT_PATH_MAX];
+	char	*exit_str;
 
 	(*pos)++;
+	if (token->str[*pos] == '?')
+	{
+		exit_str = ft_itoa(ms->exit_code);
+		ft_strlcat(str, exit_str, FT_PATH_MAX);
+		if (exit_str)
+			free(exit_str);
+		return (0);
+	}
 	set_key(&token->str[*pos], key, pos);
 	ft_get_env_value(ms, value, key);
 	ft_strlcat(str, value, FT_PATH_MAX);
-	printf("str: |%s|\n",str);
 	return (0);
 }
 
