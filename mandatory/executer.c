@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/06 21:38:40 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/07 18:06:35 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,9 +232,10 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 	}
 	else
 	{
+		if (expand_node(node, ms))
+			return (1);
 		if (is_rgt && node->right == NULL)
 			exit_code = 127;
-		expand_node(node, ms);
 		pid = execute_cmd(fdr, fdw, node, ms, exit_code);
 		ft_close_fd(fdr, fdw);
 		if (exit_code == 127)
@@ -278,13 +279,15 @@ int	exec_manager(t_ms *ms)
 		if (builtin)
 		{
 			if (builtin != BI_EXPORT)
-				expand_node(ms->nodes, ms);
+				if (expand_node(ms->nodes, ms))
+					return (1);
 			create_cmd(&cmd, ms->nodes);
 			status = exec_builtin(builtin, &cmd, ms, 0);
 			free_cmd(&cmd);
 			return (status);
 		}
-		expand_node(ms->nodes, ms);
+		if (expand_node(ms->nodes, ms))
+			return (1);
 		pid = execute_cmd(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms, 127);
 		waitpid(pid, &status, 0);
 	}

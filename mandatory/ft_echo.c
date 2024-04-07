@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 02:35:00 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/27 05:05:50 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/07 18:32:44 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,16 +55,25 @@ int search_dollar(t_ms *ms)
 int	ft_echo(t_ms *ms)
 {
 	t_token *token;
+	int		flag;
 
-	token = ms->tokens->next;
+	flag = 0;
+	if (ms->tokens->next && ft_strncmp("-n", ms->tokens->next->str, 3) == 0)
+	{
+		token = ms->tokens->next->next;
+		flag = 1;
+	}
+	else
+		token = ms->tokens->next;
 	while (token != NULL)
 	{
 		if (!is_operator(token->str) && !is_single_token(*token->str))
-		{
 			printf("%s", token->str);
-		}
+		if(token->next)
+			printf(" ");
 		token = token->next;
 	}
-	printf("\n");
+	if (flag == 0)
+		printf("\n");
 	return (0);
 }
