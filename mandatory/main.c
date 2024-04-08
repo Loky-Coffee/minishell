@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/08 15:00:46 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/08 17:19:27 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,12 +57,29 @@ void	init_ms(int argc, char **argv, t_ms *ms)
 	ms->run = 1;	
 }
 
+int	handle_single_arg_input(t_ms *ms)
+{
+	int	exit_code;
+
+	if (ft_strncmp(ms->av[1], "-c", 3) == 0)
+	{
+		ms->line = ft_strdup(ms->av[2]);
+		ft_lexer(ms);
+		ft_parse(ms->tokens, &ms->nodes);
+		exit_code = exec_manager(ms);
+		ms->exit_code = WEXITSTATUS(exit_code);
+		cleanup_ms(ms);	
+		terminate(ms, NULL, ms->shell_exit_code);
+	}
+	return (ft_error("Wrong arguments", "usage", "./minishell -c 'input_line'"), terminate(ms, NULL, 1), 1);
+}
+
 int	handle_arg_file(t_ms *ms)
 {
 	int	fd;
 	int	exit_code;
 
-	if (ms->ac > 1)
+	if (ms->ac == 2)
 	{
 		fd = open(ms->av[1], O_RDONLY);
 		if (fd == -1)
@@ -80,6 +97,8 @@ int	handle_arg_file(t_ms *ms)
 		}
 		terminate(ms, NULL, ms->shell_exit_code);
 	}
+	else if (ms->ac == 3)
+		handle_single_arg_input(ms);
 	return (0);
 }
 
