@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/08 18:36:35 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/08 19:01:01 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,20 @@ static int	ft_cmd_is_dir(char *cmd, int *exit_code)
 		return (1);
 	}
 	return (0);
+}
+
+static void	ft_check_cmd_is_dot(int fdr, int fdw, t_cmd *cmd, t_ms *ms)
+{
+	if (ft_strncmp(cmd->cmdpth, ".", 2) == 0)
+	{
+		ft_close_fd(fdr, fdw);
+		ft_error(cmd->cmdpth, "filename argument required", NULL);
+		ft_putstr_fd(LIGHTRED, 2);
+		ft_putstr_fd(cmd->cmdpth, 2);
+		ft_putstr_fd(": usage: ", 2);
+		ft_putstr_fd(". filename [arguments]\n"RESET, 2);
+		terminate(ms, cmd, 2);
+	}
 }
 
 static int	ft_strncmp_ignorecase(const char *s1, const char *s2, size_t n)
@@ -120,16 +134,7 @@ int	execute_cmd(int fdr, int fdw, t_node *node, t_ms *ms, int exit_code)
 			close(fdw);
 		}
 		create_cmd(&cmd, node);
-		if (ft_strncmp(cmd.cmdpth, ".", 2) == 0)
-		{
-			ft_close_fd(fdr, fdw);
-			ft_error(cmd.cmdpth, "filename argument required", NULL);
-			ft_putstr_fd(LIGHTRED, 2);
-			ft_putstr_fd(cmd.cmdpth, 2);
-			ft_putstr_fd(": usage: ", 2);
-			ft_putstr_fd(". filename [arguments]\n"RESET, 2);
-			terminate(ms, &cmd, 2);
-		}
+		ft_check_cmd_is_dot(fdr, fdw, &cmd, ms);
 		ft_get_env_value(ms, cmd.path, "PATH");
 		if (cmd.cmdpth[0] == '\0'
 			|| ft_strncmp(cmd.cmdpth, "..", 3) == 0
