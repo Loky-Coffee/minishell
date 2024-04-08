@@ -6,7 +6,7 @@
 #    By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/20 16:47:30 by aalatzas          #+#    #+#              #
-#    Updated: 2024/04/06 16:39:51 by nmihaile         ###   ########.fr        #
+#    Updated: 2024/04/08 10:45:06 by nmihaile         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ OBJ_DIR = mandatory/obj/
 
 SRCS = main.c prompt.c history.c terminate.c lexer.c parser.c renderer.c \
 utoken.c token_list_utils.c expander.c executer.c path.c error.c \
-environment.c here_doc.c node_utils1.c node_utils2.c \
+environment.c here_doc.c node_utils1.c node_utils2.c tree_utils1.c \
 builtins.c ft_echo.c ft_cd.c ft_pwd.c ft_export.c ft_unset.c ft_env.c ft_exit.c
 OBJS = $(addprefix $(OBJ_DIR), $(notdir $(SRCS:.c=.o)))
 
@@ -56,6 +56,10 @@ re: fclean all
 t: $(NAME)
 	echo "\n"
 	./$(NAME)
+
+test: $(NAME)
+	echo "\n"
+	./$(NAME) tests
 
 ret: re t
 

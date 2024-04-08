@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/07 18:06:35 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/08 12:09:32 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -273,7 +273,9 @@ int	exec_manager(t_ms *ms)
 	save_stdfds(std_fds);
 	if (ms->nodes == NULL)
 		return (-1);
-	if (ms->nodes->left == NULL && ms->nodes->right == NULL && (ms->nodes->tokens && is_word(ms->nodes->tokens[0]->str)))
+	if (ms->nodes->left == NULL && ms->nodes->right == NULL \
+	&& (node_is_word(ms->nodes)))
+	// && (ms->nodes->tokens && is_word(ms->nodes->tokens[0]->str)))
 	{
 		builtin = is_builtin(ms->nodes->tokens[0]);
 		if (builtin)

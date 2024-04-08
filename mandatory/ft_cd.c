@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 00:41:52 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/03 19:43:27 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/08 14:58:12 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static int	ft_chdir(t_ms *ms, char *dir)
 	return (free(new_pwd), 0);
 }
 
-static int is_tilde(char *old_cwd, t_ms *ms)
+static int is_tilde(char *old_cwd, t_cmd *cmd, t_ms *ms)
 {
 	char *home_dir;
 	static char *full_path;
@@ -48,9 +48,9 @@ static int is_tilde(char *old_cwd, t_ms *ms)
 	home_dir = getenv("HOME");
 	if (!home_dir)
 		return (ft_perror("cd4"),1);
-	if (ms->tokens->next->next && is_word(ms->tokens->next->next->str))
+	if (cmd->tokens[0]->next->next && is_word(cmd->tokens[0]->next->next->str))
 	{
-		full_path = ft_strjoin(home_dir, ms->tokens->next->next->str);
+		full_path = ft_strjoin(home_dir, cmd->tokens[0]->next->next->str);
 		home_dir = full_path;
 	}
 	result = ft_chdir(ms, home_dir);
@@ -69,7 +69,7 @@ int	ft_cd(t_cmd *cmd, t_ms *ms)
 
 	// replace all ms->token with cmd->token
 
-	if (ft_strncmp((cmd->tokens[0])->str, "cd\0", 3) == 0 && !ms->tokens->next)
+	if (ft_strncmp((cmd->tokens[0])->str, "cd\0", 3) == 0 && !cmd->tokens[0]->next)
 	{
 		ft_get_env_value(ms, old_cwd, "PWD");
 		ft_get_env_value(ms, home, "HOME");
@@ -78,7 +78,7 @@ int	ft_cd(t_cmd *cmd, t_ms *ms)
 		ft_get_env_value(ms, current_cwd, "PWD");
 		return (0);
 	}
-	else if (ms->tokens->next && ft_strncmp(ms->tokens->next->str, "-\0", 2) == 0)
+	else if (cmd->tokens[0]->next && ft_strncmp(cmd->tokens[0]->next->str, "-\0", 2) == 0)
 	{
 		if (ft_strlen(old_cwd) == 0)
 			return (ft_printf("\n"), 1);
@@ -88,12 +88,13 @@ int	ft_cd(t_cmd *cmd, t_ms *ms)
 		ft_strlcpy(old_cwd, current_cwd, ft_strlen(current_cwd) + 1);
 		return (0);
 	}
-	else if ((ms->tokens->next && is_single_token(*ms->tokens->next->str) == TOKEN_TILDE))
-		return (is_tilde(old_cwd, ms));
+	else if ((cmd->tokens[0]->next && is_single_token(*cmd->tokens[0]->next->str) == TOKEN_TILDE))
+		return (is_tilde(old_cwd, cmd, ms));
 	else
 	{
 		ft_get_env_value(ms, old_cwd, "PWD");
-		ft_chdir(ms, ms->tokens->next->str);
+		if (ft_chdir(ms, cmd->tokens[0]->next->str) != 0)
+			return (ft_double_perror("cd", cmd->tokens[0]->next->str), 1);
 	}
 	return (0);
 }

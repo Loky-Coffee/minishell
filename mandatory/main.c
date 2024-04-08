@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/07 19:09:00 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/08 15:00:46 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,18 +48,49 @@ void	cleanup_ms(t_ms *ms)
 	free_nodetree(&ms->nodes);
 }
 
+void	init_ms(int argc, char **argv, t_ms *ms)
+{
+	ms->ac = argc;
+	ms->av = argv;
+	ms->envp = NULL;
+	ms->historypath = getenv("PWD");
+	ms->run = 1;	
+}
+
+int	handle_arg_file(t_ms *ms)
+{
+	int	fd;
+	int	exit_code;
+
+	if (ms->ac > 1)
+	{
+		fd = open(ms->av[1], O_RDONLY);
+		if (fd == -1)
+			return (ft_perror(ms->av[1]), terminate(ms, NULL, 1), 1);
+		while (1)
+		{
+			ms->line = get_next_line(fd);
+			if (ms->line == NULL)
+				break ;
+			ft_lexer(ms);
+			ft_parse(ms->tokens, &ms->nodes);
+			exit_code = exec_manager(ms);
+			ms->exit_code = WEXITSTATUS(exit_code);
+			cleanup_ms(ms);	
+		}
+		terminate(ms, NULL, ms->shell_exit_code);
+	}
+	return (0);
+}
+
 int	main(int argc, char **argv, char **env)
 {
 	static t_ms	ms;
 	int			exit_code;
 
-	ms.ac = argc;
-	ms.av = argv;
-	ms.envp = NULL;
-	ms.historypath = getenv("PWD");
-	ms.run = 1;
-
+	init_ms(argc, argv, &ms);
 	load_env(&ms, env);
+	handle_arg_file(&ms);
 	restore_history(&ms);
 	render_ninjashell();
 	while (ms.run)
@@ -83,7 +114,7 @@ int	main(int argc, char **argv, char **env)
 		ft_parse(ms.tokens, &ms.nodes);
 
 		// render NODES
-		// render_nodes(0, ms.nodes, 'R');
+		render_nodes(0, ms.nodes, 'R');
 
 		// EXECUTE IT
 		exit_code = exec_manager(&ms);
