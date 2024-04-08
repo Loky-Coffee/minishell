@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/08 12:09:32 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/08 18:36:35 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,8 +120,19 @@ int	execute_cmd(int fdr, int fdw, t_node *node, t_ms *ms, int exit_code)
 			close(fdw);
 		}
 		create_cmd(&cmd, node);
+		if (ft_strncmp(cmd.cmdpth, ".", 2) == 0)
+		{
+			ft_close_fd(fdr, fdw);
+			ft_error(cmd.cmdpth, "filename argument required", NULL);
+			ft_putstr_fd(LIGHTRED, 2);
+			ft_putstr_fd(cmd.cmdpth, 2);
+			ft_putstr_fd(": usage: ", 2);
+			ft_putstr_fd(". filename [arguments]\n"RESET, 2);
+			terminate(ms, &cmd, 2);
+		}
 		ft_get_env_value(ms, cmd.path, "PATH");
 		if (cmd.cmdpth[0] == '\0'
+			|| ft_strncmp(cmd.cmdpth, "..", 3) == 0
 			|| ft_cmd_is_dir(cmd.cmdpth, &exit_code)
 			|| ft_prepend_path(&cmd.cmdpth, cmd.path)
 			|| ft_exec_permissions(cmd.cmdpth, &exit_code))
