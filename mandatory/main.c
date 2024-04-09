@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/09 12:32:14 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/09 15:10:29 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ int	main(int argc, char **argv, char **env)
 	load_env(&ms, env);
 	handle_arg_file(&ms);
 	restore_history(&ms);
-	render_ninjashell();
+	// render_ninjashell();
 	while (ms.run)
 	{
 		create_prompt(&ms);
@@ -126,7 +126,7 @@ int	main(int argc, char **argv, char **env)
 		if (ms.line)
 			dump_history(&ms);
 		else
-			continue ;
+			ms.run = 0;
 		if (ft_strncmp(ms.line, "\0", 1) == 0)
 			continue ;
 
@@ -144,7 +144,7 @@ int	main(int argc, char **argv, char **env)
 		ft_parse(ms.tokens, &ms.nodes);
 
 		// render NODES
-		render_nodes(0, ms.nodes, 'R');
+		// render_nodes(0, ms.nodes, 'R');
 
 		// EXECUTE IT
 		exit_code = exec_manager(&ms);

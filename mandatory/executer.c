@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/08 19:01:01 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/09 14:42:49 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,11 +136,11 @@ int	execute_cmd(int fdr, int fdw, t_node *node, t_ms *ms, int exit_code)
 		create_cmd(&cmd, node);
 		ft_check_cmd_is_dot(fdr, fdw, &cmd, ms);
 		ft_get_env_value(ms, cmd.path, "PATH");
-		if (cmd.cmdpth[0] == '\0'
+		if (cmd.cmdpth[0] != '/' && (cmd.cmdpth[0] == '\0'
 			|| ft_strncmp(cmd.cmdpth, "..", 3) == 0
 			|| ft_cmd_is_dir(cmd.cmdpth, &exit_code)
 			|| ft_prepend_path(&cmd.cmdpth, cmd.path)
-			|| ft_exec_permissions(cmd.cmdpth, &exit_code))
+			|| ft_exec_permissions(cmd.cmdpth, &exit_code)))
 		{
 			ft_cmd_error(NINJASHELL, cmd.args[0], exit_code);
 			ft_close_fd(fdr, fdw);
