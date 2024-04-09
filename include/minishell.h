@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/09 12:22:07 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/09 21:12:55 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,19 +36,35 @@
 # define CUR_CWD 2
 
 /* ************************************************************************** */
-# define RED			"\033[0;31m"
-# define GREEN			"\033[0;32m"
-# define YELLOW			"\033[0;33m"
-# define BLUE			"\033[0;34m"
-# define MAGENTA		"\033[0;35m"
-# define CYAN			"\033[0;36m"
-# define LIGHTRED		"\033[0;91m"
-# define LIGHTGREEN		"\033[0;92m"
-# define LIGHTYELLOW	"\033[0;93m"
-# define LIGHTBLUE		"\033[0;94m"
-# define LIGHTMAGENTA	"\033[0;95m"
-# define LIGHTCYAN		"\033[0;96m"
-# define RESET			"\033[0m"
+# ifdef DISABLE_NINJA_COLORS
+#  define RED 			""
+#  define GREEN			""
+#  define YELLOW		""
+#  define BLUE			""
+#  define MAGENTA		""
+#  define CYAN			""
+#  define LIGHTRED		""
+#  define LIGHTGREEN	""
+#  define LIGHTYELLOW	""
+#  define LIGHTBLUE		""
+#  define LIGHTMAGENTA	""
+#  define LIGHTCYAN		""
+#  define RESET			""
+# else
+#  define RED			"\033[0;31m"
+#  define GREEN			"\033[0;32m"
+#  define YELLOW		"\033[0;33m"
+#  define BLUE			"\033[0;34m"
+#  define MAGENTA		"\033[0;35m"
+#  define CYAN			"\033[0;36m"
+#  define LIGHTRED		"\033[0;91m"
+#  define LIGHTGREEN	"\033[0;92m"
+#  define LIGHTYELLOW	"\033[0;93m"
+#  define LIGHTBLUE		"\033[0;94m"
+#  define LIGHTMAGENTA	"\033[0;95m"
+#  define LIGHTCYAN		"\033[0;96m"
+#  define RESET			"\033[0m"
+# endif
 
 /* ************************************************************************** */
 // Definition of token types for a shell interpreter.

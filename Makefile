@@ -6,7 +6,7 @@
 #    By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/20 16:47:30 by aalatzas          #+#    #+#              #
-#    Updated: 2024/04/09 16:25:19 by aalatzas         ###   ########.fr        #
+#    Updated: 2024/04/09 21:16:39 by aalatzas         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,8 @@ NC		= \033[0m
 
 NAME	= minishell
 CC		= cc
-CFLAGS	= -Wall -Wextra -Werror 			 -g # -fsanitize=address
+CFLAGS	= -Wall -Wextra -Werror  				-g  # -fsanitize=address
+NCOLORS = # -DDISABLE_NINJA_COLORS
 
 SRC_DIR	= mandatory/
 OBJ_DIR = mandatory/obj/
@@ -37,11 +38,11 @@ start:
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@ || \
+	$(CC) $(CFLAGS) $(NCOLORS) -c $< -o $@ || \
 	echo "$(RED)Compilation failed ❌$(NC)"
 
 $(NAME): start libft $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME) -lreadline
+	$(CC) $(CFLAGS) $(NCOLORS) $(OBJS) $(LIBFT) -o $(NAME) -lreadline
 	echo "$(GREEN)Compilation successful ✅$(NC)"
 
 

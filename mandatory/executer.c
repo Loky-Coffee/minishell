@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/09 16:33:44 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/09 20:58:06 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ static int	ft_cmd_is_dir(char *cmd, int *exit_code)
 {
 	struct stat	file_stat;
 
+	if (ft_strchr(cmd, '/') == NULL)
+		return (0);
 	if (stat(cmd, &file_stat) != 0)
 		return (0);
 	if (S_ISDIR(file_stat.st_mode) != 0)
@@ -115,8 +117,9 @@ static int	create_cmd(t_cmd *cmd, t_node *node)
 
 int	execute_cmd(int fdr, int fdw, t_node *node, t_ms *ms, int exit_code)
 {
-	int		pid;
-	t_cmd	cmd;
+	int			pid;
+	t_cmd		cmd;
+	t_builtin	builtin;
 
 	if (!is_word(node->tokens[0]->str))
 		return (-1);
@@ -134,6 +137,18 @@ int	execute_cmd(int fdr, int fdw, t_node *node, t_ms *ms, int exit_code)
 			close(fdw);
 		}
 		create_cmd(&cmd, node);
+
+		builtin = is_builtin(node->tokens[0]);
+		if (builtin)
+		{
+			if (builtin != BI_EXPORT)
+				if (expand_node(ms->nodes, ms))
+					return (1);
+			exit_code = exec_builtin(builtin, &cmd, ms, 0);
+			terminate(ms, &cmd, exit_code);
+		}
+
+
 		ft_check_cmd_is_dot(fdr, fdw, &cmd, ms);
 		ft_get_env_value(ms, cmd.path, "PATH");
 		if (cmd.cmdpth[0] != '/' && (cmd.cmdpth[0] == '\0'
@@ -142,10 +157,17 @@ int	execute_cmd(int fdr, int fdw, t_node *node, t_ms *ms, int exit_code)
 			|| ft_prepend_path(&cmd.cmdpth, cmd.path)
 			|| ft_exec_permissions(cmd.cmdpth, &exit_code)))
 		{
+
 			ft_cmd_error(NINJASHELL, cmd.args[0], exit_code);
 			ft_close_fd(fdr, fdw);
 			terminate(ms, &cmd, exit_code);
 		}
+		// printf("\n---------------------\n");
+		// printf("cmd.cmdpth [%s]\n", cmd.cmdpth);
+		// printf("cmd.args   [%s]\n", cmd.args[0]);
+		// printf("ms->envp   [%s]\n", ms->envp[1]);
+		// printf("---------------------\n");
+		fflush(stdout);
 		execve(cmd.cmdpth, cmd.args, ms->envp);
 		ft_perror(NINJASHELL);
 		ft_perror(cmd.args[0]);
