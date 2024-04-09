@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/09 12:28:00 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/09 12:32:14 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,9 @@ void	free_cmd(t_cmd *cmd)
 
 void	cleanup_ms(t_ms *ms)
 {
-	free_line(ms);
+	if (ms->line)
+		free_line(ms);
+	ms->line = NULL;
 	ft_token_clear(&ms->tokens, del_token_content);
 	ms->tokens = NULL;
 	free_nodetree(&ms->nodes);
