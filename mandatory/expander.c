@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 05:50:33 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/09 15:07:51 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/09 15:14:59 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ int expand_tkn(t_token *token, t_ms *ms)
 			else
 				str[j++] = token->str[i];
 		}
-		else if (token->str[i] == '$' && token->str[i + 1] != ' ' && quote_mode != '\'')
+		else if (token->str[i] == '$' && (token->str[i + 1] != '\0' && token->str[i + 1] != '\"' && token->str[i + 1] != ' ') && quote_mode != '\'')
 		{
 			expand_variable(&i, token, str, ms);
 			j = ft_strlen(str);
