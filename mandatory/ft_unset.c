@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 02:33:21 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/28 15:53:17 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/09 17:02:36 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,11 @@ int	ft_unset(t_ms *ms)
 	char	*str;
 	char	key[FT_PATH_MAX];
 	int 	i;
+	int		flag;
 
+	flag = 0;
 	if (ms->tokens->next == NULL || ms->tokens->next->str == NULL)
-		return (1);
+		return (0);
 	str = ms->tokens->next->str;
 	ft_memset(key, 0, FT_PATH_MAX);
 	ft_strlcat(key, str, FT_PATH_MAX);
@@ -35,8 +37,11 @@ int	ft_unset(t_ms *ms)
 		{
 			ms->envp[i] = ms->envp[1 + i];
 			i++;
+			flag = 1;
 		}
 		return (ms->envp[i] = NULL, 0);
 	}
-	return (1);
+	if (flag == 1)
+		return (1);
+	return (0);
 }
