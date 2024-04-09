@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   prompt.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 23:53:16 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/06 16:24:47 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/09 16:56:59 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,9 @@ int	create_prompt(t_ms *ms)
 	ms->prompt = (char *)ft_calloc(size, sizeof(char));
 	if (ms->prompt == NULL)
 		return (1);
-	ft_strlcpy(ms->prompt, "\033[0;92m", size);
+	if (ms->exit_code > 0)
+		ft_strlcat(ms->prompt, "\n", size);
+	ft_strlcat(ms->prompt, "\033[0;92m", size);
 	ft_strlcat(ms->prompt, "ninjaSHELL: /", size);
 	ft_strlcat(ms->prompt, last_slash, size);
 	ft_strlcat(ms->prompt, " $ \033[0m", size + 1);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/09 15:10:29 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/09 16:33:17 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	init_ms(int argc, char **argv, t_ms *ms)
 	ms->av = argv;
 	ms->envp = NULL;
 	ms->historypath = getenv("PWD");
-	ms->run = 1;	
+	ms->run = 1;
 }
 
 int	handle_single_arg_input(t_ms *ms)
@@ -71,7 +71,7 @@ int	handle_single_arg_input(t_ms *ms)
 		ft_parse(ms->tokens, &ms->nodes);
 		exit_code = exec_manager(ms);
 		ms->exit_code = WEXITSTATUS(exit_code);
-		cleanup_ms(ms);	
+		cleanup_ms(ms);
 		terminate(ms, NULL, ms->shell_exit_code);
 	}
 	return (ft_error("Wrong arguments", "usage", "./minishell -c 'input_line'"), terminate(ms, NULL, 1), 1);
@@ -94,13 +94,13 @@ int	handle_arg_file(t_ms *ms)
 				break ;
 			if (ft_lexer(ms))
 			{
-				cleanup_ms(ms);	
+				cleanup_ms(ms);
 				continue ;
 			}
 			ft_parse(ms->tokens, &ms->nodes);
 			exit_code = exec_manager(ms);
 			ms->exit_code = WEXITSTATUS(exit_code);
-			cleanup_ms(ms);	
+			cleanup_ms(ms);
 		}
 		terminate(ms, NULL, ms->shell_exit_code);
 	}
@@ -112,7 +112,7 @@ int	handle_arg_file(t_ms *ms)
 int	main(int argc, char **argv, char **env)
 {
 	static t_ms	ms;
-	int			exit_code;
+	// int			exit_code;
 
 	init_ms(argc, argv, &ms);
 	load_env(&ms, env);
@@ -147,8 +147,9 @@ int	main(int argc, char **argv, char **env)
 		// render_nodes(0, ms.nodes, 'R');
 
 		// EXECUTE IT
-		exit_code = exec_manager(&ms);
-		ms.exit_code = WEXITSTATUS(exit_code);
+		exec_manager(&ms);
+		// exit_code = exec_manager(&ms);
+		// ms.exit_code = WEXITSTATUS(exit_code);
 		// printf(YELLOW"=> %i\n"RESET, ms.exit_code);
 
 		// FREE line && tokens

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/09 14:42:49 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/09 16:33:44 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -286,6 +286,7 @@ int	exec_manager(t_ms *ms)
 	t_builtin	builtin;
 	int			std_fds[2];
 
+	status = 0;
 	save_stdfds(std_fds);
 	if (ms->nodes == NULL)
 		return (-1);
@@ -300,7 +301,7 @@ int	exec_manager(t_ms *ms)
 				if (expand_node(ms->nodes, ms))
 					return (1);
 			create_cmd(&cmd, ms->nodes);
-			status = exec_builtin(builtin, &cmd, ms, 0);
+			ms->exit_code = exec_builtin(builtin, &cmd, ms, 0);
 			free_cmd(&cmd);
 			return (status);
 		}
@@ -308,9 +309,13 @@ int	exec_manager(t_ms *ms)
 			return (1);
 		pid = execute_cmd(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms, 127);
 		waitpid(pid, &status, 0);
+		ms->exit_code = WEXITSTATUS(status);
 	}
 	else
+	{
 		status = execute(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms, 0);
+		ms->exit_code = WEXITSTATUS(status);
+	}
 	reset_stdfds(std_fds);
 	return (status);
 }
