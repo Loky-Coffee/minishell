@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 02:30:05 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/06 21:02:13 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/09 12:25:42 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,10 +86,12 @@ static int	handle_word(int i, t_ms *ms)
 	return (i);
 }
 
-void	ft_lexer(t_ms *ms)
+int	ft_lexer(t_ms *ms)
 {
 	int		i;
 
+	if (ms->line && ms->line[0] == '#')
+		return (1);
 	i = 0;
 	while (ms->line && ms->line[i])
 	{
@@ -100,4 +102,5 @@ void	ft_lexer(t_ms *ms)
 		else
 			i++;
 	}
+	return (0);
 }

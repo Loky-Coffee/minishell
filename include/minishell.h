@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/08 11:56:39 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/09 12:22:07 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,7 +183,7 @@ int				dump_history(t_ms *ms);
 int				restore_history(t_ms *ms);
 
 // Lexer
-void			ft_lexer(t_ms *ms);
+int				ft_lexer(t_ms *ms);
 
 // expender.c
 int				expand_tkn(t_token *token, t_ms *ms);
