@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 02:35:00 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/07 18:32:44 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/09 11:44:02 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,17 +52,41 @@ int search_dollar(t_ms *ms)
 	return (NO_TOKEN);
 }
 
+static int	set_flag(char *str)
+{
+	int	i;
+	int	flag;
+	
+	flag = 0;
+	if (str && str[0] == '-')
+	{
+		i = 1;
+		while (str[i])
+		{
+			if (str[i] == 'n')
+				flag = 1;
+			else if (str[i])
+			{
+				flag = 0;
+				break;	
+			}
+			i++;
+		}
+	}
+	return (flag);
+}
+
 int	ft_echo(t_ms *ms)
 {
 	t_token *token;
 	int		flag;
 
-	flag = 0;
-	if (ms->tokens->next && ft_strncmp("-n", ms->tokens->next->str, 3) == 0)
-	{
+	if (ms->tokens->next)
+		flag = set_flag(ms->tokens->next->str);
+	else
+		flag = 0;
+	if (flag == 1)
 		token = ms->tokens->next->next;
-		flag = 1;
-	}
 	else
 		token = ms->tokens->next;
 	while (token != NULL)
