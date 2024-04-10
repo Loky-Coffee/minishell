@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 16:34:41 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/06 21:03:11 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/10 16:35:05 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,10 @@ t_node	*make_word(t_token **ct)
 
 	if (create_node(ct, &n))
 		return (NULL);
+	n->type = NODE_COMMAND;
 	n->left = NULL;
 	n->right = NULL;
+	n->parent = NULL;
 	t = *ct;
 	i = 0;
 	while (t && !tkn_is_operator(t) && !tkn_is_redirect(t))
@@ -69,8 +71,17 @@ t_node	*make_operator(t_token **ct)
 		free(n);
 		return (NULL);
 	}
+	if ((*ct)->type == TOKEN_PIPE)
+		n->type = NODE_PIPE;
+	else if ((*ct)->type == TOKEN_DAND)
+		n->type = NODE_AND;
+	else if ((*ct)->type == TOKEN_OR)
+		n->type = NODE_OR;
+	else
+		n->type = NO_NODE;
 	n->left = NULL;
 	n->right = NULL;
+	n->parent = NULL;
 	n->tokens[0] = *ct;
 	*ct = (*ct)->next;
 	return (n);
@@ -92,8 +103,10 @@ t_node	*make_redirect(t_token **ct)
 		free(n);
 		return (NULL);
 	}
+	n->type = NODE_REDIRECT;
 	n->left = NULL;
 	n->right = NULL;
+	n->parent = NULL;
 	n->tokens[0] = *ct;
 	if (i == 2)
 	{

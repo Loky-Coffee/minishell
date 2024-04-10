@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/09 20:58:06 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/10 21:04:39 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,7 +167,7 @@ int	execute_cmd(int fdr, int fdw, t_node *node, t_ms *ms, int exit_code)
 		// printf("cmd.args   [%s]\n", cmd.args[0]);
 		// printf("ms->envp   [%s]\n", ms->envp[1]);
 		// printf("---------------------\n");
-		fflush(stdout);
+		// fflush(stdout);
 		execve(cmd.cmdpth, cmd.args, ms->envp);
 		ft_perror(NINJASHELL);
 		ft_perror(cmd.args[0]);
