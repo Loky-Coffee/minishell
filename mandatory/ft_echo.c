@@ -3,60 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 02:35:00 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/09 11:44:02 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/11 22:27:30 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-int search_operator(t_ms *ms)
-{
-	t_token *tokens;
-	int i;
-
-	tokens = ms->tokens;
-	while (tokens != NULL)
-	{
-		i = 0;
-		while (tokens->str[i] != 0)
-		{
-			if (is_operator(&tokens->str[i]))
-				return (TOKEN_PIPE);
-			i++;
-		}
-		tokens = tokens->next;
-	}
-	return (NO_TOKEN);
-}
-
-int search_dollar(t_ms *ms)
-{
-	t_token *tokens;
-	int i;
-
-	tokens = ms->tokens;
-	while (tokens != NULL)
-	{
-		i = 0;
-		while (tokens->str[i] != 0)
-		{
-			if (tokens->str[i] == '$')
-				return (TOKEN_DOLLAR);
-			i++;
-		}
-		tokens = tokens->next;
-	}
-	return (NO_TOKEN);
-}
-
 static int	set_flag(char *str)
 {
 	int	i;
 	int	flag;
-	
+
 	flag = 0;
 	if (str && str[0] == '-')
 	{
@@ -68,7 +28,7 @@ static int	set_flag(char *str)
 			else if (str[i])
 			{
 				flag = 0;
-				break;	
+				break;
 			}
 			i++;
 		}
@@ -76,26 +36,28 @@ static int	set_flag(char *str)
 	return (flag);
 }
 
-int	ft_echo(t_ms *ms)
+int	ft_echo(t_cmd *cmd)
 {
 	t_token *token;
 	int		flag;
+	int		i;
 
-	if (ms->tokens->next)
-		flag = set_flag(ms->tokens->next->str);
+	i = 1;
+	if (cmd->tokens[i])
+		flag = set_flag(cmd->tokens[i]->str);
 	else
 		flag = 0;
 	if (flag == 1)
-		token = ms->tokens->next->next;
+		token = cmd->tokens[i]->next;
 	else
-		token = ms->tokens->next;
-	while (token != NULL)
+		token = cmd->tokens[i];
+	while (cmd->tokens[i] != NULL)
 	{
-		if (!is_operator(token->str) && !is_single_token(*token->str))
-			printf("%s", token->str);
-		if(token->next)
+		if (!is_operator(cmd->tokens[i]->str) && !is_single_token(*cmd->tokens[i]->str))
+			printf("%s", cmd->tokens[i]->str);
+		if(cmd->tokens[i + 1])
 			printf(" ");
-		token = token->next;
+		i++;
 	}
 	if (flag == 0)
 		printf("\n");

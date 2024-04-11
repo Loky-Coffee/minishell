@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 20:33:21 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/09 16:29:28 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/11 22:26:47 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	exec_builtin(t_builtin builtin, t_cmd *cmd, t_ms *ms, int in_pipe)
 
 	exit_code = 1;
 	if (builtin == BI_ECHO)
-		exit_code = ft_echo(ms);
+		exit_code = ft_echo(cmd);
 	else if (builtin == BI_CD)
 		exit_code = ft_cd(cmd, ms);
 	else if (builtin == BI_PWD)

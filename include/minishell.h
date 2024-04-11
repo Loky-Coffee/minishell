@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/10 16:33:32 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/11 22:26:24 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -269,7 +269,7 @@ int				ft_heredoc(int fd_write, char *lim);
 
 // builtins
 int				exec_builtin(t_builtin builtin, t_cmd *cmd, t_ms *ms, int in_pipe);
-int				ft_echo(t_ms *ms);
+int				ft_echo(t_cmd *cmd);
 int				ft_cd(t_cmd *cmd, t_ms *ms);
 int				ft_pwd(void);
 int 			ft_export(t_ms *ms);

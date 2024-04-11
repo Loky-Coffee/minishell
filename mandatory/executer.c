@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/10 21:04:39 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/11 22:27:21 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,7 +137,6 @@ int	execute_cmd(int fdr, int fdw, t_node *node, t_ms *ms, int exit_code)
 			close(fdw);
 		}
 		create_cmd(&cmd, node);
-
 		builtin = is_builtin(node->tokens[0]);
 		if (builtin)
 		{
@@ -162,12 +161,6 @@ int	execute_cmd(int fdr, int fdw, t_node *node, t_ms *ms, int exit_code)
 			ft_close_fd(fdr, fdw);
 			terminate(ms, &cmd, exit_code);
 		}
-		// printf("\n---------------------\n");
-		// printf("cmd.cmdpth [%s]\n", cmd.cmdpth);
-		// printf("cmd.args   [%s]\n", cmd.args[0]);
-		// printf("ms->envp   [%s]\n", ms->envp[1]);
-		// printf("---------------------\n");
-		// fflush(stdout);
 		execve(cmd.cmdpth, cmd.args, ms->envp);
 		ft_perror(NINJASHELL);
 		ft_perror(cmd.args[0]);

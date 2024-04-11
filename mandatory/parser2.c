@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 14:58:11 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/11 18:21:30 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/11 22:07:27 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ t_node	*ft_parse(t_token *ct, t_node **root)
 	{
 		next->left = curr;
 		curr->parent = next;
-		if (curr->type < next->type && (*root)->type <= NODE_PIPE)
+		if (curr->type < next->type) //  && (*root)->type <= NODE_PIPE
 			return (next);
 		return (curr);
 	}

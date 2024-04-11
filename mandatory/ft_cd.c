@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 00:41:52 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/08 14:58:12 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/11 19:41:46 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static int is_tilde(char *old_cwd, t_cmd *cmd, t_ms *ms)
 
 	result = 0;
 	getcwd(old_cwd, FT_PATH_MAX);
-	home_dir = getenv("HOME");
+	home_dir = getenv("HOME"); //eigene penv benutzen
 	if (!home_dir)
 		return (ft_perror("cd4"),1);
 	if (cmd->tokens[0]->next->next && is_word(cmd->tokens[0]->next->next->str))
