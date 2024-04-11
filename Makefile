@@ -17,7 +17,7 @@ NC		= \033[0m
 
 NAME	= minishell
 CC		= cc
-CFLAGS	= -Wall -Wextra -Werror  				-g  # -fsanitize=address
+CFLAGS	= -Wall -Wextra -Werror  				-g  -fsanitize=address
 NCOLORS = # -DDISABLE_NINJA_COLORS
 
 SRC_DIR	= mandatory/

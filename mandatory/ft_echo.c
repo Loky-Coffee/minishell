@@ -38,7 +38,6 @@ static int	set_flag(char *str)
 
 int	ft_echo(t_cmd *cmd)
 {
-	t_token *token;
 	int		flag;
 	int		i;
 
@@ -48,9 +47,7 @@ int	ft_echo(t_cmd *cmd)
 	else
 		flag = 0;
 	if (flag == 1)
-		token = cmd->tokens[i]->next;
-	else
-		token = cmd->tokens[i];
+		i++;
 	while (cmd->tokens[i] != NULL)
 	{
 		if (!is_operator(cmd->tokens[i]->str) && !is_single_token(*cmd->tokens[i]->str))
