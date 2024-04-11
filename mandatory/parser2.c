@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 14:58:11 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/10 20:35:09 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/11 17:22:00 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,19 @@ t_node	*ft_parse(t_token *ct, t_node **root)
 	}
 	if (*root && (*root)->type <= curr->type)
 		*root = curr;
-	if (next->parent && curr->type > next->parent->type )
+	if (next->parent && next->parent->parent && curr->type > next->parent->type)
 	{
 		next->parent->parent->left = curr;
 		curr->right = next->parent;
 		curr->parent = next->parent->parent;
-		next->parent = curr;		
+		next->parent = curr;
+	}
+	else if (next->parent && next->parent->parent == NULL && curr->type > next->parent->type)
+	{
+		next->parent->parent->right = curr;
+		curr->right = next->parent;
+		curr->parent = next->parent->parent;
+		next->parent = curr;
 	}
 	else if (curr->type > next->type)
 	{
@@ -71,10 +78,18 @@ t_node	*ft_parse(t_token *ct, t_node **root)
 		next->parent = curr;
 		return (curr);
 	}
-	else if (next->type > curr->type && next->left == NULL)
+	else if (next->type == curr->type && next->left)
+	{
+		curr->right = next;
+		next->parent = curr;
+		return(curr);
+	}
+	else if (next->type >= curr->type && next->left == NULL)
 	{
 		next->left = curr;
 		curr->parent = next;
+		if (curr->type < next->type && (*root)->type <= NODE_PIPE)
+			return (next);
 		return (curr);
 	}
 	return (curr);
