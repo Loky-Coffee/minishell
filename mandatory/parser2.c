@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 14:58:11 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/11 17:22:00 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/11 18:21:30 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ t_node	*ft_parse(t_token *ct, t_node **root)
 {
 	t_node	*curr;
 	t_node	*next;
+	t_node	*buff;
 
 	curr = parse_leaf(&ct);
 	if (curr == NULL)
@@ -48,9 +49,10 @@ t_node	*ft_parse(t_token *ct, t_node **root)
 	if (next->parent && next->parent->parent && curr->type > next->parent->type)
 	{
 		next->parent->parent->left = curr;
-		curr->right = next->parent;
 		curr->parent = next->parent->parent;
+		curr->right = next->parent;
 		next->parent = curr;
+		return (curr);
 	}
 	else if (next->parent && next->parent->parent == NULL && curr->type > next->parent->type)
 	{
@@ -78,11 +80,26 @@ t_node	*ft_parse(t_token *ct, t_node **root)
 		next->parent = curr;
 		return (curr);
 	}
-	else if (next->type == curr->type && next->left)
+	else if (next->type == curr->type && next->left && curr->type != NODE_REDIRECT)
 	{
 		curr->right = next;
 		next->parent = curr;
 		return(curr);
+	}
+	else if (next->type == NODE_REDIRECT && curr->type == NODE_REDIRECT)
+	{
+		curr->left = next;
+		next->parent = curr;
+		return(curr);
+	}
+	else if (next->type == NODE_REDIRECT && curr->type == NODE_COMMAND)
+	{
+		buff = next;
+		while (next->left != NULL)
+			next = next->left;
+		next->left = curr;
+		curr->parent = next->left;
+		return (buff);
 	}
 	else if (next->type >= curr->type && next->left == NULL)
 	{
