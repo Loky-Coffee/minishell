@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/10 14:58:11 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/11 22:07:27 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/12 15:23:14 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,32 @@ static t_node	*parse_leaf(t_token **ct)
 		n = make_operator(ct);
 	return (n);
 }
+t_node *next_is_redirect(t_node *curr, t_node *next)
+{
+	t_node	*buff;
+
+	if (curr->type == NODE_REDIRECT)
+	{
+		curr->left = next;
+		next->parent = curr;
+		return(curr);
+	}
+	else if (curr->type == NODE_COMMAND)
+	{
+		buff = next;
+		while (next->left != NULL)
+			next = next->left;
+		next->left = curr;
+		curr->parent = next->left;
+		return (buff);
+	}
+	return (NULL);
+}
 
 t_node	*ft_parse(t_token *ct, t_node **root)
 {
 	t_node	*curr;
 	t_node	*next;
-	t_node	*buff;
 
 	curr = parse_leaf(&ct);
 	if (curr == NULL)
@@ -46,7 +66,7 @@ t_node	*ft_parse(t_token *ct, t_node **root)
 	}
 	if (*root && (*root)->type <= curr->type)
 		*root = curr;
-	if (next->parent && next->parent->parent && curr->type > next->parent->type)
+	if (next->parent && next->parent->parent && (curr->type > next->parent->type || curr->type > next->type))
 	{
 		next->parent->parent->left = curr;
 		curr->parent = next->parent->parent;
@@ -63,18 +83,10 @@ t_node	*ft_parse(t_token *ct, t_node **root)
 	}
 	else if (curr->type > next->type)
 	{
-		if (next->right == NULL && next->parent && next->type < curr->type && next->parent->type != curr->type)
+		if (next->right == NULL && next->parent && next->parent->type != curr->type)
 		{
 			next->parent->left = curr;
 			curr->parent = next->parent;
-		}
-		else if (curr->type > next->type && next->parent && next->parent->parent)
-		{
-			next->parent->parent->left = curr;
-			curr->parent = next->parent->parent;
-			curr->right = next->parent;
-			next->parent = curr;
-			return (curr);
 		}
 		curr->right = next;
 		next->parent = curr;
@@ -86,26 +98,21 @@ t_node	*ft_parse(t_token *ct, t_node **root)
 		next->parent = curr;
 		return(curr);
 	}
-	else if (next->type == NODE_REDIRECT && curr->type == NODE_REDIRECT)
+	else if (next->type == NODE_REDIRECT)
+		return(next_is_redirect(curr, next));
+	else if (curr->type == NODE_REDIRECT && next->type >= NODE_PIPE)
 	{
-		curr->left = next;
-		next->parent = curr;
-		return(curr);
-	}
-	else if (next->type == NODE_REDIRECT && curr->type == NODE_COMMAND)
-	{
-		buff = next;
-		while (next->left != NULL)
-			next = next->left;
+		curr->left = next->left;
+		next->left->parent = curr;
 		next->left = curr;
-		curr->parent = next->left;
-		return (buff);
+		curr->parent = next;
+		return (next);
 	}
 	else if (next->type >= curr->type && next->left == NULL)
 	{
 		next->left = curr;
 		curr->parent = next;
-		if (curr->type < next->type) //  && (*root)->type <= NODE_PIPE
+		if (curr->type < next->type && (*root)->type <= NODE_PIPE) //  && (*root)->type <= NODE_PIPE
 			return (next);
 		return (curr);
 	}
