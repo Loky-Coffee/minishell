@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   node_utils2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 16:34:41 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/10 16:35:05 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/13 20:28:44 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ t_node	*make_operator(t_token **ct)
 	return (n);
 }
 
-t_node	*make_redirect(t_token **ct)
+t_node	*make_redirect(t_ms *ms, t_token **ct)
 {
 	int		i;
 	t_node	*n;
@@ -95,8 +95,10 @@ t_node	*make_redirect(t_token **ct)
 	if (create_node(ct, &n))
 		return (NULL);
 	i = 1;
-	if ((*ct)->next)
+	if ((*ct)->next->type == TOKEN_WORD)
 		i++;
+	else
+		return (parse_error((*ct)->next, ms), NULL);
 	n->tokens = (t_token **)ft_calloc(i + 1, sizeof(t_token));
 	if (n->tokens == NULL)
 	{
@@ -110,10 +112,10 @@ t_node	*make_redirect(t_token **ct)
 	n->tokens[0] = *ct;
 	if (i == 2)
 	{
-		*ct = (*ct)->next;
+		while((*ct)->next && (*ct)->next->type == TOKEN_WORD)
+			*ct = (*ct)->next;
 		n->tokens[1] = *ct;
 	}
-
 	*ct = (*ct)->next;
 	return (n);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/13 16:16:06 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/13 20:31:25 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,10 +218,10 @@ t_tokentype		node_is_andor(t_node *node);
 int				create_node(t_token **token, t_node **node);
 t_node			*make_word(t_token **ct);
 t_node			*make_operator(t_token **ct);
-t_node			*make_redirect(t_token **ct);
+t_node			*make_redirect(t_ms *ms, t_token **ct);
 
 // Parser
-// int				ft_parse(t_token *ct, t_node **cn); // t_token *current_token, t_node **current_node
+void			parse_error(t_token *tkn, t_ms *ms);
 t_node			*ft_parse(t_token *ct, t_node **root, t_ms *ms);
 
 // Tree_Utils1

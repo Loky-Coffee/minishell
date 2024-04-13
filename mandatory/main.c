@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/13 18:42:34 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/13 20:40:45 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ int	main(int argc, char **argv, char **env)
 	init_ms(argc, argv, &ms);
 	load_env(&ms, env);
 	handle_arg_file(&ms);
-	render_ninjashell();
+	// render_ninjashell();
 	restore_history(&ms);
 	while (ms.run)
 	{
@@ -159,7 +159,7 @@ int	main(int argc, char **argv, char **env)
 		}
 
 		// render NODES
-		render_nodes(0, ms.nodes, 'R');
+		// render_nodes(0, ms.nodes, 'R');
 
 		// EXECUTE IT
 		exec_manager(&ms);

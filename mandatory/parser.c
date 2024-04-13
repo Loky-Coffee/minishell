@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser3.c                                          :+:      :+:    :+:   */
+/*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/12 15:56:24 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/13 17:34:37 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/13 20:24:30 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static t_node	*parse_leaf(t_token **ct)
+static t_node	*parse_leaf(t_ms *ms, t_token **ct)
 {
 	t_node	*n;
 
@@ -22,7 +22,7 @@ static t_node	*parse_leaf(t_token **ct)
 	if (tkn_is_word(*ct))
 		n = make_word(ct);
 	else if (tkn_is_redirect(*ct))
-		n = make_redirect(ct);
+		n = make_redirect(ms, ct);
 	else if (tkn_is_operator(*ct))
 		n = make_operator(ct);
 	return (n);
@@ -95,14 +95,14 @@ t_node	*insert_cmd(t_node *curr, t_node *next, t_ms *ms)
 		{
 			next->left = curr;
 			curr->parent = next;
-			return (curr); 
+			return (curr);
 		}
 		else
 			parse_error(curr->tokens[0], ms);
 	}
 	else
 		parse_error(curr->tokens[0], ms);
-	return (NULL);	
+	return (NULL);
 }
 
 t_node	*insert_redirect(t_node *curr, t_node *next, t_ms *ms)
@@ -190,7 +190,7 @@ t_node	*ft_parse(t_token *ct, t_node **root, t_ms *ms)
 	t_node	*next;
 	t_node	*ast;
 
-	curr = parse_leaf(&ct);
+	curr = parse_leaf(ms, &ct);
 	if (curr == NULL)
 		return (NULL);
 	next = ft_parse(ct, root, ms);

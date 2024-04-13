@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/11 22:27:21 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/13 20:46:20 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,9 +222,9 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 			ft_close_fd(fdr, 0);
 			status = execute_heredoc(fdw, fdp, node->tokens[1]->str, ms);
 			ft_close_fd(0, fdp[1]);
-			if (node_is_word(node->right))
+			if (node_is_word(node->left))
 			{
-				pid = execute_cmd(fdp[0], fdw, node->right, ms, 127);
+				pid = execute_cmd(fdp[0], fdw, node->left, ms, 127);
 				ft_close_fd(fdp[0], fdw);
 				waitpid(pid, &status, 0);
 				return (status);
@@ -234,6 +234,8 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 		else if (node->tokens[0]->type == TOKEN_LESS)
 		{
 			// NEW STD_IN
+			if (expand_node(node, ms))
+				return (1);
 			fdp[0] = open(node->tokens[1]->str, O_RDONLY | O_CREAT, 0644);
 			if (fdp[0] != -1)
 			{
@@ -258,8 +260,8 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 				ft_close_fd(fdp[1], 0);
 			}
 		}
-		if (node->right)
-			status = execute(fdr, fdw, node->right, ms, 1);
+		if (node->left)
+			status = execute(fdr, fdw, node->left, ms, 1);
 	}
 	else
 	{
