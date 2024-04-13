@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 16:33:05 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/13 18:07:23 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/13 18:29:37 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,6 @@ t_tokentype	node_is_andor(t_node *node)
 	if (node && node->tokens
 		&& (node->tokens[0]->type == TOKEN_DAND \
 		|| node->tokens[0]->type == TOKEN_OR))
-		return (tkn_is_redirect(node->tokens[0]));
+		return (tkn_is_andor(node->tokens[0]));
 	return (NO_TOKEN);
 }

@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:51:40 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/12 19:34:58 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/13 18:30:20 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,6 +143,13 @@ t_tokentype	tkn_is_redirect(t_token *token)
 t_tokentype	tkn_is_pipe(t_token *token)
 {
 	if (token && token->type == TOKEN_PIPE)
+		return (token->type);
+	return (NO_TOKEN);
+}
+
+t_tokentype	tkn_is_andor(t_token *token)
+{
+	if (token && (token->type == TOKEN_DAND || token->type == TOKEN_OR))
 		return (token->type);
 	return (NO_TOKEN);
 }
