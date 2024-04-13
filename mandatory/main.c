@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/12 14:34:01 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/13 17:59:59 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,14 +48,24 @@ void	cleanup_ms(t_ms *ms)
 	ft_token_clear(&ms->tokens, del_token_content);
 	ms->tokens = NULL;
 	free_nodetree(&ms->nodes);
+	ms->parse_error = 0;
+	ms->parse_errtkn = NULL;
 }
 
 void	init_ms(int argc, char **argv, t_ms *ms)
 {
+	char	*hfp;
+	
 	ms->ac = argc;
 	ms->av = argv;
 	ms->envp = NULL;
-	ms->historypath = getenv("PWD");
+	hfp = getenv("PWD");
+	if (ms->historypath == NULL)
+		ms->historypath = ft_strdup("/");
+	else
+		ms->historypath = ft_strdup(hfp);
+	ms->parse_error = 0;
+	ms->parse_errtkn = NULL;
 	ms->run = 1;
 }
 
@@ -68,7 +78,7 @@ int	handle_single_arg_input(t_ms *ms)
 		ms->line = ft_strdup(ms->av[2]);
 		if (ft_lexer(ms))
 			return (terminate(ms, NULL, 0), 0);
-		ft_parse(ms->tokens, &ms->nodes);
+		ft_parse(ms->tokens, &ms->nodes, ms);
 		exit_code = exec_manager(ms);
 		ms->exit_code = WEXITSTATUS(exit_code);
 		cleanup_ms(ms);
@@ -97,7 +107,7 @@ int	handle_arg_file(t_ms *ms)
 				cleanup_ms(ms);
 				continue ;
 			}
-			ft_parse(ms->tokens, &ms->nodes);
+			ft_parse(ms->tokens, &ms->nodes, ms);
 			exit_code = exec_manager(ms);
 			ms->exit_code = WEXITSTATUS(exit_code);
 			cleanup_ms(ms);
@@ -112,7 +122,6 @@ int	handle_arg_file(t_ms *ms)
 int	main(int argc, char **argv, char **env)
 {
 	static t_ms	ms;
-	// int			exit_code;
 
 	init_ms(argc, argv, &ms);
 	load_env(&ms, env);
@@ -126,7 +135,11 @@ int	main(int argc, char **argv, char **env)
 		if (ms.line)
 			dump_history(&ms);
 		else
+		{
 			ms.run = 0;
+			printf("exit\n");
+			continue ;
+		}
 		if (ft_strncmp(ms.line, "\0", 1) == 0)
 			continue ;
 
@@ -138,11 +151,18 @@ int	main(int argc, char **argv, char **env)
 		}
 
 		// render TOKENS
-		render_tokens(&ms);
+		// render_tokens(&ms);
 
 		// PARSE IT aka Build TREE
 		// ft_parse(ms.tokens, &ms.nodes);
-		ft_parse(ms.tokens, &ms.nodes);
+		ft_parse(ms.tokens, &ms.nodes, &ms);
+		if (ms.parse_error && ms.parse_errtkn)
+		{
+			ms.exit_code = 258;
+			ft_error("syntax error near unexpected token", ms.parse_errtkn->str, NULL);
+			cleanup_ms(&ms);
+			continue ;
+		}
 
 		// render NODES
 		render_nodes(0, ms.nodes, 'R');

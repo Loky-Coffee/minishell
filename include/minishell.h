@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/11 22:26:24 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/13 16:16:06 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,17 +161,19 @@ typedef struct s_node
 
 typedef struct s_ms
 {
-	int			ac;
-	char		**av;
-	char		**envp;
-	char		*historypath;
-	int			run;
-	int			error;
-	t_token		*tokens;
-	t_node		*nodes;
-	char		*line;
-	char		*prompt;
-	int			exit_code;
+	int				ac;
+	char			**av;
+	char			**envp;
+	char			*historypath;
+	int				run;
+	int				error;
+	t_token			*tokens;
+	t_node			*nodes;
+	char			*line;
+	char			*prompt;
+	int				parse_error;
+	t_token			*parse_errtkn;
+	int				exit_code;
 	unsigned char	shell_exit_code;
 }				t_ms;
 /* ************************************************************************** */
@@ -220,7 +222,7 @@ t_node			*make_redirect(t_token **ct);
 
 // Parser
 // int				ft_parse(t_token *ct, t_node **cn); // t_token *current_token, t_node **current_node
-t_node			*ft_parse(t_token *ct, t_node **root);
+t_node			*ft_parse(t_token *ct, t_node **root, t_ms *ms);
 
 // Tree_Utils1
 void			add_right_right(t_node **node, t_node *curr, t_node *next);
@@ -252,6 +254,8 @@ t_tokentype		tkn_is_word(t_token *token);
 t_tokentype		tkn_is_operator(t_token *token);
 t_tokentype		tkn_is_redirect(t_token *token);
 t_tokentype		tkn_is_pipe(t_token *token);
+t_tokentype		tkn_is_andor(t_token *token);
+
 // token_list_utils
 t_token			*ft_token_new(void);
 t_token			*ft_token_last(t_token *token);

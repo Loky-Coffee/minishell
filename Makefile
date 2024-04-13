@@ -6,7 +6,7 @@
 #    By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/20 16:47:30 by aalatzas          #+#    #+#              #
-#    Updated: 2024/04/10 16:56:40 by nmihaile         ###   ########.fr        #
+#    Updated: 2024/04/12 18:41:38 by nmihaile         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ NCOLORS = # -DDISABLE_NINJA_COLORS
 SRC_DIR	= mandatory/
 OBJ_DIR = mandatory/obj/
 
-SRCS = main.c prompt.c history.c terminate.c lexer.c parser2.c renderer.c \
+SRCS = main.c prompt.c history.c terminate.c lexer.c parser3.c renderer.c \
 utoken.c token_list_utils.c expander.c executer.c path.c error.c \
 environment.c here_doc.c node_utils1.c node_utils2.c tree_utils1.c \
 builtins.c ft_echo.c ft_cd.c ft_pwd.c ft_export.c ft_unset.c ft_env.c ft_exit.c
