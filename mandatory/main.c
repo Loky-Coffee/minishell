@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/13 18:29:11 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/13 18:42:34 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,16 +54,10 @@ void	cleanup_ms(t_ms *ms)
 
 void	init_ms(int argc, char **argv, t_ms *ms)
 {
-	char	*hfp;
-
 	ms->ac = argc;
 	ms->av = argv;
 	ms->envp = NULL;
-	hfp = getenv("PWD");
-	if (ms->historypath == NULL)
-		ms->historypath = ft_strdup("/");
-	else
-		ms->historypath = ft_strdup(hfp);
+	ms->historypath = getenv("PWD");
 	ms->parse_error = 0;
 	ms->parse_errtkn = NULL;
 	ms->run = 1;
@@ -126,8 +120,8 @@ int	main(int argc, char **argv, char **env)
 	init_ms(argc, argv, &ms);
 	load_env(&ms, env);
 	handle_arg_file(&ms);
-	restore_history(&ms);
 	render_ninjashell();
+	restore_history(&ms);
 	while (ms.run)
 	{
 		create_prompt(&ms);

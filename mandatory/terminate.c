@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   terminate.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:48:38 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/13 18:30:05 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/13 18:42:14 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ void	del_token_content(void *param)
 void	free_ms(t_ms *ms)
 {
 	ft_token_clear(&ms->tokens, del_token_content);
-	if (ms->historypath)
-		free(ms->historypath);
+
+	// Free more if we hve more
 }
 
 void	free_av(char **av)
@@ -61,7 +61,6 @@ void	free_nodetree(t_node **n)
 void	terminate(t_ms *ms, t_cmd *cmd, int exit_code)
 {
 	rl_clear_history();
-	// clear_history();
 	if (cmd)
 		free_cmd(cmd);
 	free_line(ms);

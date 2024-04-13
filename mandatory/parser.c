@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.c                                           :+:      :+:    :+:   */
+/*   parser3.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/12 17:25:37 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/08 11:54:59 by nmihaile         ###   ########.fr       */
+/*   Created: 2024/04/12 15:56:24 by nmihaile          #+#    #+#             */
+/*   Updated: 2024/04/13 17:34:37 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,123 +28,193 @@ static t_node	*parse_leaf(t_token **ct)
 	return (n);
 }
 
-static void	set_root_node(t_node **root, t_node *node, t_node *rgt)
+t_node	*insert_cmd_to_redirect(t_node *cmd, t_node *rd)
 {
-	if (node && node_is_redirect(node))
-	{
-		node->right = rgt;
-		(*root) = node;
-	}
-	else
-	{
-		node->left = rgt;
-		(*root) = node;
-	}
+	t_node	*buff;
+
+	buff = rd;
+	while (rd->left && rd->left->type == NODE_REDIRECT)
+		rd = rd->left;
+	rd->left = cmd;
+	cmd->parent = rd;
+	return (buff);
 }
 
-static void	set_node_left(t_node **node, t_node *curr, t_node *next)
+t_node *insert_node_left(t_node *curr, t_node *next)
 {
-	if (next && !node_is_word(next))
+	if (next->left == NULL)
 	{
-		(*node)->left = next;
-		(*node)->right = curr;
-		*node = curr;
+		next->left = curr;
+		curr->parent = next;
 	}
 	else
 	{
-		(*node)->left = curr;
-		(*node)->right = next;
-		*node = next;
+		curr->left = next->left;
+		next->left->parent = curr;
+		next->left = curr;
+		curr->parent = next;
 	}
+	return (next);
 }
 
-static void	set_node_right(t_node **node, t_node *curr, t_node *next)
+t_node	*insert_tree_right(t_node *node, t_node *tree)
 {
-	if (curr && node_is_redirect(curr))
+	node->right = tree;
+	tree->parent = node;
+	return (node);
+}
+
+void	parse_error(t_token *tkn, t_ms *ms)
+{
+	ms->parse_error = 1;
+	ms->parse_errtkn = tkn;
+}
+
+t_node	*insert_cmd(t_node *curr, t_node *next, t_ms *ms)
+{
+	if (next == NULL) // chek if necessary
+		return (curr);
+	if (node_is_redirect(next))
+		return (insert_cmd_to_redirect(curr, next));
+	if (node_is_pipe(next))
 	{
-		(*node)->right = curr;
-		curr->right = next;
+		if (next->left == NULL)
+		{
+			next->left = curr;
+			curr->parent = next;
+			return (next);
+		}
+		else if (next->left->type == NODE_REDIRECT)
+			return (insert_cmd_to_redirect(curr, next));
+		else
+			parse_error(curr->tokens[0], ms);
+	}
+	else if (next->type == NODE_AND || next->type == NODE_OR)
+	{
+		if (next->left == NULL)
+		{
+			next->left = curr;
+			curr->parent = next;
+			return (curr); 
+		}
+		else
+			parse_error(curr->tokens[0], ms);
 	}
 	else
+		parse_error(curr->tokens[0], ms);
+	return (NULL);	
+}
+
+t_node	*insert_redirect(t_node *curr, t_node *next, t_ms *ms)
+{
+	if (next == NULL)
+		return (curr);
+	if (next->type == NODE_COMMAND || next->type == NODE_REDIRECT) // || next->type == NODE_SUBSHELL
 	{
-		(*node)->right = curr;
+		if (next->parent)
+		{
+			curr->parent = next->parent;
+			next->parent->left = curr;
+		}
 		curr->left = next;
+		next->parent = curr;
+		return (curr);
 	}
-	*node = curr;
+	else if (next->type == NODE_PIPE)
+	{
+		if ((next->left == NULL) || (next->left->type == NODE_COMMAND || next->left->type == NODE_REDIRECT))
+			return (insert_node_left(curr, next));
+		else
+			parse_error(curr->tokens[0], ms);
+	}
+	return (NULL);
 }
 
-// static void	flip_add_right_right(t_node **node, t_node *curr, t_node *next)
-// {
-// 	(*node)->right = next;
-// 	next->right = curr;
-// 	(*node) = curr;
-// }
+t_node	*insert_pipe(t_node *curr, t_node *next, t_ms *ms)
+{
+	if (next == NULL || node_is_andor(next))
+		return (parse_error(curr->tokens[0], ms), NULL);
+	if (next->type == NODE_COMMAND || next->type == NODE_REDIRECT) // || next->type == NODE_SUBSHELL
+	{
+		if (next->parent)
+		{
+			next->parent->left = curr;
+			curr->parent = next->parent;
+		}
+		curr->right = next;
+		next->parent = curr;
+		return (curr);
+	}
+	else if (next->type == NODE_PIPE)
+	{
+		if (next->left == NULL && next->right == NULL)
+			return (parse_error(curr->tokens[0], ms), NULL);
+		if (next->parent)
+		{
+			next->parent->left = curr;
+			curr->parent = next->parent;
+		}
+		curr->right = next;
+		next->parent = curr;
+		return (curr);
+	}
+	return (parse_error(curr->tokens[0], ms), NULL);
+}
 
-// static void	add_left_right(t_node **node, t_node *curr, t_node *next)
-// {
-// 	(*node)->left = curr;
-// 	(*node)->right = next;
-// 	(*node) = next;
-// }
+t_node	*insert_operator(t_node *curr, t_node *next, t_ms *ms)
+{
+	if (next == NULL || node_is_andor(next))
+		return (parse_error(curr->tokens[0], ms), NULL);
+	if (next->type == NODE_COMMAND || next->type == NODE_REDIRECT) // next->type == || NODE_SUBSHELL
+		return (insert_tree_right(curr, next));
+	else if (next->type == NODE_PIPE)
+	{
+		if (next->left == NULL && next->right == NULL)
+			return (parse_error(curr->tokens[0], ms), NULL);
+		if (next->parent)
+		{
+			next->parent->left = curr;
+			curr->parent = next->parent;
+		}
+		curr->right = next;
+		next->parent = curr;
+		return (curr);
+	}
+	parse_error(curr->tokens[0], ms);
+	return (NULL);
+}
 
-int	ft_parse(t_token *ct, t_node **cn)
+t_node	*ft_parse(t_token *ct, t_node **root, t_ms *ms)
 {
 	t_node	*curr;
 	t_node	*next;
-	t_node	*node;
-	// t_node	*buff;
+	t_node	*ast;
 
-	node = *cn;
-	while (ct)
+	curr = parse_leaf(&ct);
+	if (curr == NULL)
+		return (NULL);
+	next = ft_parse(ct, root, ms);
+	if (ms->parse_error == 258)
+		return (free(curr), NULL);
+	if (next == NULL)
 	{
-		curr = parse_leaf(&ct);
-		if (ct == NULL)
-			next = NULL;
-		else
-			next = parse_leaf(&ct);
-		if (*cn == NULL)
-		{
-			if (curr && node_is_redirect(curr) && next && node_is_redirect(next))
-			{
-				set_root_node(&node, curr, next);
-				*cn = curr;
-				node = next;
-			}
-			else if (next && !node_is_word(next) && !node_is_redirect(curr))
-				set_root_node(&node, next, curr);
-			else
-					set_root_node(&node, curr, next);
-			if (*cn == NULL)
-				*cn = node;
-		}
-		else
-		{
-			if (node_is_redirect(curr) && node_is_word(next))
-				set_node_right(&node, curr, next);
-				// add_right_right(&node, curr, next);
-			else if (!node_is_redirect(node) && (node_is_redirect(curr) && node_is_redirect(next)))
-				// add_right_right(&node, curr, next);
-				swap_dup_right(&node, curr, next);
-			else if ( \
-			(node_is_redirect(curr) && node_is_redirect(next)) \
-			|| (node_is_word(curr) && next == NULL) \
-			|| (node_is_redirect(curr)))
-				add_right_right(&node, curr, next);
-			else if (node_is_word(curr) && next && node_is_redirect(next))
-			{
-				node->right = next;
-				next->right = curr;
-				node = node->right;
-			}
-			else if (node_is_pipe(curr) && node_is_word(next))
-				swap_up_righttoleft_right(&node, curr, next);
-			else if (node_is_word(curr) && node_is_pipe(next))
-				swap_up_left(&node, curr, next);
-			else if (node->left == NULL && !node_is_redirect(node))
-				set_node_left(&node, curr, next);
-			else
-				set_node_right(&node, curr, next);
-		}
+		if (*root == NULL)
+			*root = curr;
+		if (curr->type == NODE_PIPE || curr->type == NODE_AND || curr->type == NODE_OR)
+			parse_error(curr->tokens[0], ms);
+		return (curr);
 	}
-	return (0);
+	if (*root && (*root)->type <= curr->type)
+		*root = curr;
+	if (curr->type == NODE_COMMAND)
+		ast = insert_cmd(curr, next, ms);
+	else if (curr->type == NODE_REDIRECT)
+		ast = insert_redirect(curr, next, ms);
+	else if (curr->type == NODE_PIPE)
+		ast = insert_pipe(curr, next, ms);
+	else if (curr->type == NODE_AND || curr->type == NODE_OR)
+		ast = insert_operator(curr, next, ms);
+	else
+		return (curr);
+	return (ast);
 }
