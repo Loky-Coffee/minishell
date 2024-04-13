@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 10:24:09 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/04 16:48:38 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/13 18:23:11 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@ static int	get_ac(char **av)
 
 static int	is_long(char *str)
 {
-	long int n;
-	int		sign;
-	int		d;
+	long int	n;
+	int			sign;
+	int			d;
 
 	if (str == NULL || *str == '\0')
 		return (0);
@@ -52,9 +52,9 @@ static int	is_long(char *str)
 
 static int	ft_atol(char *str)
 {
-	long int n;
-	int		sign;
-	int		d;
+	long int	n;
+	int			sign;
+	int			d;
 
 	if (str == NULL || *str == '\0')
 		return (0);
@@ -106,20 +106,4 @@ unsigned char	ft_exit(t_cmd *cmd, t_ms *ms)
 	ms->run = 0;
 	ms->shell_exit_code = exit_code;
 	return (exit_code);
-	// The Below value have to be veryfied
 }
-
-//	#############################
-//  @TODO  exit $?
-//	#############################
-
-// x exit 123 456		=> prints "exit" then prints "bash: exit: too many arguments"				=> x	return 1
-// x exit 127 cd		=> prints "exit" then prints "bash: exit: too many arguments"				=> x	return 1
-
-// x exit ab 12			=> prints "exit" then prints "bash: exit: abc: numeric argument required"	=> ✓	exit_code: 255
-// x exit abc			=> prints "exit" then prints "bash: exit: abc: numeric argument required"	=> ✓	exit_code: 255
-
-// x exit 1				=> prints "exit"															=> ✓	1
-// x exit 0				=> prints "exit"															=> ✓	0
-// x exit				=> prints "exit"															=> ✓	0
-// x exit -42			=> prints "exit"															=> ✓	214

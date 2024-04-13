@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 18:27:30 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/09 16:51:45 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/13 18:17:21 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static int	has_equal_sign(char *str)
 
 static int	search_env_var(t_ms *ms)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (ms->tokens->next->str[i] != '=')
@@ -44,8 +44,8 @@ static char	*tkn_to_str(t_token *token, t_ms *ms)
 
 static int	add_new_env_var(t_ms *ms, int i)
 {
-	char **new_envp;
-	int j;
+	char	**new_envp;
+	int		j;
 
 	j = 0;
 	new_envp = NULL;
@@ -94,19 +94,19 @@ static int	has_valid_key(t_ms *ms, char *key)
 	return (0);
 }
 
-
-
-int ft_export(t_ms *ms)
+int	ft_export(t_ms *ms)
 {
-	int i;
+	int		i;
 	char	key[FT_PATH_MAX];
 
 	if (has_valid_key(ms, key) == 1)
-		return (ft_error("export",ms->tokens->next->str, "not a valid identifier"), 1);
+		return (ft_error("export", ms->tokens->next->str, \
+		"not a valid identifier"), 1);
 	if (ms->tokens->next && has_equal_sign(ms->tokens->next->str))
 		return (0);
 	i = 0;
-	while (ms->envp[i] != NULL && ft_strncmp(ms->envp[i], ms->tokens->next->str, search_env_var(ms)) != 0)
+	while (ms->envp[i] != NULL && ft_strncmp(ms->envp[i], \
+	ms->tokens->next->str, search_env_var(ms)) != 0)
 		i++;
 	if (ms->envp[i] == NULL)
 		add_new_env_var(ms, i);

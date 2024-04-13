@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_pwd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 18:16:23 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/28 15:53:09 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/13 18:15:21 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	ft_pwd(void)
 	if (pwd[0])
 	{
 		printf("%s\n", pwd);
-		return(0);
+		return (0);
 	}
-	return(1);
+	return (1);
 }

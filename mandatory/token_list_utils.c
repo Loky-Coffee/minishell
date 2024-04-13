@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 00:14:48 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/03/20 17:22:32 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/12 19:35:57 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	ft_add_token_end(t_token **token, t_token *new_token)
 
 int	tokens_size(t_token *tokens)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (tokens != NULL)
@@ -57,7 +57,7 @@ int	tokens_size(t_token *tokens)
 		tokens = tokens->next;
 		i++;
 	}
-	return(i);
+	return (i);
 }
 
 void	ft_token_clear(t_token **token, void (*del)(void*))

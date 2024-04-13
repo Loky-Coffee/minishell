@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utoken.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:51:40 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/10 16:33:38 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/12 19:34:58 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,19 +83,20 @@ t_tokentype	is_tripple_token(char *s)
 	return (NO_TOKEN);
 }
 
-t_tokentype is_operator(char *s)
+t_tokentype	is_operator(char *s)
 {
 	if (is_tripple_token(s))
 		return (is_tripple_token(s));
 	else if (is_double_token(s))
 		return (is_double_token(s));
-	else if (is_single_token(*s) == TOKEN_PIPE || is_single_token(*s) == TOKEN_LESS \
+	else if (is_single_token(*s) == TOKEN_PIPE \
+	|| is_single_token(*s) == TOKEN_LESS \
 	|| is_single_token(*s) == TOKEN_GREATER)
 		return (is_single_token(*s));
 	return (NO_TOKEN);
 }
 
-t_tokentype is_not_word(char *s)
+t_tokentype	is_not_word(char *s)
 {
 	if (is_tripple_token(s))
 		return (is_tripple_token(s));
@@ -106,23 +107,22 @@ t_tokentype is_not_word(char *s)
 	return (NO_TOKEN);
 }
 
-t_tokentype is_word(char *str)
+t_tokentype	is_word(char *str)
 {
 	if (str && !ft_isspace(str[0]) && !is_not_word(str))
 		return (TOKEN_WORD);
 	return (NO_TOKEN);
 }
 
-t_tokentype tkn_is_word(t_token *token)
+t_tokentype	tkn_is_word(t_token *token)
 {
 	if (token && token->type == TOKEN_WORD)
 		return (TOKEN_WORD);
 	return (NO_TOKEN);
 }
 
-t_tokentype tkn_is_operator(t_token *token)
+t_tokentype	tkn_is_operator(t_token *token)
 {
-
 	if (token == NULL)
 		return (NO_TOKEN);
 	if (token->type == TOKEN_PIPE || token->type == TOKEN_DAND
@@ -131,10 +131,10 @@ t_tokentype tkn_is_operator(t_token *token)
 	return (NO_TOKEN);
 }
 
-t_tokentype tkn_is_redirect(t_token *token)
+t_tokentype	tkn_is_redirect(t_token *token)
 {
-	if (token && (token->type == TOKEN_LESS || token->type == TOKEN_GREATER
-		|| token->type == TOKEN_DLESS || token->type == TOKEN_DGREATER
+	if (token && (token->type == TOKEN_LESS || token->type == TOKEN_GREATER \
+		|| token->type == TOKEN_DLESS || token->type == TOKEN_DGREATER \
 		|| token->type == TOKEN_TLESS))
 		return (token->type);
 	return (NO_TOKEN);

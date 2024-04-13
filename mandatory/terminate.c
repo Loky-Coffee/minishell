@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:48:38 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/03 19:57:26 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/12 19:41:45 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,6 @@ void	del_token_content(void *param)
 void	free_ms(t_ms *ms)
 {
 	ft_token_clear(&ms->tokens, del_token_content);
-
-	// free all
 }
 
 void	free_av(char **av)
@@ -68,6 +66,6 @@ void	terminate(t_ms *ms, t_cmd *cmd, int exit_code)
 		ft_token_clear(&ms->tokens, del_token_content);
 	ms->tokens = NULL;
 	free_nodetree(&ms->nodes);
-	free_ms(ms);
+	ft_token_clear(&ms->tokens, del_token_content);
 	exit(exit_code);
 }

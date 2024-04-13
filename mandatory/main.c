@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/11 19:42:23 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/12 19:46:10 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ int	main(int argc, char **argv, char **env)
 	load_env(&ms, env);
 	handle_arg_file(&ms);
 	restore_history(&ms);
-	// render_ninjashell();
+	render_ninjashell();
 	while (ms.run)
 	{
 		create_prompt(&ms);

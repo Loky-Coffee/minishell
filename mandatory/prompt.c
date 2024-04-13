@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 23:53:16 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/09 21:10:34 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/13 18:03:38 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	create_prompt(t_ms *ms)
 	char	*last_slash;
 
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
-		return (ft_perror("can't locate current directory."), 1); // or change msg to "getcwd"
+		return (ft_perror("can't locate current directory."), 1);
 	last_slash = ft_strrchr(cwd, '/');
 	if (last_slash != NULL)
 		last_slash++;

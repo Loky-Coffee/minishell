@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:50:40 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/04 22:30:48 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/12 19:47:22 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	render_nodes(int depth, t_node *n, char p)
 	int		i;
 
 	if (n == NULL)
-		return;
+		return ;
 	i = 0;
 	while (i++ < depth)
 		printf("  ");
