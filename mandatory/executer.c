@@ -6,11 +6,37 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/13 20:46:20 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/14 23:04:42 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+// void	check_fds(void)
+// {
+// 	int		fd;
+// 	int		open_fd_count = 0;
+
+// 	int prev_errno = errno;
+// 	fd = 3;
+// 	while (fd < OPEN_MAX)
+// 	{
+// 		if (fcntl(fd, F_GETFD) != -1) // TODO: DEBUG: unallowed function for debugging and finding leaks (fcntl)
+// 		{
+// 			// close(fd);
+// 			fprintf(stderr, "%d is open(fd):\n", fd);
+// 			open_fd_count++;
+// 		}
+// 		fd++;
+// 	}
+// 	errno = prev_errno;
+// 	//if (LEAK_CHECK)// if some how dosnt work
+// 	if (open_fd_count)
+// 	{
+// 		fprintf(stderr, "open fds: %d\n", open_fd_count);
+// 	}
+// }
+
 
 static char	**create_cmd_args(t_node *node)
 {
@@ -212,7 +238,7 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 		ft_close_fd(fdr, fdw);
 		ft_close_fd(fdp[0], 0);
 	}
-	else if (node_is_redirect(node))
+	else if (node->type == NODE_REDIRECT)
 	{
 		if (node->tokens[0]->type == TOKEN_DLESS)
 		{
@@ -234,8 +260,10 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 		else if (node->tokens[0]->type == TOKEN_LESS)
 		{
 			// NEW STD_IN
+			// fprintf(stderr, "--------------------->(%s)\n", node->tokens[1]->str);
 			if (expand_node(node, ms))
 				return (1);
+			// fprintf(stderr, "--------------------->(%s)\n", node->tokens[1]->str);
 			fdp[0] = open(node->tokens[1]->str, O_RDONLY | O_CREAT, 0644);
 			if (fdp[0] != -1)
 			{
@@ -244,6 +272,8 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 				fdr = fdp[0];
 				ft_close_fd(fdp[0], 0);
 			}
+			else
+				return (1);
 		}
 		else if (node->tokens[0]->type == TOKEN_GREATER || node->tokens[0]->type == TOKEN_DGREATER)
 		{
@@ -260,8 +290,15 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 				ft_close_fd(fdp[1], 0);
 			}
 		}
+		// close(3);
+		// close(4);
+		// close(5);
+		// close(6);
+		// check_fds();
+		// close(fdw);
 		if (node->left)
-			status = execute(fdr, fdw, node->left, ms, 1);
+			status = execute(fdr, fdw, node->left, ms, is_rgt);
+		// usleep(1000);
 	}
 	else
 	{

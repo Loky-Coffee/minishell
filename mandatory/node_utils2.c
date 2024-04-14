@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 16:34:41 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/13 20:28:44 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/14 20:53:16 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,10 +112,10 @@ t_node	*make_redirect(t_ms *ms, t_token **ct)
 	n->tokens[0] = *ct;
 	if (i == 2)
 	{
-		while((*ct)->next && (*ct)->next->type == TOKEN_WORD)
-			*ct = (*ct)->next;
+// while((*ct)->next && (*ct)->next->type == TOKEN_WORD)
+		*ct = (*ct)->next;
 		n->tokens[1] = *ct;
-	}
+			}
 	*ct = (*ct)->next;
 	return (n);
 }

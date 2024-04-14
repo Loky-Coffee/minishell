@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/12 15:56:24 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/13 20:24:30 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/14 21:49:05 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,15 +28,47 @@ static t_node	*parse_leaf(t_ms *ms, t_token **ct)
 	return (n);
 }
 
-t_node	*insert_cmd_to_redirect(t_node *cmd, t_node *rd)
+t_node	*insert_cmd_to_redirect(t_node *curr, t_node *next, t_ms *ms)
 {
 	t_node	*buff;
+	t_token	**tkn_buff;
+	int		i[5];
 
-	buff = rd;
-	while (rd->left && rd->left->type == NODE_REDIRECT)
-		rd = rd->left;
-	rd->left = cmd;
-	cmd->parent = rd;
+	i[0] = 0;
+	i[1] = 0;
+	i[2] = 0;
+	i[3] = 0;
+	i[4] = 0;
+	buff = next;
+	while (next->left && next->left->type == NODE_REDIRECT)
+		next = next->left;
+	if (next->left && next->left->type == NODE_COMMAND)
+	{
+		while (curr->tokens[i[0]])
+			i[0]++;
+		while (next->left->tokens[i[1]])
+			i[1]++;
+		tkn_buff = ft_calloc(i[0] + i[1] + 1, sizeof(t_token *));
+		if (tkn_buff == NULL)
+			parse_error(curr->tokens[0], ms);
+		while (curr->tokens[i[2]])
+		{
+			tkn_buff[i[4]] = curr->tokens[i[2]];
+			i[2]++;
+			i[4]++;
+		}
+		while (next->left->tokens[i[3]])
+		{
+			tkn_buff[i[4]] = next->left->tokens[i[3]];
+			i[3]++;
+			i[4]++;
+		}
+		free(next->left);
+		free(curr->tokens);
+		curr->tokens = tkn_buff;
+	}
+	next->left = curr;
+	curr->parent = next;
 	return (buff);
 }
 
@@ -75,7 +107,7 @@ t_node	*insert_cmd(t_node *curr, t_node *next, t_ms *ms)
 	if (next == NULL) // chek if necessary
 		return (curr);
 	if (node_is_redirect(next))
-		return (insert_cmd_to_redirect(curr, next));
+		return (insert_cmd_to_redirect(curr, next, ms));
 	if (node_is_pipe(next))
 	{
 		if (next->left == NULL)
@@ -85,7 +117,7 @@ t_node	*insert_cmd(t_node *curr, t_node *next, t_ms *ms)
 			return (next);
 		}
 		else if (next->left->type == NODE_REDIRECT)
-			return (insert_cmd_to_redirect(curr, next));
+			return (insert_cmd_to_redirect(curr, next, ms));
 		else
 			parse_error(curr->tokens[0], ms);
 	}

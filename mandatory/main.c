@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/13 20:40:45 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/14 22:11:53 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,11 @@ int	main(int argc, char **argv, char **env)
 {
 	static t_ms	ms;
 
+	//
+	// pwd sofort export
+	// Shellvl setzen
+	// load set path of historyfile from av[0]
+	//
 	init_ms(argc, argv, &ms);
 	load_env(&ms, env);
 	handle_arg_file(&ms);
@@ -148,7 +153,6 @@ int	main(int argc, char **argv, char **env)
 		// render_tokens(&ms);
 
 		// PARSE IT aka Build TREE
-		// ft_parse(ms.tokens, &ms.nodes);
 		ft_parse(ms.tokens, &ms.nodes, &ms);
 		if (ms.parse_error && ms.parse_errtkn)
 		{
