@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   history.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 20:44:33 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/13 18:45:30 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/14 23:07:17 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	dump_history(t_ms *ms)
 		if (ms->historypath != NULL)
 			return (ft_error("Can't write to history file.\n", NULL, NULL), 1);
 	if (ft_strncmp(ms->line, "", 1) == 0)
-		return (1);
+		return (close(fd), 1);
 	write(fd, ms->line, ft_strlen(ms->line));
 	write(fd, "\n", 1);
 	close(fd);
