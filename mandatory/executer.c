@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/15 18:04:13 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/15 22:42:11 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+int	exec_intermediary(int fd_in, int fd_out, t_node *node, t_ms *ms);
 
 static void save_stdfds(int *fds)
 {
@@ -128,7 +130,7 @@ static void	ft_check_cmd_is_dot(t_cmd *cmd, t_ms *ms)
 	}
 }
 
-int	exec_builtin(t_builtin builtin, t_node *node, t_ms *ms)
+int	exec_builtin(int fd_in, int fd_out, t_builtin builtin, t_node *node, t_ms *ms)
 {
 	int			exit_code;
 	t_cmd		cmd;
@@ -137,92 +139,118 @@ int	exec_builtin(t_builtin builtin, t_node *node, t_ms *ms)
 	if (builtin != BI_EXPORT)
 		if (expand_node(ms->nodes, ms))
 			return (-1);
-	exit_code = run_builtin(builtin, &cmd, ms, 0);
+	exit_code = run_builtin(fd_in, fd_out, builtin, &cmd, ms, 0);
 	return (exit_code);
 }
 
-int	exec_cmd(t_node *node, t_ms *ms)
+int	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 {
 	int			pid;
-	int			exit_code;
 	t_cmd		cmd;
-	t_builtin	builtin;
+	int			exit_code;
 
 	exit_code = 0;
-	builtin = is_builtin(node->tokens[0]);
 	create_cmd(&cmd, node);
-	if (builtin == NO_BUILTIN)
+	pid = fork();
+	if (pid == 0)
 	{
-		pid = fork();
-		if (pid == 0)
+		dup2(fd_in, STDIN_FILENO);
+		dup2(fd_out, STDOUT_FILENO);
+
+		ft_check_cmd_is_dot(&cmd, ms);
+		ft_get_env_value(ms, cmd.path, "PATH");
+		if (cmd.cmdpth[0] != '/' && (cmd.cmdpth[0] == '\0'
+			|| ft_strncmp(cmd.cmdpth, "..", 3) == 0
+			|| ft_cmd_is_dir(cmd.cmdpth, &exit_code)
+			|| ft_prepend_path(&cmd.cmdpth, cmd.path)
+			|| ft_exec_permissions(cmd.cmdpth, &exit_code)))
 		{
-			ft_check_cmd_is_dot(&cmd, ms);
-			ft_get_env_value(ms, cmd.path, "PATH");
-			if (cmd.cmdpth[0] != '/' && (cmd.cmdpth[0] == '\0'
-				|| ft_strncmp(cmd.cmdpth, "..", 3) == 0
-				|| ft_cmd_is_dir(cmd.cmdpth, &exit_code)
-				|| ft_prepend_path(&cmd.cmdpth, cmd.path)
-				|| ft_exec_permissions(cmd.cmdpth, &exit_code)))
-			{
-				ft_cmd_error(NINJASHELL, cmd.args[0], exit_code);
-				terminate(ms, &cmd, exit_code);
-			}
-			execve(cmd.cmdpth, cmd.args, ms->envp);
-			ft_perror(NINJASHELL);
-			ft_perror(cmd.args[0]);
-			terminate(ms, &cmd, 1);
+			ft_cmd_error(NINJASHELL, cmd.args[0], exit_code);
+			ft_close_fd(fd_in, fd_out);
+			terminate(ms, &cmd, exit_code);
 		}
-		return (pid);
+		execve(cmd.cmdpth, cmd.args, ms->envp);
+		ft_perror(cmd.args[0]);
+		ft_close_fd(fd_in, fd_out);
+		terminate(ms, &cmd, 1);
 	}
-	return (-1);
+	ft_close_fd(fd_in, fd_out);
+	return (pid);
 }
+
 // int	exec_redirect(t_node *node, t_ms *ms)
 // {
 // 	return (0);
 // }
-int	exec_pipe(t_node *node, t_ms *ms)
+
+int	exec_pipe(int fd_in, int fd_out, t_node *node, t_ms *ms)
 {
+	// int	exit_code;
+	int	pid;
 	int	fd_pipe[2];
 
 	if (pipe(fd_pipe))
 		perror(NINJASHELL);
 	if (node->left)
-	{
-		dup2(fd_pipe[1], STDOUT_FILENO);
-		if (node->left->type == NODE_COMMAND)
-			exec_cmd(node->left, ms);
-	}
+		pid = exec_intermediary(fd_in, fd_pipe[1], node->left, ms);
+	// dup2(fd_pipe[0], STDIN_FILENO);
+	// dup2(fd_pipe[0], fd_in);
+	ft_close_fd(fd_in, 0);
 	if (node->right)
-	{
-		dup2(fd_pipe[0], STDIN_FILENO);
-		if (node->right->type == NODE_COMMAND)
-			exec_cmd(node->right, ms);
-	}
-	close(fd_pipe[0]);
-	return (0);
+		pid = exec_intermediary(fd_pipe[0], fd_out, node->right, ms);
+	ft_close_fd(0, fd_out);
+	ft_close_fd(fd_pipe[0], fd_pipe[1]);
+	return (pid);
 }
+
 // int	exec_logical_operation(t_node *node, t_ms *ms)
 // {
 
 // 	return (0);
 // }
 
+int	exec_intermediary(int fd_in, int fd_out, t_node *node, t_ms *ms)
+{
+	int			pid;
+	t_builtin	builtin;
+	
+	pid = -1;
+	builtin = is_builtin(node->tokens[0]);
+	if (node->type == NODE_COMMAND && builtin != NO_BUILTIN)
+		pid = exec_builtin(fd_in, fd_out, builtin, ms->nodes, ms);
+	else if (node->type == NODE_COMMAND)
+	{
+		pid = exec_cmd(fd_in, fd_out, node, ms);
+		// ms->exit_code = WEXITSTATUS(exit_code);
+	}
+	// else if (ms->nodes->type == NODE_REDIRECT)
+	// 	exit_code = exec_redirect(ms->nodes, ms);
+	else if (node->type == NODE_PIPE)
+	{
+		pid = exec_pipe(fd_in, fd_out, node, ms);
+		// ms->exit_code = WEXITSTATUS(exit_code);
+	}
+	// else if (ms->nodes->type == NODE_AND || ms->nodes->type == NODE_OR)
+	// 	exit_code = exec_logical_operation(ms->nodes, ms);
+	return (pid);	
+}
+
 int	exec_manager(t_ms *ms)
 {
-	int	pid;
-	int	exit_code;
+	int			pid;
+	int			exit_code;
 	t_builtin	builtin;
 	int			std_fds[2];
-	exit_code = 0;
 
+	exit_code = 0;
 	if (ms->nodes == NULL)
 		return (-1);
 	builtin = is_builtin(ms->nodes->tokens[0]);
 	if (ms->nodes->type == NODE_COMMAND && builtin != NO_BUILTIN)
-		exit_code = exec_builtin(builtin, ms->nodes, ms);
+		exit_code = exec_builtin(STDIN_FILENO, STDOUT_FILENO, builtin, ms->nodes, ms);
 	else if (ms->nodes->type == NODE_COMMAND)
 	{
-		pid = exec_cmd(ms->nodes, ms);
+		pid = exec_cmd(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);
 		waitpid(pid, &exit_code, 0);
 		ms->exit_code = WEXITSTATUS(exit_code);
 	}
@@ -231,7 +259,11 @@ int	exec_manager(t_ms *ms)
 	else if (ms->nodes->type == NODE_PIPE)
 	{
 		save_stdfds(std_fds);
-		exit_code = exec_pipe(ms->nodes, ms);
+		pid = exec_pipe(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);
+		waitpid(pid, &exit_code, 0);
+		while (waitpid(-1, NULL, 0) > 0)
+			;
+		ms->exit_code = WEXITSTATUS(exit_code);
 		reset_stdfds(std_fds);
 	}
 	// else if (ms->nodes->type == NODE_AND || ms->nodes->type == NODE_OR)

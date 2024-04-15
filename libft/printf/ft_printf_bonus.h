@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/22 12:25:17 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/03/04 22:37:21 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/15 22:06:25 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ typedef struct s_pfdata
 	int				opr;
 }					t_pfdata;
 
-char		*ft_strchr(const char *s, int c);
+// char		*ft_strchr(const char *s, int c);
 long int	ft_abs(long int nbr);
 int			ft_uitoa_len(unsigned int n);
 int			ft_itoa_len(int n);

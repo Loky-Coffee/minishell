@@ -6,20 +6,20 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/22 10:49:09 by nmihaile          #+#    #+#             */
-/*   Updated: 2023/11/16 14:44:54 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/15 22:05:26 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf_bonus.h"
 
-char	*ft_strchr(const char *s, int c)
-{
-	while (*(unsigned char *)s != (unsigned char)c && *(unsigned char *)s)
-		s++;
-	if (*(unsigned char *)s == (unsigned char)c)
-		return ((char *)s);
-	return (NULL);
-}
+// char	*ft_strchr(const char *s, int c)
+// {
+// 	while (*(unsigned char *)s != (unsigned char)c && *(unsigned char *)s)
+// 		s++;
+// 	if (*(unsigned char *)s == (unsigned char)c)
+// 		return ((char *)s);
+// 	return (NULL);
+// }
 
 static void	pf_charchecker(t_pfdata *pfdata)
 {

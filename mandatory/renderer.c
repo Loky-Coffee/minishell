@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:50:40 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/15 11:38:49 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/15 22:11:49 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,13 +62,13 @@ void	render_ninjashell(void)
 {
 	if (RENDER_NS_HEADER)
 	{
-		ft_printf(LIGHTRED
+		printf(LIGHTRED
 			"        •  •  ┏┓┓┏┏┓┓ ┓                                                         \n"
 			"      ┏┓┓┏┓┓┏┓┗┓┣┫┣ ┃ ┃                                           Hack it away …\n"
 			"━━━━━━┛┗┗┛┗┃┗┻┗┛┛┗┗┛┗┛┗┛━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
 			"           ┛                                                                    \n"
 			RESET);
-		ft_printf("\n");
+		printf("\n");
 	}
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/15 17:20:54 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/15 21:26:45 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -274,7 +274,8 @@ int				exec_manager(t_ms *ms);
 int				ft_heredoc(int fd_write, char *lim);
 
 // builtins
-int				run_builtin(t_builtin builtin, t_cmd *cmd, t_ms *ms, int in_pipe);
+int				run_builtin(int fd_in, int fd_out, t_builtin builtin, t_cmd *cmd, t_ms *ms, int in_pipe);
+// int				run_builtin(t_builtin builtin, t_cmd *cmd, t_ms *ms, int in_pipe);
 int				ft_echo(t_cmd *cmd);
 int				ft_cd(t_cmd *cmd, t_ms *ms);
 int				ft_pwd(void);
