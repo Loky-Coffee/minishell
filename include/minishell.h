@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/15 11:38:15 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/15 13:06:46 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -293,12 +293,11 @@ void			ft_double_perror(char *s1, char *s2);
 void			ft_cmd_error(char *msg, char *cmd, int error_code);
 
 // environment.c
-
-int				ft_unset(t_ms *ms);
-int				ft_export(t_ms *ms);
+int				is_valid_envkey(char *key);
+int				add_new_index_to_envp(t_ms *ms, int len);
 void			load_env(t_ms *ms, char **env);
 void			ft_get_env_value(t_ms *ms, char *str, char *key);
-
+int				ft_setenv(char *key, char *value, t_ms *ms);
 
 /* ************************************************************************** */
 

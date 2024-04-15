@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/14 23:04:42 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/15 11:47:33 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -296,6 +296,10 @@ int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)
 		// close(6);
 		// check_fds();
 		// close(fdw);
+/////////////////////////////////////
+// We have to fork the redirections
+/////////////////////////////////////
+
 		if (node->left)
 			status = execute(fdr, fdw, node->left, ms, is_rgt);
 		// usleep(1000);
@@ -344,9 +348,8 @@ int	exec_manager(t_ms *ms)
 	save_stdfds(std_fds);
 	if (ms->nodes == NULL)
 		return (-1);
-	if (ms->nodes->left == NULL && ms->nodes->right == NULL \
-	&& (node_is_word(ms->nodes)))
-	// && (ms->nodes->tokens && is_word(ms->nodes->tokens[0]->str)))
+	if (ms->nodes->type == NODE_COMMAND \
+	&& ms->nodes->left == NULL && ms->nodes->right == NULL)
 	{
 		builtin = is_builtin(ms->nodes->tokens[0]);
 		if (builtin)
