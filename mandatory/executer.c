@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/15 22:42:11 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/15 23:13:35 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,8 +139,21 @@ int	exec_builtin(int fd_in, int fd_out, t_builtin builtin, t_node *node, t_ms *m
 	if (builtin != BI_EXPORT)
 		if (expand_node(ms->nodes, ms))
 			return (-1);
-	exit_code = run_builtin(fd_in, fd_out, builtin, &cmd, ms, 0);
+	exit_code = run_builtin(fd_in, fd_out, builtin, &cmd, ms);
 	return (exit_code);
+}
+
+int	exec_fork_builtin(int fd_in, int fd_out, t_builtin builtin, t_node *node, t_ms *ms)
+{
+	int		pid;
+	t_cmd	cmd;
+
+	create_cmd(&cmd, node);
+	if (builtin != BI_EXPORT)
+		if (expand_node(ms->nodes, ms))
+			return (-1);
+	pid = fork_run_builtin(fd_in, fd_out, builtin, &cmd, ms);
+	return (pid);
 }
 
 int	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
@@ -159,6 +172,7 @@ int	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 
 		ft_check_cmd_is_dot(&cmd, ms);
 		ft_get_env_value(ms, cmd.path, "PATH");
+		fprintf(stderr, "Huch…1………………………………………………\n");
 		if (cmd.cmdpth[0] != '/' && (cmd.cmdpth[0] == '\0'
 			|| ft_strncmp(cmd.cmdpth, "..", 3) == 0
 			|| ft_cmd_is_dir(cmd.cmdpth, &exit_code)
@@ -168,12 +182,16 @@ int	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 			ft_cmd_error(NINJASHELL, cmd.args[0], exit_code);
 			ft_close_fd(fd_in, fd_out);
 			terminate(ms, &cmd, exit_code);
+			// terminate(ms, &cmd, 1);
 		}
+		fprintf(stderr, "Huch…2………………………………………………\n");
 		execve(cmd.cmdpth, cmd.args, ms->envp);
+		fprintf(stderr, "Huch…3………………………………………………\n");
 		ft_perror(cmd.args[0]);
 		ft_close_fd(fd_in, fd_out);
 		terminate(ms, &cmd, 1);
 	}
+	fprintf(stderr, "Huch…pid…%i……………………………………………\n", pid);
 	ft_close_fd(fd_in, fd_out);
 	return (pid);
 }
@@ -217,7 +235,7 @@ int	exec_intermediary(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	pid = -1;
 	builtin = is_builtin(node->tokens[0]);
 	if (node->type == NODE_COMMAND && builtin != NO_BUILTIN)
-		pid = exec_builtin(fd_in, fd_out, builtin, ms->nodes, ms);
+		pid = exec_fork_builtin(fd_in, fd_out, builtin, ms->nodes, ms);
 	else if (node->type == NODE_COMMAND)
 	{
 		pid = exec_cmd(fd_in, fd_out, node, ms);
@@ -247,12 +265,14 @@ int	exec_manager(t_ms *ms)
 		return (-1);
 	builtin = is_builtin(ms->nodes->tokens[0]);
 	if (ms->nodes->type == NODE_COMMAND && builtin != NO_BUILTIN)
-		exit_code = exec_builtin(STDIN_FILENO, STDOUT_FILENO, builtin, ms->nodes, ms);
+		ms->exit_code = exec_builtin(STDIN_FILENO, STDOUT_FILENO, builtin, ms->nodes, ms);
 	else if (ms->nodes->type == NODE_COMMAND)
 	{
 		pid = exec_cmd(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);
 		waitpid(pid, &exit_code, 0);
+		fprintf(stderr, " ec: %i\n", exit_code);
 		ms->exit_code = WEXITSTATUS(exit_code);
+		fprintf(stderr, "wec: %i\n", ms->exit_code);
 	}
 	// else if (ms->nodes->type == NODE_REDIRECT)
 	// 	exit_code = exec_redirect(ms->nodes, ms);
@@ -263,11 +283,13 @@ int	exec_manager(t_ms *ms)
 		waitpid(pid, &exit_code, 0);
 		while (waitpid(-1, NULL, 0) > 0)
 			;
+		// fprintf(stderr, " ec: %i\n", exit_code);
 		ms->exit_code = WEXITSTATUS(exit_code);
+		// fprintf(stderr, "wec: %i\n", ms->exit_code);
 		reset_stdfds(std_fds);
 	}
 	// else if (ms->nodes->type == NODE_AND || ms->nodes->type == NODE_OR)
 	// 	exit_code = exec_logical_operation(ms->nodes, ms);
 	// reset_stdfds(std_fds);
-	return (exit_code);
+	return (ms->exit_code);
 }

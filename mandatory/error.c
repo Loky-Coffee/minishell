@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 18:56:31 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/15 18:24:42 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/15 23:16:18 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,5 +68,5 @@ void	ft_cmd_error(char *msg, char *cmd, int error_code)
 		ft_putstr_fd(strerror(errno), 2);
 	else
 		ft_putstr_fd("command not found", 2);
-	exit(error_code);
+	// exit(error_code);
 }
