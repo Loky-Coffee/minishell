@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 20:33:21 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/15 22:46:51 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/15 23:28:04 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,10 @@ int	run_builtin(int fd_in, int fd_out, t_builtin builtin, t_cmd *cmd, t_ms *ms)
 	return (exit_code);
 }
 
-int	fork_run_builtin(int fd_in, int fd_out, t_builtin builtin, t_cmd *cmd, t_ms *ms)
+pid_t	fork_run_builtin(int fd_in, int fd_out, t_builtin builtin, t_cmd *cmd, t_ms *ms)
 {
-	int	pid;
-	int	exit_code;
+	pid_t	pid;
+	int		exit_code;
 
 	pid = fork();
 	if (pid == 0)

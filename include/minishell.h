@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/15 22:51:47 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/15 23:27:57 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -275,7 +275,7 @@ int				ft_heredoc(int fd_write, char *lim);
 
 // builtins
 int				run_builtin(int fd_in, int fd_out, t_builtin builtin, t_cmd *cmd, t_ms *ms);
-int				fork_run_builtin(int fd_in, int fd_out, t_builtin builtin, t_cmd *cmd, t_ms *ms);
+pid_t			fork_run_builtin(int fd_in, int fd_out, t_builtin builtin, t_cmd *cmd, t_ms *ms);
 int				ft_echo(t_cmd *cmd);
 int				ft_cd(t_cmd *cmd, t_ms *ms);
 int				ft_pwd(void);

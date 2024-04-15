@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/15 23:13:35 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/15 23:53:36 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,9 +143,9 @@ int	exec_builtin(int fd_in, int fd_out, t_builtin builtin, t_node *node, t_ms *m
 	return (exit_code);
 }
 
-int	exec_fork_builtin(int fd_in, int fd_out, t_builtin builtin, t_node *node, t_ms *ms)
+pid_t	exec_fork_builtin(int fd_in, int fd_out, t_builtin builtin, t_node *node, t_ms *ms)
 {
-	int		pid;
+	pid_t	pid;
 	t_cmd	cmd;
 
 	create_cmd(&cmd, node);
@@ -156,11 +156,11 @@ int	exec_fork_builtin(int fd_in, int fd_out, t_builtin builtin, t_node *node, t_
 	return (pid);
 }
 
-int	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
+pid_t	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 {
-	int			pid;
-	t_cmd		cmd;
-	int			exit_code;
+	pid_t	pid;
+	t_cmd	cmd;
+	int		exit_code;
 
 	exit_code = 0;
 	create_cmd(&cmd, node);
@@ -172,26 +172,25 @@ int	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 
 		ft_check_cmd_is_dot(&cmd, ms);
 		ft_get_env_value(ms, cmd.path, "PATH");
-		fprintf(stderr, "Huch…1………………………………………………\n");
-		if (cmd.cmdpth[0] != '/' && (cmd.cmdpth[0] == '\0'
-			|| ft_strncmp(cmd.cmdpth, "..", 3) == 0
+		if (cmd.cmdpth[0] != '/'
+			&& (cmd.cmdpth[0] == '\0'
+			|| ft_str __we__have__to__fix__here__ ncmp(cmd.cmdpth, "..", 2) == 0
 			|| ft_cmd_is_dir(cmd.cmdpth, &exit_code)
 			|| ft_prepend_path(&cmd.cmdpth, cmd.path)
 			|| ft_exec_permissions(cmd.cmdpth, &exit_code)))
 		{
+			if (exit_code == 0)
+				exit_code = 1;
 			ft_cmd_error(NINJASHELL, cmd.args[0], exit_code);
 			ft_close_fd(fd_in, fd_out);
 			terminate(ms, &cmd, exit_code);
 			// terminate(ms, &cmd, 1);
 		}
-		fprintf(stderr, "Huch…2………………………………………………\n");
 		execve(cmd.cmdpth, cmd.args, ms->envp);
-		fprintf(stderr, "Huch…3………………………………………………\n");
 		ft_perror(cmd.args[0]);
 		ft_close_fd(fd_in, fd_out);
 		terminate(ms, &cmd, 1);
 	}
-	fprintf(stderr, "Huch…pid…%i……………………………………………\n", pid);
 	ft_close_fd(fd_in, fd_out);
 	return (pid);
 }
@@ -201,11 +200,11 @@ int	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 // 	return (0);
 // }
 
-int	exec_pipe(int fd_in, int fd_out, t_node *node, t_ms *ms)
+pid_t	exec_pipe(int fd_in, int fd_out, t_node *node, t_ms *ms)
 {
 	// int	exit_code;
-	int	pid;
-	int	fd_pipe[2];
+	pid_t	pid;
+	int		fd_pipe[2];
 
 	if (pipe(fd_pipe))
 		perror(NINJASHELL);
@@ -227,9 +226,9 @@ int	exec_pipe(int fd_in, int fd_out, t_node *node, t_ms *ms)
 // 	return (0);
 // }
 
-int	exec_intermediary(int fd_in, int fd_out, t_node *node, t_ms *ms)
+pid_t	exec_intermediary(int fd_in, int fd_out, t_node *node, t_ms *ms)
 {
-	int			pid;
+	pid_t		pid;
 	t_builtin	builtin;
 	
 	pid = -1;
@@ -255,7 +254,7 @@ int	exec_intermediary(int fd_in, int fd_out, t_node *node, t_ms *ms)
 
 int	exec_manager(t_ms *ms)
 {
-	int			pid;
+	pid_t		pid;
 	int			exit_code;
 	t_builtin	builtin;
 	int			std_fds[2];
@@ -270,9 +269,7 @@ int	exec_manager(t_ms *ms)
 	{
 		pid = exec_cmd(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);
 		waitpid(pid, &exit_code, 0);
-		fprintf(stderr, " ec: %i\n", exit_code);
 		ms->exit_code = WEXITSTATUS(exit_code);
-		fprintf(stderr, "wec: %i\n", ms->exit_code);
 	}
 	// else if (ms->nodes->type == NODE_REDIRECT)
 	// 	exit_code = exec_redirect(ms->nodes, ms);
@@ -283,9 +280,7 @@ int	exec_manager(t_ms *ms)
 		waitpid(pid, &exit_code, 0);
 		while (waitpid(-1, NULL, 0) > 0)
 			;
-		// fprintf(stderr, " ec: %i\n", exit_code);
 		ms->exit_code = WEXITSTATUS(exit_code);
-		// fprintf(stderr, "wec: %i\n", ms->exit_code);
 		reset_stdfds(std_fds);
 	}
 	// else if (ms->nodes->type == NODE_AND || ms->nodes->type == NODE_OR)
