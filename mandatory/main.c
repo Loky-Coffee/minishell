@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/15 13:13:49 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/15 15:01:00 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ int	main(int argc, char **argv, char **env)
 	//
 	// ✅	pwd sofort export
 	// -	Shellvl setzen
-	// -	load set path of historyfile from av[0]
+	// -	load path of historyfile from av[0]
 	//
 	init_ms(argc, argv, &ms);
 	load_env(&ms, env);

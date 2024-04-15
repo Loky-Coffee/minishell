@@ -6,13 +6,13 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 20:33:21 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/11 22:26:47 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/15 17:20:34 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-int	exec_builtin(t_builtin builtin, t_cmd *cmd, t_ms *ms, int in_pipe)
+int	run_builtin(t_builtin builtin, t_cmd *cmd, t_ms *ms, int in_pipe)
 {
 	int		exit_code;
 
