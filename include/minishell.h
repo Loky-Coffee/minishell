@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/14 20:51:59 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/15 11:38:15 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@
 #  define LIGHTMAGENTA	""
 #  define LIGHTCYAN		""
 #  define RESET			""
+#  define RENDER_NS_HEADER 0
 # else
 #  define RED			"\033[0;31m"
 #  define GREEN			"\033[0;32m"
@@ -64,6 +65,7 @@
 #  define LIGHTMAGENTA	"\033[0;95m"
 #  define LIGHTCYAN		"\033[0;96m"
 #  define RESET			"\033[0m"
+#  define RENDER_NS_HEADER 1
 # endif
 
 /* ************************************************************************** */

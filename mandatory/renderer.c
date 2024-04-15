@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   renderer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:50:40 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/12 19:47:22 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/15 11:38:49 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,13 +60,16 @@ void	render_nodes(int depth, t_node *n, char p)
 
 void	render_ninjashell(void)
 {
-	ft_printf(LIGHTRED
-		"        •  •  ┏┓┓┏┏┓┓ ┓                                                         \n"
-		"      ┏┓┓┏┓┓┏┓┗┓┣┫┣ ┃ ┃                                           Hack it away …\n"
-		"━━━━━━┛┗┗┛┗┃┗┻┗┛┛┗┗┛┗┛┗┛━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-		"           ┛                                                                    \n"
-		RESET);
-	ft_printf("\n");
+	if (RENDER_NS_HEADER)
+	{
+		ft_printf(LIGHTRED
+			"        •  •  ┏┓┓┏┏┓┓ ┓                                                         \n"
+			"      ┏┓┓┏┓┓┏┓┗┓┣┫┣ ┃ ┃                                           Hack it away …\n"
+			"━━━━━━┛┗┗┛┗┃┗┻┗┛┛┗┗┛┗┛┗┛━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+			"           ┛                                                                    \n"
+			RESET);
+		ft_printf("\n");
+	}
 }
 
 // void	render_ninjashell(void)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/14 22:11:53 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/15 11:38:21 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ int	main(int argc, char **argv, char **env)
 	init_ms(argc, argv, &ms);
 	load_env(&ms, env);
 	handle_arg_file(&ms);
-	// render_ninjashell();
+	render_ninjashell();
 	restore_history(&ms);
 	while (ms.run)
 	{
