@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/15 23:27:57 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/16 09:28:01 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -285,7 +285,7 @@ int				ft_env(t_ms *ms);
 unsigned char	ft_exit(t_cmd *cmd, t_ms *ms);
 
 // path.c
-int				ft_prepend_path(char **cmd, char *envpaths);
+int				ft_prepend_path(char **cmd, char *envpaths, int *exit_code);
 
 // error.c
 void			ft_error(char *s1, char *s2, char *s3);

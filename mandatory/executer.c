@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/15 23:53:36 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/16 10:45:44 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,31 +26,6 @@ static void reset_stdfds(int *fds)
 	dup2(fds[1], STDOUT_FILENO);
 	close(fds[0]);
 	close(fds[1]);
-}
-
-static int	ft_exec_permissions(char *cmd, int *exit_code)
-{
-	if (access(cmd, X_OK) == 0)
-		return (0);
-	*exit_code = 126;
-	return (1);
-}
-
-static int	ft_cmd_is_dir(char *cmd, int *exit_code)
-{
-	struct stat	file_stat;
-
-	if (ft_strchr(cmd, '/') == NULL)
-		return (0);
-	if (stat(cmd, &file_stat) != 0)
-		return (0);
-	if (S_ISDIR(file_stat.st_mode) != 0)
-	{
-		errno = EISDIR;
-		*exit_code = 126;
-		return (1);
-	}
-	return (0);
 }
 
 static int	ft_strncmp_ignorecase(const char *s1, const char *s2, size_t n)
@@ -117,17 +92,52 @@ static int	create_cmd(t_cmd *cmd, t_node *node)
 	return (0);
 }
 
-static void	ft_check_cmd_is_dot(t_cmd *cmd, t_ms *ms)
+static void	ft_cmd_is_dot(t_cmd *cmd, t_ms *ms)
 {
 	if (ft_strncmp(cmd->cmdpth, ".", 2) == 0)
 	{
 		ft_error(cmd->cmdpth, "filename argument required", NULL);
-		ft_putstr_fd(LIGHTRED, 2);
+		ft_putstr_fd(LIGHTRED "\n", 2);
 		ft_putstr_fd(cmd->cmdpth, 2);
 		ft_putstr_fd(": usage: ", 2);
-		ft_putstr_fd(". filename [arguments]\n"RESET, 2);
+		ft_putstr_fd(". filename [arguments]"RESET, 2);
 		terminate(ms, cmd, 2);
 	}
+}
+
+static int	ft_cmd_is_dotdot(t_cmd *cmd, int *exit_code)
+{
+	if (ft_strncmp(cmd->cmdpth, "..", 3) == 0)
+	{
+		*exit_code = 127;
+		return (1);
+	}
+	return (0);
+}
+
+static int	ft_cmd_is_dir(char *cmd, int *exit_code)
+{
+	struct stat	file_stat;
+
+	if (ft_strchr(cmd, '/') == NULL)
+		return (0);
+	if (stat(cmd, &file_stat) != 0)
+		return (0);
+	if (S_ISDIR(file_stat.st_mode) != 0)
+	{
+		errno = EISDIR;
+		*exit_code = 126;
+		return (1);
+	}
+	return (0);
+}
+
+static int	ft_exec_permissions(char *cmd, int *exit_code)
+{
+	if (access(cmd, X_OK) == 0)
+		return (0);
+	*exit_code = 126;
+	return (1);
 }
 
 int	exec_builtin(int fd_in, int fd_out, t_builtin builtin, t_node *node, t_ms *ms)
@@ -170,21 +180,20 @@ pid_t	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 		dup2(fd_in, STDIN_FILENO);
 		dup2(fd_out, STDOUT_FILENO);
 
-		ft_check_cmd_is_dot(&cmd, ms);
+		ft_cmd_is_dot(&cmd, ms);
 		ft_get_env_value(ms, cmd.path, "PATH");
 		if (cmd.cmdpth[0] != '/'
 			&& (cmd.cmdpth[0] == '\0'
-			|| ft_str __we__have__to__fix__here__ ncmp(cmd.cmdpth, "..", 2) == 0
-			|| ft_cmd_is_dir(cmd.cmdpth, &exit_code)
-			|| ft_prepend_path(&cmd.cmdpth, cmd.path)
-			|| ft_exec_permissions(cmd.cmdpth, &exit_code)))
+			|| ft_cmd_is_dotdot(&cmd, &exit_code)					// 127
+			|| ft_cmd_is_dir(cmd.cmdpth, &exit_code)				// 126
+			|| ft_prepend_path(&cmd.cmdpth, cmd.path, &exit_code)	// 127
+			|| ft_exec_permissions(cmd.cmdpth, &exit_code)))		// 126
 		{
 			if (exit_code == 0)
 				exit_code = 1;
 			ft_cmd_error(NINJASHELL, cmd.args[0], exit_code);
 			ft_close_fd(fd_in, fd_out);
 			terminate(ms, &cmd, exit_code);
-			// terminate(ms, &cmd, 1);
 		}
 		execve(cmd.cmdpth, cmd.args, ms->envp);
 		ft_perror(cmd.args[0]);
@@ -202,7 +211,6 @@ pid_t	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 
 pid_t	exec_pipe(int fd_in, int fd_out, t_node *node, t_ms *ms)
 {
-	// int	exit_code;
 	pid_t	pid;
 	int		fd_pipe[2];
 
@@ -210,19 +218,15 @@ pid_t	exec_pipe(int fd_in, int fd_out, t_node *node, t_ms *ms)
 		perror(NINJASHELL);
 	if (node->left)
 		pid = exec_intermediary(fd_in, fd_pipe[1], node->left, ms);
-	// dup2(fd_pipe[0], STDIN_FILENO);
-	// dup2(fd_pipe[0], fd_in);
-	ft_close_fd(fd_in, 0);
+	ft_close_fd(fd_in, fd_pipe[1]);
 	if (node->right)
 		pid = exec_intermediary(fd_pipe[0], fd_out, node->right, ms);
-	ft_close_fd(0, fd_out);
-	ft_close_fd(fd_pipe[0], fd_pipe[1]);
+	ft_close_fd(fd_pipe[0], fd_out);
 	return (pid);
 }
 
 // int	exec_logical_operation(t_node *node, t_ms *ms)
 // {
-
 // 	return (0);
 // }
 

@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 17:32:46 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/08 18:31:30 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/16 09:27:41 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static char	**ft_get_paths(char *envpaths)
 	return (paths);
 }
 
-int	ft_prepend_path(char **cmd, char *envpaths)
+int	ft_prepend_path(char **cmd, char *envpaths, int *exit_code)
 {
 	size_t	i;
 	char	**paths;
@@ -83,5 +83,6 @@ int	ft_prepend_path(char **cmd, char *envpaths)
 	free_av(paths);
 	if (*cmd && (*cmd)[0] == '.' && access(*cmd, F_OK) == 0)
 		return (0);
+	*exit_code = 127;
 	return (1);
 }
