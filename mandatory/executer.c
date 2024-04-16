@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/16 18:05:20 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/16 18:15:12 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,26 +204,25 @@ pid_t	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	return (pid);
 }
 
-// static int	redirect_in(int *fd_in, t_node *node, t_ms *ms)
-// {
-// 	int	fd_in_new;
+static int	redirect_in(int *fd_in, t_node *node, t_ms *ms)
+{
+	int	fd_in_new;
 
-// 	if (expand_node(node, ms))
-// 		return (EXIT_FAILURE);
-// 	fd_in_new = open(node->tokens[1]->str, O_RDONLY | O_CREAT, 0644);
-// 	if (fd_in_new < 0)
-// 		return (EXIT_FAILURE);
-// 	close(*fd_in);
-// 	*fd_in = dup(fd_in_new);
-// 	close(fd_in_new);
-// 	return (EXIT_SUCCESS);
-// }
+	if (expand_node(node, ms))
+		return (EXIT_FAILURE);
+	fd_in_new = open(node->tokens[1]->str, O_RDONLY | O_CREAT, 0644);
+	if (fd_in_new < 0)
+		return (EXIT_FAILURE);
+	close(*fd_in);
+	*fd_in = dup(fd_in_new);
+	close(fd_in_new);
+	return (EXIT_SUCCESS);
+}
 
 static int	redirect_manager(int fd_in, int fd_out, t_node *node, t_ms *ms)
 {
 	pid_t	pid;
-	int	fd_in_new;
-
+	// int	fd_in_new;
 
 	pid = EXIT_FAILURE;
 	if (node->tokens == NULL)
@@ -234,22 +233,15 @@ static int	redirect_manager(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	}
 	else if (node->tokens[0]->type == TOKEN_LESS && node->tokens[1])
 	{
-		if (expand_node(node, ms))
-			return (EXIT_FAILURE);
-		fd_in_new = open(node->tokens[1]->str, O_RDONLY | O_CREAT, 0644);
-		if (fd_in_new < 0)
-			return (EXIT_FAILURE);
-		// ft_close_fd(fd_in, 0);
-		dup2(fd_in_new, fd_in);
-		close(fd_in_new);
-		// close(fd_in);
+		redirect_in(&fd_in, node, ms);
+		pid = exec_intermediary(fd_in, fd_out, node->left, ms);
 	}
 	else if (node->tokens[0]->type == TOKEN_GREATER || node->tokens[0]->type == TOKEN_DGREATER)
 	{
 		;
 	}
-	if (node->left->type == NODE_REDIRECT)
-		pid = exec_intermediary(fd_in, fd_out, node->left, ms);
+	// if (node->left->type == NODE_REDIRECT)
+	// 	pid = exec_intermediary(fd_in, fd_out, node->left, ms);
 	return (pid);
 }
 
@@ -315,9 +307,11 @@ int	exec_manager(t_ms *ms)
 	}
 	else if (ms->nodes->type == NODE_REDIRECT)
 	{
+		save_stdfds(std_fds);
 		pid = redirect_manager(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);
 		waitpid(pid, &exit_code, 0);
 		ms->exit_code = WEXITSTATUS(exit_code);
+		reset_stdfds(std_fds);
 	}
 	else if (ms->nodes->type == NODE_PIPE)
 	{
