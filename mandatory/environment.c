@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 13:57:42 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/15 13:12:10 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/16 11:02:46 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,20 @@ int	add_new_index_to_envp(t_ms *ms, int len)
 	return (0);
 }
 
+static void	set_shlvl(t_ms *ms)
+{
+	int		lvl;
+	char	lvlstr[FT_PATH_MAX];
+	char	*newlvl;
+	
+	ft_get_env_value(ms, lvlstr, "SHLVL");
+	lvl = ft_atoi(lvlstr);
+	lvl++;
+	newlvl = ft_itoa(lvl);
+	ft_setenv("SHLVL", newlvl, ms);
+	free(newlvl);
+}
+
 void	load_env(t_ms *ms, char **env)
 {
 	static int		i;
@@ -70,6 +84,7 @@ void	load_env(t_ms *ms, char **env)
 	ms->envp[i] = NULL;
 	getcwd(pwd, FT_PATH_MAX);
 	ft_setenv("PWD", pwd, ms);
+	set_shlvl(ms);
 }
 
 void	ft_get_env_value(t_ms *ms, char *str, char *key)
