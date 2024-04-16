@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 20:33:21 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/16 10:50:15 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/16 14:37:02 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@ int	run_builtin(int fd_in, int fd_out, t_builtin builtin, t_cmd *cmd, t_ms *ms)
 		exit_code = ft_env(ms);
 	else if (builtin == BI_EXIT)
 		exit_code = ft_exit(cmd, ms);
-	if (exit_code != 0)
-		ms->exit_code = exit_code;
+	// if (exit_code != 0)
+	// 	ms->exit_code = exit_code;
 	ft_close_fd(fd_in, fd_out);
 	return (exit_code);
 }
