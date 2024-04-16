@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/16 10:45:44 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/16 12:41:00 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,15 +242,11 @@ pid_t	exec_intermediary(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	else if (node->type == NODE_COMMAND)
 	{
 		pid = exec_cmd(fd_in, fd_out, node, ms);
-		// ms->exit_code = WEXITSTATUS(exit_code);
 	}
 	// else if (ms->nodes->type == NODE_REDIRECT)
 	// 	exit_code = exec_redirect(ms->nodes, ms);
 	else if (node->type == NODE_PIPE)
-	{
 		pid = exec_pipe(fd_in, fd_out, node, ms);
-		// ms->exit_code = WEXITSTATUS(exit_code);
-	}
 	// else if (ms->nodes->type == NODE_AND || ms->nodes->type == NODE_OR)
 	// 	exit_code = exec_logical_operation(ms->nodes, ms);
 	return (pid);	
@@ -288,7 +284,10 @@ int	exec_manager(t_ms *ms)
 		reset_stdfds(std_fds);
 	}
 	// else if (ms->nodes->type == NODE_AND || ms->nodes->type == NODE_OR)
+	// {
+	// 	save_stdfds(std_fds);
 	// 	exit_code = exec_logical_operation(ms->nodes, ms);
-	// reset_stdfds(std_fds);
+	// 	reset_stdfds(std_fds);
+	// }
 	return (ms->exit_code);
 }
