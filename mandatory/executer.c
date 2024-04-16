@@ -3,14 +3,39 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/16 18:27:05 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/16 21:57:30 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+void	check_fds(void)
+{
+	int		fd;
+	int		open_fd_count = 0;
+
+	int prev_errno = errno;
+	fd = 3;
+	while (fd < OPEN_MAX)
+	{
+		if (fcntl(fd, F_GETFD) != -1) // TODO: DEBUG: unallowed function for debugging and finding leaks (fcntl)
+		{
+			// close(fd);
+			fprintf(stderr, "%d is open(fd):\n", fd);
+			open_fd_count++;
+		}
+		fd++;
+	}
+	errno = prev_errno;
+	//if (LEAK_CHECK)// if some how dosnt work
+	if (open_fd_count)
+	{
+		fprintf(stderr, "open fds: %d\n", open_fd_count);
+	}
+}
 
 int	exec_intermediary(int fd_in, int fd_out, t_node *node, t_ms *ms);
 
@@ -173,13 +198,15 @@ pid_t	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	int		exit_code;
 
 	exit_code = 0;
-	create_cmd(&cmd, node);
 	pid = fork();
 	if (pid == 0)
 	{
+		if (expand_node(node, ms))
+			return (-1);
+		create_cmd(&cmd, node);
 		dup2(fd_in, STDIN_FILENO);
 		dup2(fd_out, STDOUT_FILENO);
-
+		ft_close_fd(fd_in, fd_out);
 		ft_cmd_is_dot(&cmd, ms);
 		ft_get_env_value(ms, cmd.path, "PATH");
 		if (cmd.cmdpth[0] != '/'
@@ -192,12 +219,14 @@ pid_t	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 			if (exit_code == 0)
 				exit_code = 1;
 			ft_cmd_error(NINJASHELL, cmd.args[0], exit_code);
-			ft_close_fd(fd_in, fd_out);
+			// ft_close_fd(fd_in, fd_out);
 			terminate(ms, &cmd, exit_code);
 		}
+// check_fds();
+// close(5);
 		execve(cmd.cmdpth, cmd.args, ms->envp);
 		ft_perror(cmd.args[0]);
-		ft_close_fd(fd_in, fd_out);
+		// ft_close_fd(fd_in, fd_out);
 		terminate(ms, &cmd, 1);
 	}
 	ft_close_fd(fd_in, fd_out);
@@ -206,23 +235,42 @@ pid_t	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 
 static int	redirect_in(int *fd_in, t_node *node, t_ms *ms)
 {
-	int	fd_in_new;
+	// int	fd_in_new;
 
 	if (expand_node(node, ms))
 		return (EXIT_FAILURE);
-	fd_in_new = open(node->tokens[1]->str, O_RDONLY | O_CREAT, 0644);
-	if (fd_in_new < 0)
-		return (EXIT_FAILURE);
+	// fprintf(stderr, "---------->redirect_in |%i|\n", *fd_in);
 	close(*fd_in);
-	*fd_in = dup(fd_in_new);
-	close(fd_in_new);
+	*fd_in = open(node->tokens[1]->str, O_RDONLY, 0644);
+	if (*fd_in < 0)
+		return (ft_perror(node->tokens[1]->str), EXIT_FAILURE);
+	// close(*fd_in);
+	// *fd_in = dup(fd_in_new);
+	// close(fd_in_new);
 	return (EXIT_SUCCESS);
 }
 
-static int	redirect_manager(int fd_in, int fd_out, t_node *node, t_ms *ms)
+static int	redirect_out(int *fd_out, t_node *node, t_ms *ms)
+{
+	int	fd_out_new;
+
+	if (expand_node(node, ms))
+		return (EXIT_FAILURE);
+	if (node->tokens[0]->type == TOKEN_DGREATER)
+		fd_out_new = open(node->tokens[1]->str, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	else
+		fd_out_new = open(node->tokens[1]->str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd_out_new < 0)
+		return (ft_perror(node->tokens[1]->str), EXIT_FAILURE);
+	close(*fd_out);
+	*fd_out = dup(fd_out_new);
+	close(fd_out_new);
+	return (EXIT_SUCCESS);	
+}
+
+static pid_t	redirect_manager(int fd_in, int fd_out, t_node *node, t_ms *ms)
 {
 	pid_t	pid;
-	// int	fd_in_new;
 
 	pid = EXIT_FAILURE;
 	if (node->tokens == NULL)
@@ -238,7 +286,8 @@ static int	redirect_manager(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	}
 	else if (node->tokens[0]->type == TOKEN_GREATER || node->tokens[0]->type == TOKEN_DGREATER)
 	{
-		;
+		redirect_out(&fd_out, node, ms);
+		pid = exec_intermediary(fd_in, fd_out, node->left, ms);
 	}
 	// if (node->left->type == NODE_REDIRECT)
 	// 	pid = exec_intermediary(fd_in, fd_out, node->left, ms);
@@ -252,11 +301,22 @@ pid_t	exec_pipe(int fd_in, int fd_out, t_node *node, t_ms *ms)
 
 	if (pipe(fd_pipe))
 		perror(NINJASHELL);
+
+	// fprintf(stderr, "---------->pipe fd_in|%i|  fd_out|%i|\n", fd_in, fd_out);
+	// fprintf(stderr, "---------->pipe read|%i|  write|%i|\n", fd_pipe[0], fd_pipe[1]);
+
+
 	if (node->left)
+	{
+		close(fd_pipe[0]);
 		pid = exec_intermediary(fd_in, fd_pipe[1], node->left, ms);
+	}
 	ft_close_fd(fd_in, fd_pipe[1]);
 	if (node->right)
+	{
+		close(fd_pipe[1]);
 		pid = exec_intermediary(fd_pipe[0], fd_out, node->right, ms);
+	}
 	ft_close_fd(fd_pipe[0], fd_out);
 	return (pid);
 }
@@ -272,6 +332,8 @@ pid_t	exec_intermediary(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	t_builtin	builtin;
 
 	pid = -1;
+	if (node == NULL)
+		return (0);
 	builtin = is_builtin(node->tokens[0]);
 	if (node->type == NODE_COMMAND && builtin != NO_BUILTIN)
 		pid = exec_fork_builtin(fd_in, fd_out, builtin, node, ms);
