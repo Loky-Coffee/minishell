@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 18:27:30 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/13 18:17:21 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/16 17:41:04 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,8 +100,13 @@ int	ft_export(t_ms *ms)
 	char	key[FT_PATH_MAX];
 
 	if (has_valid_key(ms, key) == 1)
-		return (ft_error("export", ms->tokens->next->str, \
-		"not a valid identifier"), 1);
+	{
+		if (ms->tokens->next)
+			return (ft_error("export", ms->tokens->next->str, \
+			"not a valid identifier"), 1);
+		else
+			return (printf(LIGHTCYAN"export: Provide a valid key"RESET, NULL), 1);
+	}
 	if (ms->tokens->next && has_equal_sign(ms->tokens->next->str))
 		return (0);
 	i = 0;
