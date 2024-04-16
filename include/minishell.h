@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/16 12:57:21 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/16 23:01:43 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,6 +157,8 @@ typedef struct s_node
 	struct s_node	*left;
 	struct s_node	*right;
 	t_token			**tokens;
+	int				cfd0;
+	int				cfd1;
 }					t_node;
 
 /* ************************************************************************** */
@@ -241,6 +243,7 @@ void			del_token_content(void *param);
 void			free_ms(t_ms *ms);
 void			free_av(char **av);
 void			ft_close_fd(int fdr, int fdw);
+// void			ft_force_close_fd(int fdr, int fdw);
 void			free_nodetree(t_node **n);
 void			terminate(t_ms *ms, t_cmd *cmd, int exit_code);
 
@@ -298,6 +301,9 @@ int				add_new_index_to_envp(t_ms *ms, int len);
 void			load_env(t_ms *ms, char **env);
 void			ft_get_env_value(t_ms *ms, char *str, char *key);
 int				ft_setenv(char *key, char *value, t_ms *ms);
+
+// fd_utils.c
+
 
 /* ************************************************************************** */
 

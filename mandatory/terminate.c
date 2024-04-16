@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:48:38 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/15 23:34:20 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/16 23:04:50 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,23 @@ void	free_av(char **av)
 
 void	ft_close_fd(int fdr, int fdw)
 {
-	if (fdr != STDIN_FILENO && fdr != STDOUT_FILENO)
+	if (fdr > 2)
 		close(fdr);
-	if (fdw != STDOUT_FILENO && fdw != STDIN_FILENO)
+	if (fdw > 2)
 		close(fdw);
+	// if (fdr != STDIN_FILENO && fdr != STDOUT_FILENO)
+	// 	close(fdr);
+	// if (fdw != STDOUT_FILENO && fdw != STDIN_FILENO)
+	// 	close(fdw);
 }
+
+// void	ft_force_close_fd(int fdr, int fdw)
+// {
+// 	if (fdr >= 0)
+// 		close(fdr);
+// 	if (fdw >= 0)
+// 		close(fdw);
+// }
 
 void	free_nodetree(t_node **n)
 {

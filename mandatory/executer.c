@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/16 21:57:30 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/16 23:32:59 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,17 @@ static int	ft_cmd_is_dotdot(t_cmd *cmd, int *exit_code)
 	return (0);
 }
 
+static int	ft_cmd_has_slash(t_cmd *cmd, int *exit_code)
+{
+	if (cmd->cmdpth[0] == '/')
+	{
+		*exit_code = 127;
+		ft_error(cmd->cmdpth, "is a directory", NULL);
+		return (1);
+	}
+	return (0);
+}
+
 static int	ft_cmd_is_dir(char *cmd, int *exit_code)
 {
 	struct stat	file_stat;
@@ -150,8 +161,9 @@ static int	ft_cmd_is_dir(char *cmd, int *exit_code)
 		return (0);
 	if (S_ISDIR(file_stat.st_mode) != 0)
 	{
-		errno = EISDIR;
+		// errno = EISDIR;
 		*exit_code = 126;
+		ft_perror(cmd);
 		return (1);
 	}
 	return (0);
@@ -162,6 +174,7 @@ static int	ft_exec_permissions(char *cmd, int *exit_code)
 	if (access(cmd, X_OK) == 0)
 		return (0);
 	*exit_code = 126;
+	ft_perror(cmd);
 	return (1);
 }
 
@@ -201,32 +214,36 @@ pid_t	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	pid = fork();
 	if (pid == 0)
 	{
+		ft_close_fd(node->cfd0, node->cfd1);
 		if (expand_node(node, ms))
 			return (-1);
 		create_cmd(&cmd, node);
 		dup2(fd_in, STDIN_FILENO);
 		dup2(fd_out, STDOUT_FILENO);
-		ft_close_fd(fd_in, fd_out);
 		ft_cmd_is_dot(&cmd, ms);
 		ft_get_env_value(ms, cmd.path, "PATH");
-		if (cmd.cmdpth[0] != '/'
-			&& (cmd.cmdpth[0] == '\0'
+		// if (cmd.cmdpth[0] != '/'
+		// 	&& (cmd.cmdpth[0] == '\0'
+		// 	|| ft_cmd_is_dotdot(&cmd, &exit_code)					// 127
+		// 	|| ft_cmd_is_dir(cmd.cmdpth, &exit_code)				// 126
+		// 	|| ft_prepend_path(&cmd.cmdpth, cmd.path, &exit_code)	// 127
+		// 	|| ft_exec_permissions(cmd.cmdpth, &exit_code)))		// 126
+		if (ft_cmd_has_slash(&cmd, &exit_code)
+			// || cmd.cmdpth[0] == '\0'
 			|| ft_cmd_is_dotdot(&cmd, &exit_code)					// 127
 			|| ft_cmd_is_dir(cmd.cmdpth, &exit_code)				// 126
 			|| ft_prepend_path(&cmd.cmdpth, cmd.path, &exit_code)	// 127
-			|| ft_exec_permissions(cmd.cmdpth, &exit_code)))		// 126
+			|| ft_exec_permissions(cmd.cmdpth, &exit_code))			// 126
 		{
 			if (exit_code == 0)
 				exit_code = 1;
-			ft_cmd_error(NINJASHELL, cmd.args[0], exit_code);
-			// ft_close_fd(fd_in, fd_out);
+			// ft_cmd_error(NINJASHELL, cmd.args[0], exit_code);
+			ft_close_fd(fd_in, fd_out);
 			terminate(ms, &cmd, exit_code);
 		}
-// check_fds();
-// close(5);
 		execve(cmd.cmdpth, cmd.args, ms->envp);
 		ft_perror(cmd.args[0]);
-		// ft_close_fd(fd_in, fd_out);
+		ft_close_fd(fd_in, fd_out);
 		terminate(ms, &cmd, 1);
 	}
 	ft_close_fd(fd_in, fd_out);
@@ -289,8 +306,6 @@ static pid_t	redirect_manager(int fd_in, int fd_out, t_node *node, t_ms *ms)
 		redirect_out(&fd_out, node, ms);
 		pid = exec_intermediary(fd_in, fd_out, node->left, ms);
 	}
-	// if (node->left->type == NODE_REDIRECT)
-	// 	pid = exec_intermediary(fd_in, fd_out, node->left, ms);
 	return (pid);
 }
 
@@ -298,25 +313,19 @@ pid_t	exec_pipe(int fd_in, int fd_out, t_node *node, t_ms *ms)
 {
 	pid_t	pid;
 	int		fd_pipe[2];
+	t_node	*buff;
 
 	if (pipe(fd_pipe))
 		perror(NINJASHELL);
-
-	// fprintf(stderr, "---------->pipe fd_in|%i|  fd_out|%i|\n", fd_in, fd_out);
-	// fprintf(stderr, "---------->pipe read|%i|  write|%i|\n", fd_pipe[0], fd_pipe[1]);
-
-
+	buff = node->left;
+	while (buff->left && buff->type != NODE_COMMAND)
+		buff = buff->left;
+	buff->cfd0 = fd_pipe[0];
 	if (node->left)
-	{
-		close(fd_pipe[0]);
 		pid = exec_intermediary(fd_in, fd_pipe[1], node->left, ms);
-	}
 	ft_close_fd(fd_in, fd_pipe[1]);
 	if (node->right)
-	{
-		close(fd_pipe[1]);
 		pid = exec_intermediary(fd_pipe[0], fd_out, node->right, ms);
-	}
 	ft_close_fd(fd_pipe[0], fd_out);
 	return (pid);
 }

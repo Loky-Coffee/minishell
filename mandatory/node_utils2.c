@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   node_utils2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 16:34:41 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/14 20:53:16 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/16 22:16:07 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,13 @@ int	create_node(t_token **token, t_node **node)
 	n = (t_node *)ft_calloc(1, sizeof(t_node));
 	if (n == NULL)
 		return (1);
+	n->type = NO_NODE;
+	n->parent = NULL;
+	n->left = NULL;
+	n->right = NULL;
+	n->tokens = NULL;
+	n->cfd0	= -1;
+	n->cfd1	= -1;
 	*node = n;
 	return (0);
 }
@@ -34,9 +41,6 @@ t_node	*make_word(t_token **ct)
 	if (create_node(ct, &n))
 		return (NULL);
 	n->type = NODE_COMMAND;
-	n->left = NULL;
-	n->right = NULL;
-	n->parent = NULL;
 	t = *ct;
 	i = 0;
 	while (t && !tkn_is_operator(t) && !tkn_is_redirect(t))
@@ -79,9 +83,6 @@ t_node	*make_operator(t_token **ct)
 		n->type = NODE_OR;
 	else
 		n->type = NO_NODE;
-	n->left = NULL;
-	n->right = NULL;
-	n->parent = NULL;
 	n->tokens[0] = *ct;
 	*ct = (*ct)->next;
 	return (n);
@@ -106,16 +107,12 @@ t_node	*make_redirect(t_ms *ms, t_token **ct)
 		return (NULL);
 	}
 	n->type = NODE_REDIRECT;
-	n->left = NULL;
-	n->right = NULL;
-	n->parent = NULL;
 	n->tokens[0] = *ct;
 	if (i == 2)
 	{
-// while((*ct)->next && (*ct)->next->type == TOKEN_WORD)
 		*ct = (*ct)->next;
 		n->tokens[1] = *ct;
-			}
+	}
 	*ct = (*ct)->next;
 	return (n);
 }
