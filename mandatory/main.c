@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/16 11:04:00 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/16 12:20:14 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	init_ms(int argc, char **argv, t_ms *ms)
 	ms->ac = argc;
 	ms->av = argv;
 	ms->envp = NULL;
-	ms->historypath = getenv("PWD");
+	// ms->historypath = getenv("PWD");
 	ms->parse_error = 0;
 	ms->parse_errtkn = NULL;
 	ms->run = 1;
@@ -120,7 +120,7 @@ int	main(int argc, char **argv, char **env)
 	//
 	// ✅	pwd sofort export
 	// ✅	Shellvl setzen
-	// -	load path of historyfile from av[0]
+	// ✅	load path of historyfile from av[0]
 	//
 	init_ms(argc, argv, &ms);
 	load_env(&ms, env);

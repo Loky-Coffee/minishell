@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/16 09:28:01 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/16 11:43:10 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,7 +166,7 @@ typedef struct s_ms
 	int				ac;
 	char			**av;
 	char			**envp;
-	char			*historypath;
+	// char			historypath[FT_PATH_MAX];
 	int				run;
 	int				error;
 	t_token			*tokens;
