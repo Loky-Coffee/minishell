@@ -6,14 +6,14 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/16 11:43:10 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/16 12:57:21 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-#include <stdbool.h>
+# include <stdbool.h>
 # include <unistd.h>
 # include <stdio.h>
 # include <sys/errno.h>
@@ -26,6 +26,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include "../libft/libft.h"
+
 /* ************************************************************************** */
 # define NINJASHELL "ninjaSHELL"
 # define HISTORY_FILE "ninjaSHELL.history"
@@ -96,8 +97,8 @@ typedef enum e_tokentype
 	// TOKEN_VARIABLE,
 	// TOKEN_DDOT		//		.
 }	t_tokentype;
-/* ************************************************************************** */
 
+/* ************************************************************************** */
 // Defines the types of nodes in the Abstract Syntax Tree (AST) for shell
 // command parsing.Each node type corresponds to a specific structure in the
 // shell command syntax, including commands, pipes, redirections, and logical
@@ -125,7 +126,6 @@ typedef enum e_builtin
 }	t_builtin;
 
 /* ************************************************************************** */
-
 // Defines the structure of a token in the shell
 // command parsing process.
 // A token represents a syntactically meaningful unit of text,
@@ -141,7 +141,6 @@ typedef struct s_token
 }					t_token;
 
 /* ************************************************************************** */
-
 // Defines a node in the AST, used for parsing shell commands.
 //	Each node can represent a command, operator, or other syntactic element,
 // holding tokens for the command or operation, arguments if applicable,
@@ -159,8 +158,8 @@ typedef struct s_node
 	struct s_node	*right;
 	t_token			**tokens;
 }					t_node;
-/* ************************************************************************** */
 
+/* ************************************************************************** */
 typedef struct s_ms
 {
 	int				ac;
@@ -177,9 +176,9 @@ typedef struct s_ms
 	t_token			*parse_errtkn;
 	int				exit_code;
 	unsigned char	shell_exit_code;
-}				t_ms;
-/* ************************************************************************** */
+}					t_ms;
 
+/* ************************************************************************** */
 typedef struct s_cmd
 {
 	t_token	**tokens;
@@ -266,8 +265,8 @@ int				tokens_size(t_token *tokens);
 void			ft_token_clear(t_token **token, void (*del)(void*));
 
 // executer
-int				execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt);
-int				execute_cmd(int fdr, int fdw, t_node *node, t_ms *ms, int exit_code);
+// int				execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt);
+// int				execute_cmd(int fdr, int fdw, t_node *node, t_ms *ms, int exit_code);
 int				exec_manager(t_ms *ms);
 
 // here_doc

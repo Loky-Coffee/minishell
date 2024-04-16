@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/16 12:41:00 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/16 13:00:58 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ static void	ft_cmd_is_dot(t_cmd *cmd, t_ms *ms)
 	if (ft_strncmp(cmd->cmdpth, ".", 2) == 0)
 	{
 		ft_error(cmd->cmdpth, "filename argument required", NULL);
-		ft_putstr_fd(LIGHTRED "\n", 2);
+		ft_putstr_fd(LIGHTCYAN "\n", 2);
 		ft_putstr_fd(cmd->cmdpth, 2);
 		ft_putstr_fd(": usage: ", 2);
 		ft_putstr_fd(". filename [arguments]"RESET, 2);
