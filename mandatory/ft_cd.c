@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 00:41:52 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/16 12:36:38 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/16 15:16:58 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static int	is_tilde(char *old_cwd, t_cmd *cmd, t_ms *ms)
 	getcwd(old_cwd, FT_PATH_MAX);
 	home_dir = getenv("HOME");
 	if (!home_dir)
-		return (ft_perror("cd4"), 1);
+		return (ft_perror("cd"), 1);
 	if (cmd->tokens[0]->next->next && is_word(cmd->tokens[0]->next->next->str))
 	{
 		full_path = ft_strjoin(home_dir, cmd->tokens[0]->next->next->str);
@@ -57,7 +57,7 @@ static int	is_tilde(char *old_cwd, t_cmd *cmd, t_ms *ms)
 	}
 	result = ft_chdir(ms, home_dir);
 	if (result != 0)
-		result = (ft_double_perror("cd5", home_dir), 1);
+		result = (ft_double_perror("cd", home_dir), 1);
 	free(full_path);
 	full_path = NULL;
 	return (result);

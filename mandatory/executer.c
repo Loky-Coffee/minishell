@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/16 13:00:58 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/16 16:56:05 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,19 @@
 
 int	exec_intermediary(int fd_in, int fd_out, t_node *node, t_ms *ms);
 
-static void save_stdfds(int *fds)
-{
-	fds[0] = dup(STDIN_FILENO);
-	fds[1] = dup(STDOUT_FILENO);
-}
+// static void save_stdfds(int *fds)
+// {
+// 	fds[0] = dup(STDIN_FILENO);
+// 	fds[1] = dup(STDOUT_FILENO);
+// }
 
-static void reset_stdfds(int *fds)
-{
-	dup2(fds[0], STDIN_FILENO);
-	dup2(fds[1], STDOUT_FILENO);
-	close(fds[0]);
-	close(fds[1]);
-}
+// static void reset_stdfds(int *fds)
+// {
+// 	dup2(fds[0], STDIN_FILENO);
+// 	dup2(fds[1], STDOUT_FILENO);
+// 	close(fds[0]);
+// 	close(fds[1]);
+// }
 
 static int	ft_strncmp_ignorecase(const char *s1, const char *s2, size_t n)
 {
@@ -204,10 +204,54 @@ pid_t	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	return (pid);
 }
 
-// int	exec_redirect(t_node *node, t_ms *ms)
+// static int	redirect_in(int *fd_in, t_node *node, t_ms *ms)
 // {
-// 	return (0);
+// 	int	fd_in_new;
+
+// 	if (expand_node(node, ms))
+// 		return (EXIT_FAILURE);
+// 	fd_in_new = open(node->tokens[1]->str, O_RDONLY | O_CREAT, 0644);
+// 	if (fd_in_new < 0)
+// 		return (EXIT_FAILURE);
+// 	close(*fd_in);
+// 	*fd_in = dup(fd_in_new);
+// 	close(fd_in_new);
+// 	return (EXIT_SUCCESS);
 // }
+
+static int	redirect_manager(int fd_in, int fd_out, t_node *node, t_ms *ms)
+{
+	pid_t	pid;
+	// int	fd_in_new;
+
+
+	pid = EXIT_FAILURE;
+	if (node->tokens == NULL)
+		return (EXIT_FAILURE);
+	if (node->tokens[0]->type == TOKEN_DLESS)
+	{
+		;
+	}
+	else if (node->tokens[0]->type == TOKEN_LESS)
+	{
+		if (expand_node(node, ms))
+			return (EXIT_FAILURE);
+		ft_close_fd(fd_in, 0);
+		fd_in = open(node->tokens[1]->str, O_RDONLY | O_CREAT, 0644);
+		if (fd_in < 0)
+			return (EXIT_FAILURE);
+		// close(fd_in);
+		// dup2(fd_in_new, fd_in);
+		// close(fd_in_new);
+	}
+	else if (node->tokens[0]->type == TOKEN_GREATER || node->tokens[0]->type == TOKEN_DGREATER)
+	{
+		;
+	}
+	if (node->left->type == NODE_REDIRECT)
+		pid = exec_intermediary(fd_in, fd_out, node->left, ms);
+	return (pid);
+}
 
 pid_t	exec_pipe(int fd_in, int fd_out, t_node *node, t_ms *ms)
 {
@@ -234,7 +278,7 @@ pid_t	exec_intermediary(int fd_in, int fd_out, t_node *node, t_ms *ms)
 {
 	pid_t		pid;
 	t_builtin	builtin;
-	
+
 	pid = -1;
 	builtin = is_builtin(node->tokens[0]);
 	if (node->type == NODE_COMMAND && builtin != NO_BUILTIN)
@@ -243,13 +287,13 @@ pid_t	exec_intermediary(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	{
 		pid = exec_cmd(fd_in, fd_out, node, ms);
 	}
-	// else if (ms->nodes->type == NODE_REDIRECT)
-	// 	exit_code = exec_redirect(ms->nodes, ms);
+	else if (node->type == NODE_REDIRECT)
+		pid = redirect_manager(fd_in, fd_out, ms->nodes, ms);
 	else if (node->type == NODE_PIPE)
 		pid = exec_pipe(fd_in, fd_out, node, ms);
 	// else if (ms->nodes->type == NODE_AND || ms->nodes->type == NODE_OR)
 	// 	exit_code = exec_logical_operation(ms->nodes, ms);
-	return (pid);	
+	return (pid);
 }
 
 int	exec_manager(t_ms *ms)
@@ -257,7 +301,7 @@ int	exec_manager(t_ms *ms)
 	pid_t		pid;
 	int			exit_code;
 	t_builtin	builtin;
-	int			std_fds[2];
+	// int			std_fds[2];
 
 	exit_code = 0;
 	if (ms->nodes == NULL)
@@ -271,17 +315,23 @@ int	exec_manager(t_ms *ms)
 		waitpid(pid, &exit_code, 0);
 		ms->exit_code = WEXITSTATUS(exit_code);
 	}
-	// else if (ms->nodes->type == NODE_REDIRECT)
-	// 	exit_code = exec_redirect(ms->nodes, ms);
+	else if (ms->nodes->type == NODE_REDIRECT)
+	{
+		pid = redirect_manager(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);
+		waitpid(pid, &exit_code, 0);
+		ms->exit_code = WEXITSTATUS(exit_code);
+	}
 	else if (ms->nodes->type == NODE_PIPE)
 	{
-		save_stdfds(std_fds);
+		// save_stdfds(std_fds);
 		pid = exec_pipe(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);
 		waitpid(pid, &exit_code, 0);
 		while (waitpid(-1, NULL, 0) > 0)
 			;
 		ms->exit_code = WEXITSTATUS(exit_code);
-		reset_stdfds(std_fds);
+		// dup2(0, STDIN_FILENO);
+		// dup2(1, STDOUT_FILENO);
+		// reset_stdfds(std_fds);
 	}
 	// else if (ms->nodes->type == NODE_AND || ms->nodes->type == NODE_OR)
 	// {
