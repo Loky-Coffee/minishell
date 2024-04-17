@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 18:56:31 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/16 23:11:16 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/17 06:46:46 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,9 @@ void	ft_perror(char *str)
 	if (str)
 	{
 		ft_putstr_fd(str, 2);
-		ft_putstr_fd(": ", 2);
+		ft_putstr_fd(":", 2);
 	}
-	ft_putstr_fd(strerror(errno), 2);
+	// ft_putstr_fd(strerror(errno), 2);
 }
 
 void	ft_double_perror(char *s1, char *s2)

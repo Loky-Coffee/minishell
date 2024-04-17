@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/16 23:32:59 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/17 07:14:50 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,6 +134,7 @@ static int	ft_cmd_is_dotdot(t_cmd *cmd, int *exit_code)
 {
 	if (ft_strncmp(cmd->cmdpth, "..", 3) == 0)
 	{
+		ft_error(cmd->cmdpth, "command not found", NULL);
 		*exit_code = 127;
 		return (1);
 	}
@@ -145,7 +146,7 @@ static int	ft_cmd_has_slash(t_cmd *cmd, int *exit_code)
 	if (cmd->cmdpth[0] == '/')
 	{
 		*exit_code = 127;
-		ft_error(cmd->cmdpth, "is a directory", NULL);
+		ft_error(cmd->cmdpth, "No such file or directory", NULL);
 		return (1);
 	}
 	return (0);
@@ -155,7 +156,7 @@ static int	ft_cmd_is_dir(char *cmd, int *exit_code)
 {
 	struct stat	file_stat;
 
-	if (ft_strchr(cmd, '/') == NULL)
+	if (ft_strchr(cmd, '/') == NULL || ft_strchr(cmd, '.') == NULL)
 		return (0);
 	if (stat(cmd, &file_stat) != 0)
 		return (0);
@@ -163,7 +164,7 @@ static int	ft_cmd_is_dir(char *cmd, int *exit_code)
 	{
 		// errno = EISDIR;
 		*exit_code = 126;
-		ft_perror(cmd);
+		ft_error(cmd, "is a directory", NULL);
 		return (1);
 	}
 	return (0);
@@ -215,6 +216,7 @@ pid_t	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	if (pid == 0)
 	{
 		ft_close_fd(node->cfd0, node->cfd1);
+		// fprintf(stderr,"node[%s]\n", node->tokens[0]->str);
 		if (expand_node(node, ms))
 			return (-1);
 		create_cmd(&cmd, node);
@@ -228,7 +230,10 @@ pid_t	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 		// 	|| ft_cmd_is_dir(cmd.cmdpth, &exit_code)				// 126
 		// 	|| ft_prepend_path(&cmd.cmdpth, cmd.path, &exit_code)	// 127
 		// 	|| ft_exec_permissions(cmd.cmdpth, &exit_code)))		// 126
-		if (ft_cmd_has_slash(&cmd, &exit_code)
+		// if (ft_cmd_has_slash(&cmd, &exit_code) && access(node->tokens[0]->str, ENOENT) == -1)
+		// 	return (ft_error(cmd.args[0], "is a directory\n", NULL), 126);
+		if ( \
+			ft_cmd_has_slash(&cmd, &exit_code)
 			// || cmd.cmdpth[0] == '\0'
 			|| ft_cmd_is_dotdot(&cmd, &exit_code)					// 127
 			|| ft_cmd_is_dir(cmd.cmdpth, &exit_code)				// 126
@@ -244,7 +249,7 @@ pid_t	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 		execve(cmd.cmdpth, cmd.args, ms->envp);
 		ft_perror(cmd.args[0]);
 		ft_close_fd(fd_in, fd_out);
-		terminate(ms, &cmd, 1);
+		terminate(ms, &cmd, 0);
 	}
 	ft_close_fd(fd_in, fd_out);
 	return (pid);
@@ -257,10 +262,14 @@ static int	redirect_in(int *fd_in, t_node *node, t_ms *ms)
 	if (expand_node(node, ms))
 		return (EXIT_FAILURE);
 	// fprintf(stderr, "---------->redirect_in |%i|\n", *fd_in);
+	// if (access(node->tokens[0]->str, ENOENT) == -1)
+	// 	return (ft_error(node->tokens[1]->str, "No such file or directory\n", NULL), EXIT_FAILURE);
+	// if (access(node->tokens[0]->str, R_OK) == -1)
+	// 	return (ft_error(node->tokens[1]->str, "Permission denied\n", NULL), EXIT_FAILURE);
 	close(*fd_in);
 	*fd_in = open(node->tokens[1]->str, O_RDONLY, 0644);
 	if (*fd_in < 0)
-		return (ft_perror(node->tokens[1]->str), EXIT_FAILURE);
+		return (ft_error(node->tokens[1]->str, "No such file or directory\n", NULL), EXIT_FAILURE);
 	// close(*fd_in);
 	// *fd_in = dup(fd_in_new);
 	// close(fd_in_new);
@@ -269,20 +278,25 @@ static int	redirect_in(int *fd_in, t_node *node, t_ms *ms)
 
 static int	redirect_out(int *fd_out, t_node *node, t_ms *ms)
 {
-	int	fd_out_new;
+	// int	fd_out_new;
 
 	if (expand_node(node, ms))
 		return (EXIT_FAILURE);
-	if (node->tokens[0]->type == TOKEN_DGREATER)
-		fd_out_new = open(node->tokens[1]->str, O_WRONLY | O_CREAT | O_APPEND, 0644);
-	else
-		fd_out_new = open(node->tokens[1]->str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (fd_out_new < 0)
-		return (ft_perror(node->tokens[1]->str), EXIT_FAILURE);
+	// ft_get_env_value(ms, node->tokens[0]->str, "PWD");
+	// if (access(node->tokens[0]->str, ENOENT) == -1)
+	// 	return (ft_error(node->tokens[1]->str, "No such file or directory\n", NULL), EXIT_FAILURE);
+	if (access(node->tokens[0]->str, W_OK) == -1)
+		return (ft_error(node->tokens[1]->str, "Permission denied", NULL), EXIT_FAILURE);
 	close(*fd_out);
-	*fd_out = dup(fd_out_new);
-	close(fd_out_new);
-	return (EXIT_SUCCESS);	
+	if (node->tokens[0]->type == TOKEN_DGREATER)
+		*fd_out = open(node->tokens[1]->str, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	else
+		*fd_out = open(node->tokens[1]->str, O_WRONLY | O_CREAT |O_TRUNC, 0644);
+	if (*fd_out < 0)
+		return (ft_error(node->tokens[1]->str, "Permission denied", NULL), EXIT_FAILURE);
+	// *fd_out = dup(fd_out_new);
+	// close(fd_out_new);
+	return (EXIT_SUCCESS);
 }
 
 static pid_t	redirect_manager(int fd_in, int fd_out, t_node *node, t_ms *ms)
@@ -298,12 +312,14 @@ static pid_t	redirect_manager(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	}
 	else if (node->tokens[0]->type == TOKEN_LESS && node->tokens[1])
 	{
-		redirect_in(&fd_in, node, ms);
+		if (redirect_in(&fd_in, node, ms) > 0)
+			return (1);
 		pid = exec_intermediary(fd_in, fd_out, node->left, ms);
 	}
 	else if (node->tokens[0]->type == TOKEN_GREATER || node->tokens[0]->type == TOKEN_DGREATER)
 	{
-		redirect_out(&fd_out, node, ms);
+		if (redirect_out(&fd_out, node, ms) > 0)
+			return (1);
 		pid = exec_intermediary(fd_in, fd_out, node->left, ms);
 	}
 	return (pid);
@@ -380,18 +396,28 @@ int	exec_manager(t_ms *ms)
 	{
 		save_stdfds(std_fds);
 		pid = redirect_manager(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);
-		waitpid(pid, &exit_code, 0);
-		ms->exit_code = WEXITSTATUS(exit_code);
+		if (pid > 256)
+		{
+			waitpid(pid, &exit_code, 0);
+			ms->exit_code = WEXITSTATUS(exit_code);
+		}
+		else
+			ms->exit_code = pid;
 		reset_stdfds(std_fds);
 	}
 	else if (ms->nodes->type == NODE_PIPE)
 	{
 		save_stdfds(std_fds);
 		pid = exec_pipe(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);
-		waitpid(pid, &exit_code, 0);
-		while (waitpid(-1, NULL, 0) > 0)
-			;
-		ms->exit_code = WEXITSTATUS(exit_code);
+		if (pid > 256)
+		{
+			waitpid(pid, &exit_code, 0);
+			while (waitpid(-1, NULL, 0) > 0)
+				;
+			ms->exit_code = WEXITSTATUS(exit_code);
+		}
+		else
+			ms->exit_code = pid;
 		reset_stdfds(std_fds);
 	}
 	// else if (ms->nodes->type == NODE_AND || ms->nodes->type == NODE_OR)
