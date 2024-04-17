@@ -6,36 +6,36 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/17 07:14:50 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/17 22:04:24 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	check_fds(void)
-{
-	int		fd;
-	int		open_fd_count = 0;
+// void	check_fds(void)
+// {
+// 	int		fd;
+// 	int		open_fd_count = 0;
 
-	int prev_errno = errno;
-	fd = 3;
-	while (fd < OPEN_MAX)
-	{
-		if (fcntl(fd, F_GETFD) != -1) // TODO: DEBUG: unallowed function for debugging and finding leaks (fcntl)
-		{
-			// close(fd);
-			fprintf(stderr, "%d is open(fd):\n", fd);
-			open_fd_count++;
-		}
-		fd++;
-	}
-	errno = prev_errno;
-	//if (LEAK_CHECK)// if some how dosnt work
-	if (open_fd_count)
-	{
-		fprintf(stderr, "open fds: %d\n", open_fd_count);
-	}
-}
+// 	int prev_errno = errno;
+// 	fd = 3;
+// 	while (fd < OPEN_MAX)
+// 	{
+// 		if (fcntl(fd, F_GETFD) != -1) // TODO: DEBUG: unallowed function for debugging and finding leaks (fcntl)
+// 		{
+// 			// close(fd);
+// 			fprintf(stderr, "%d is open(fd):\n", fd);
+// 			open_fd_count++;
+// 		}
+// 		fd++;
+// 	}
+// 	errno = prev_errno;
+// 	//if (LEAK_CHECK)// if some how dosnt work
+// 	if (open_fd_count)
+// 	{
+// 		fprintf(stderr, "open fds: %d\n", open_fd_count);
+// 	}
+// }
 
 int	exec_intermediary(int fd_in, int fd_out, t_node *node, t_ms *ms);
 
@@ -85,31 +85,51 @@ static t_builtin	is_builtin(t_token *token)
 	return (NO_BUILTIN);
 }
 
-static char	**create_cmd_args(t_node *node)
+// static char	**create_cmd_args(t_node *node)
+// {
+// 	int		i;
+// 	int		j;
+// 	char	**args;
+
+// 	i = 0;
+// 	while (node->tokens[i])
+// 		i++;
+// 	args = (char **)ft_calloc((i + 1), sizeof(char *));
+// 	if (args == NULL)
+// 		return (NULL);
+// 	j = 0;
+// 	while (j < i)
+// 	{
+// 		args[j] = node->tokens[j]->str;
+// 		j++;
+// 	}
+// 	return (args);
+// }
+
+
+//Ich habe die funktion verbundet unten... es reicht mit von der lines und create_cmd_args wird nur 1 mall verwendet....
+//auf die dunktion unten..
+static int	create_cmd(t_cmd *cmd, t_node *node)
 {
 	int		i;
 	int		j;
 	char	**args;
 
-	i = 0;
+	cmd->tokens = node->tokens;
+	// cmd->args = create_cmd_args(node);
+		i = 0;
 	while (node->tokens[i])
 		i++;
 	args = (char **)ft_calloc((i + 1), sizeof(char *));
 	if (args == NULL)
-		return (NULL);
+		return (0);
 	j = 0;
 	while (j < i)
 	{
 		args[j] = node->tokens[j]->str;
 		j++;
 	}
-	return (args);
-}
-
-static int	create_cmd(t_cmd *cmd, t_node *node)
-{
-	cmd->tokens = node->tokens;
-	cmd->args = create_cmd_args(node);
+	cmd->args = args;
 	if (cmd->args == NULL)
 		cmd->cmdpth = ft_strdup("");
 	else
@@ -162,6 +182,8 @@ static int	ft_cmd_is_dir(char *cmd, int *exit_code)
 		return (0);
 	if (S_ISDIR(file_stat.st_mode) != 0)
 	{
+		// if (access(cmd, X_OK) != 0)
+		// 	return (ft_cmd_error(NINJASHELL, cmd, 1), 126);
 		// errno = EISDIR;
 		*exit_code = 126;
 		ft_error(cmd, "is a directory", NULL);
@@ -346,10 +368,32 @@ pid_t	exec_pipe(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	return (pid);
 }
 
-// int	exec_logical_operation(t_node *node, t_ms *ms)
-// {
-// 	return (0);
-// }
+int	logical_operation_manager(t_node *node, t_ms *ms)
+{
+	pid_t	pid;
+	t_node	*buff;
+
+	buff = node->left;
+	while (buff->left && buff->type != NODE_COMMAND)
+		buff = buff->left;
+	if (node->tokens[0]->type == TOKEN_DAND)
+	{
+		if (node->left)
+			pid = exec_intermediary(STDIN_FILENO, STDOUT_FILENO, node->left, ms);
+		if (node->right && pid == 0)
+			pid = exec_intermediary(STDIN_FILENO, STDOUT_FILENO, node->right, ms);
+		else
+			return (pid);
+	}
+	else
+		if (node->left)
+			pid = exec_intermediary(STDIN_FILENO, STDOUT_FILENO, node->left, ms);
+		if (node->right && pid != 0)
+			pid = exec_intermediary(STDIN_FILENO, STDOUT_FILENO, node->right, ms);
+		else
+			return (pid);
+	return (pid);
+}
 
 pid_t	exec_intermediary(int fd_in, int fd_out, t_node *node, t_ms *ms)
 {
@@ -368,8 +412,8 @@ pid_t	exec_intermediary(int fd_in, int fd_out, t_node *node, t_ms *ms)
 		pid = redirect_manager(fd_in, fd_out, node, ms);
 	else if (node->type == NODE_PIPE)
 		pid = exec_pipe(fd_in, fd_out, node, ms);
-	// else if (ms->nodes->type == NODE_AND || ms->nodes->type == NODE_OR)
-	// 	exit_code = exec_logical_operation(ms->nodes, ms);
+	else if (ms->nodes->type == NODE_AND || ms->nodes->type == NODE_OR)
+		pid = logical_operation_manager(ms->nodes, ms);
 	return (pid);
 }
 
@@ -420,11 +464,20 @@ int	exec_manager(t_ms *ms)
 			ms->exit_code = pid;
 		reset_stdfds(std_fds);
 	}
-	// else if (ms->nodes->type == NODE_AND || ms->nodes->type == NODE_OR)
-	// {
-	// 	save_stdfds(std_fds);
-	// 	exit_code = exec_logical_operation(ms->nodes, ms);
-	// 	reset_stdfds(std_fds);
-	// }
+	else if (ms->nodes->type == NODE_AND || ms->nodes->type == NODE_OR)
+	{
+		save_stdfds(std_fds);
+		pid = logical_operation_manager(ms->nodes, ms);
+		if (pid > 256)
+		{
+			waitpid(pid, &exit_code, 0);
+			while (waitpid(-1, NULL, 0) > 0)
+				;
+			ms->exit_code = WEXITSTATUS(exit_code);
+		}
+		else
+			ms->exit_code = pid;
+		reset_stdfds(std_fds);
+	}
 	return (ms->exit_code);
 }
