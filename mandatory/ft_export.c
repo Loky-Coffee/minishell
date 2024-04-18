@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 18:27:30 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/16 17:41:04 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/18 01:13:31 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ static int	has_valid_key(t_ms *ms, char *key)
 		return (1);
 	i = 0;
 	ft_memset(key, 0, FT_PATH_MAX);
-	while (ms->tokens->next->str[i] && i < FT_PATH_MAX)
+	while (ms->tokens->next->str != NULL && ms->tokens->next->str[i] && i < FT_PATH_MAX)
 	{
 		if (ms->tokens->next->str[i] == '=')
 			break ;

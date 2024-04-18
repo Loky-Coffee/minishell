@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:51:40 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/13 18:30:20 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/18 01:23:47 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ t_tokentype	is_single_token(char c)
 {
 	char	*tokens;
 
-	tokens = "|<>~";
+	tokens = "|<>";
 	while (*tokens)
 		if (c == *tokens++)
 			return (ft_get_stokentype(c));

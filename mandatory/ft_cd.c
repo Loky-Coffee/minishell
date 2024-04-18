@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 00:41:52 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/16 15:16:58 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/18 01:24:10 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ static int	ft_cd2(t_cmd *cmd, t_ms *ms, char *old_cwd, char *current_cwd)
 		return (0);
 	}
 	else if ((cmd->tokens[0]->next \
-	&& is_single_token(*cmd->tokens[0]->next->str) == TOKEN_TILDE))
+	&& *cmd->tokens[0]->next->str == '~'))
 		return (is_tilde(old_cwd, cmd, ms));
 	else
 	{

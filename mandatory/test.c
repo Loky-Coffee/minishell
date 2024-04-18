@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   executer.c                                         :+:      :+:    :+:   */
+/*   test.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/18 06:48:49 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/18 06:21:48 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,30 +85,6 @@ static t_builtin	is_builtin(t_token *token)
 	return (NO_BUILTIN);
 }
 
-// static char	**create_cmd_args(t_node *node)
-// {
-// 	int		i;
-// 	int		j;
-// 	char	**args;
-
-// 	i = 0;
-// 	while (node->tokens[i])
-// 		i++;
-// 	args = (char **)ft_calloc((i + 1), sizeof(char *));
-// 	if (args == NULL)
-// 		return (NULL);
-// 	j = 0;
-// 	while (j < i)
-// 	{
-// 		args[j] = node->tokens[j]->str;
-// 		j++;
-// 	}
-// 	return (args);
-// }
-
-
-//Ich habe die funktion verbundet unten... es reicht mit von der lines und create_cmd_args wird nur 1 mall verwendet....
-//auf die dunktion unten..
 static int	create_cmd(t_cmd *cmd, t_node *node)
 {
 	int		i;
@@ -116,7 +92,6 @@ static int	create_cmd(t_cmd *cmd, t_node *node)
 	char	**args;
 
 	cmd->tokens = node->tokens;
-	// cmd->args = create_cmd_args(node);
 		i = 0;
 	while (node->tokens[i])
 		i++;
@@ -181,9 +156,6 @@ static int	ft_cmd_is_dir(char *cmd, int *exit_code)
 		return (0);
 	if (S_ISDIR(file_stat.st_mode) != 0)
 	{
-		// if (access(cmd, X_OK) != 0)
-		// 	return (ft_cmd_error(NINJASHELL, cmd, 1), 126);
-		// errno = EISDIR;
 		*exit_code = 126;
 		ft_error(cmd, "is a directory", NULL);
 		return (1);
@@ -226,13 +198,15 @@ pid_t	exec_fork_builtin(int fd_in, int fd_out, t_builtin builtin, t_node *node, 
 	return (pid);
 }
 
-pid_t	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
+int	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 {
 	pid_t	pid;
 	t_cmd	cmd;
 	int		exit_code;
+	int		status;
 
 	exit_code = 0;
+	status = 0;
 	pid = fork();
 	if (pid == 0)
 	{
@@ -244,27 +218,15 @@ pid_t	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 		dup2(fd_out, STDOUT_FILENO);
 		ft_cmd_is_dot(&cmd, ms);
 		ft_get_env_value(ms, cmd.path, "PATH");
-		// if (cmd.cmdpth[0] != '/'
-		// 	&& (cmd.cmdpth[0] == '\0'
-		// 	|| ft_cmd_is_dotdot(&cmd, &exit_code)					// 127
-		// 	|| ft_cmd_is_dir(cmd.cmdpth, &exit_code)				// 126
-		// 	|| ft_prepend_path(&cmd.cmdpth, cmd.path, &exit_code)	// 127
-		// 	|| ft_exec_permissions(cmd.cmdpth, &exit_code)))		// 126
-		// if (ft_cmd_has_slash(&cmd, &exit_code) && access(node->tokens[0]->str, ENOENT) == -1)
-		// 	return (ft_error(cmd.args[0], "is a directory\n", NULL), 126);
 		if ( \
 			ft_cmd_has_slash(&cmd, &exit_code)
-			// || cmd.cmdpth[0] == '\0'
 			|| ft_cmd_is_dotdot(&cmd, &exit_code)					// 127
 			|| ft_cmd_is_dir(cmd.cmdpth, &exit_code)				// 126
 			|| ft_prepend_path(&cmd.cmdpth, cmd.path, &exit_code)	// 127
 			|| ft_exec_permissions(cmd.cmdpth, &exit_code))			// 126
 		{
-			// fprintf(stdout, "\n1 ms->exit [%d]\n", ms->exit_code);
-			// fprintf(stdout, "\n1 ms->exit [%d]\n", exit_code);
 			if (exit_code == 0)
 				exit_code = 1;
-			ms->exit_code = exit_code;
 			ft_close_fd(fd_in, fd_out);
 			terminate(ms, &cmd, exit_code);
 		}
@@ -273,8 +235,10 @@ pid_t	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 		ft_close_fd(fd_in, fd_out);
 		terminate(ms, &cmd, 0);
 	}
+	waitpid(pid, &status, 0);
+	ms->exit_code = WEXITSTATUS(status);
 	ft_close_fd(fd_in, fd_out);
-	return (pid);
+	return (ms->exit_code);
 }
 
 static int	redirect_in(int *fd_in, t_node *node, t_ms *ms)
@@ -304,11 +268,11 @@ static int	redirect_out(int *fd_out, t_node *node, t_ms *ms)
 	return (EXIT_SUCCESS);
 }
 
-static pid_t	redirect_manager(int fd_in, int fd_out, t_node *node, t_ms *ms)
+static int	redirect_manager(int fd_in, int fd_out, t_node *node, t_ms *ms)
 {
-	pid_t	pid;
+	int	exit_code;
 
-	pid = EXIT_FAILURE;
+	exit_code = EXIT_FAILURE;
 	if (node->tokens == NULL)
 		return (EXIT_FAILURE);
 	if (node->tokens[0]->type == TOKEN_DLESS)
@@ -319,20 +283,20 @@ static pid_t	redirect_manager(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	{
 		if (redirect_in(&fd_in, node, ms) > 0)
 			return (1);
-		pid = exec_intermediary(fd_in, fd_out, node->left, ms);
+		exit_code = exec_intermediary(fd_in, fd_out, node->left, ms);
 	}
 	else if (node->tokens[0]->type == TOKEN_GREATER || node->tokens[0]->type == TOKEN_DGREATER)
 	{
 		if (redirect_out(&fd_out, node, ms) > 0)
 			return (1);
-		pid = exec_intermediary(fd_in, fd_out, node->left, ms);
+		exit_code = exec_intermediary(fd_in, fd_out, node->left, ms);
 	}
-	return (pid);
+	return (exit_code);
 }
 
-pid_t	exec_pipe(int fd_in, int fd_out, t_node *node, t_ms *ms)
+int	exec_pipe(int fd_in, int fd_out, t_node *node, t_ms *ms)
 {
-	pid_t	pid;
+	int		exit_code;
 	int		fd_pipe[2];
 	t_node	*buff;
 
@@ -343,79 +307,65 @@ pid_t	exec_pipe(int fd_in, int fd_out, t_node *node, t_ms *ms)
 		buff = buff->left;
 	buff->cfd0 = fd_pipe[0];
 	if (node->left)
-		pid = exec_intermediary(fd_in, fd_pipe[1], node->left, ms);
+		exit_code = exec_intermediary(fd_in, fd_pipe[1], node->left, ms);
 	ft_close_fd(fd_in, fd_pipe[1]);
 	if (node->right)
-		pid = exec_intermediary(fd_pipe[0], fd_out, node->right, ms);
+		exit_code = exec_intermediary(fd_pipe[0], fd_out, node->right, ms);
 	ft_close_fd(fd_pipe[0], fd_out);
-	return (pid);
+	return (exit_code);
 }
 
 int	logical_operation_manager(t_node *node, t_ms *ms)
 {
-	pid_t	pid;
-	// t_node	*buff;
-	int 	status;
+	int	exit_code;
 
-	// buff = node->left;
-	pid = 0;
-	// while (buff->left && buff->type != NODE_COMMAND)
-	// 	buff = buff->left;
+	exit_code = 0;
 	if (node->tokens[0]->type == TOKEN_DAND)
 	{
 		if (node->left)
-		{
-			pid = exec_intermediary(STDIN_FILENO, STDOUT_FILENO, node->left, ms);
-			waitpid(pid, &status, 0);
-			ms->exit_code = WEXITSTATUS(status);
-		}
-		if (node->right && ms->exit_code == 0)
-			pid = exec_intermediary(STDIN_FILENO, STDOUT_FILENO, node->right, ms);
+			exit_code = exec_intermediary(STDIN_FILENO, STDOUT_FILENO, node->left, ms);
+		if (node->right && exit_code == 0)
+			exit_code = exec_intermediary(STDIN_FILENO, STDOUT_FILENO, node->right, ms);
 	}
 	else if (node->tokens[0]->type == TOKEN_OR)
 	{
 		if (node->left)
-		{
-			pid = exec_intermediary(STDIN_FILENO, STDOUT_FILENO, node->left, ms);
-			waitpid(pid, &status, 0);
-			ms->exit_code = WEXITSTATUS(status);
-		}
-		if (node->right && ms->exit_code != 0)
-			pid = exec_intermediary(STDIN_FILENO, STDOUT_FILENO, node->right, ms);
+			exit_code = exec_intermediary(STDIN_FILENO, STDOUT_FILENO, node->left, ms);
+		if (node->right && exit_code != 0)
+			exit_code = exec_intermediary(STDIN_FILENO, STDOUT_FILENO, node->right, ms);
 	}
-	return (pid);
+	return (exit_code);
 }
 
-pid_t	exec_intermediary(int fd_in, int fd_out, t_node *node, t_ms *ms)
+int	exec_intermediary(int fd_in, int fd_out, t_node *node, t_ms *ms)
 {
-	pid_t		pid;
+	int		exit_code;
 	t_builtin	builtin;
 
-	pid = -1;
+	exit_code = -1;
 	if (node == NULL)
 		return (0);
 	builtin = is_builtin(node->tokens[0]);
 	if (node->type == NODE_COMMAND && builtin != NO_BUILTIN)
-		pid = exec_fork_builtin(fd_in, fd_out, builtin, node, ms);
+		exit_code = exec_fork_builtin(fd_in, fd_out, builtin, node, ms);
 	else if (node->type == NODE_COMMAND)
-		pid = exec_cmd(fd_in, fd_out, node, ms);
+		exit_code = exec_cmd(fd_in, fd_out, node, ms);
 	else if (node->type == NODE_REDIRECT)
-		pid = redirect_manager(fd_in, fd_out, node, ms);
+		exit_code = redirect_manager(fd_in, fd_out, node, ms);
 	else if (node->type == NODE_PIPE)
-		pid = exec_pipe(fd_in, fd_out, node, ms);
+		exit_code = exec_pipe(fd_in, fd_out, node, ms);
 	else if (ms->nodes->type == NODE_AND || ms->nodes->type == NODE_OR)
-		pid = logical_operation_manager(ms->nodes, ms);
-	return (pid);
+		exit_code = logical_operation_manager(ms->nodes, ms);
+	return (exit_code);
 }
 
 int	exec_manager(t_ms *ms)
 {
-	pid_t		pid;
-	int			status;
+	int			exit_code;
 	t_builtin	builtin;
 	int			std_fds[2];
 
-	status = 0;
+	exit_code = 0;
 	if (ms->nodes == NULL)
 		return (-1);
 	builtin = is_builtin(ms->nodes->tokens[0]);
@@ -423,50 +373,27 @@ int	exec_manager(t_ms *ms)
 		ms->exit_code = exec_builtin(STDIN_FILENO, STDOUT_FILENO, builtin, ms->nodes, ms);
 	else if (ms->nodes->type == NODE_COMMAND)
 	{
-		pid = exec_cmd(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);
-		waitpid(pid, &status, 0);
-		if (pid > 256)
-			ms->exit_code = WEXITSTATUS(status);
-		else
-			ms->exit_code = pid;
-
+		save_stdfds(std_fds);
+		exit_code = exec_cmd(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);
+		reset_stdfds(std_fds);
 	}
 	else if (ms->nodes->type == NODE_REDIRECT)
 	{
 		save_stdfds(std_fds);
-		pid = redirect_manager(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);
-		waitpid(pid, &status, 0);
-		if (pid > 256)
-			ms->exit_code = WEXITSTATUS(status);
-		else
-			ms->exit_code = pid;
+		exit_code = redirect_manager(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);
 		reset_stdfds(std_fds);
 	}
 	else if (ms->nodes->type == NODE_PIPE)
 	{
 		save_stdfds(std_fds);
-		pid = exec_pipe(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);
-		waitpid(pid, &status, 0);
-		if (pid > 256)
-		{
-			while (waitpid(-1, NULL, 0) > 0)
-				;
-			ms->exit_code = WEXITSTATUS(status);
-		}
-		else
-			ms->exit_code = pid;
+		exit_code = exec_pipe(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);
 		reset_stdfds(std_fds);
 	}
 	else if (ms->nodes->type == NODE_AND || ms->nodes->type == NODE_OR)
 	{
 		save_stdfds(std_fds);
-		pid = logical_operation_manager(ms->nodes, ms);
-		waitpid(pid, &status, 0);
-		if (pid > 256)
-			ms->exit_code = WEXITSTATUS(status);
-		else
-			ms->exit_code = pid;
+		exit_code = logical_operation_manager(ms->nodes, ms);
 		reset_stdfds(std_fds);
 	}
-	return (ms->exit_code);
+	return (exit_code);
 }

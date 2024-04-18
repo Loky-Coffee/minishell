@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   renderer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:50:40 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/15 22:11:49 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/18 01:45:42 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

@@ -6,18 +6,38 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 02:33:21 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/13 18:14:02 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/18 01:19:14 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+static int is_valid_identifier(char *key)
+{
+	int i;
+
+	if (key[0] == '_' || ft_isalpha(key[0]))
+	{
+		i = 1;
+		while (key[i])
+		{
+			if (ft_isalnum(key[i]) || key[i] == '_')
+				i++;
+			else
+				return (1);
+		}
+	}
+	else
+		return (1);
+	return (0);
+}
 
 int	feel_empty_line(t_ms *ms, int *flag, int i)
 {
 	free(ms->envp[i]);
 	while (ms->envp[i + 1] != NULL)
 	{
-		ms->envp[i] = ms->envp[1 + i];
+		ms->envp[i] = ms->envp[i + 1];
 		i++;
 		*flag = 1;
 	}
@@ -35,6 +55,8 @@ int	ft_unset(t_ms *ms)
 	if (ms->tokens->next == NULL || ms->tokens->next->str == NULL)
 		return (0);
 	str = ms->tokens->next->str;
+	if (is_valid_identifier(str) > 0)
+		return (ft_error(str, "not a valid identifier", NULL), 1);
 	ft_memset(key, 0, FT_PATH_MAX);
 	ft_strlcat(key, str, FT_PATH_MAX);
 	ft_strlcat(key, "=", FT_PATH_MAX);

@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/17 20:58:49 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/18 06:29:08 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,6 +139,8 @@ int	main(int argc, char **argv, char **env)
 			printf("exit\n");
 			continue ;
 		}
+		//tester einstellungen bitte nicht losen!
+
 		// if (isatty(fileno(stdin))) // Überprüfe, ob die Eingabe von der Konsole kommt
 		// {
 		// 	create_prompt(&ms);
