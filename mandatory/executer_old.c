@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/16 15:30:52 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/19 13:47:52 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,6 +200,7 @@ int	execute_heredoc(int old_fdw, int *fdp, char *lim, t_ms *ms)
 {
 	int	pid;
 	int	status;
+	int	exit_code;
 
 	status = 0;
 	pid = fork();
@@ -211,7 +212,7 @@ int	execute_heredoc(int old_fdw, int *fdp, char *lim, t_ms *ms)
 		terminate(ms, NULL, status);
 	}
 	waitpid(pid, &status, 0);
-	return (status);
+	return (exit_code);
 }
 
 int	execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt)

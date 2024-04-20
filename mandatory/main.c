@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/18 06:29:08 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/19 14:00:44 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,7 +194,7 @@ int	main(int argc, char **argv, char **env)
 		}
 
 		// render NODES
-		// render_nodes(0, ms.nodes, 'R');
+		render_nodes(0, ms.nodes, 'R');
 
 		// EXECUTE IT
 		exec_manager(&ms);

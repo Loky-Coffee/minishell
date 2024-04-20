@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 18:56:31 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/17 20:59:54 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/19 20:05:16 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	ft_perror(char *str)
 		ft_putstr_fd(str, 2);
 		ft_putstr_fd(":", 2);
 	}
-	// ft_putstr_fd(strerror(errno), 2);
+	// ft_putstr_fd(strerror(errno), 2);----------------------------------------------------
 }
 
 void	ft_double_perror(char *s1, char *s2)
@@ -53,7 +53,7 @@ void	ft_double_perror(char *s1, char *s2)
 		ft_putstr_fd(s2, 2);
 		ft_putstr_fd(": ", 2);
 	}
-	ft_putstr_fd(strerror(errno), 2);
+	// ft_putstr_fd(strerror(errno), 2);
 }
 
 void	ft_cmd_error(char *msg, char *cmd, int error_code)

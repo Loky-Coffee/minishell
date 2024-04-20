@@ -6,36 +6,38 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/18 06:48:49 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/20 17:07:50 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	check_fds(void)
-{
-	int		fd;
-	int		open_fd_count = 0;
+// void	check_fds(void)
+// {
+// 	int		fd;
+// 	int		open_fd_count = 0;
 
-	int prev_errno = errno;
-	fd = 3;
-	while (fd < OPEN_MAX)
-	{
-		if (fcntl(fd, F_GETFD) != -1) // TODO: DEBUG: unallowed function for debugging and finding leaks (fcntl)
-		{
-			// close(fd);
-			fprintf(stderr, "%d is open(fd):\n", fd);
-			open_fd_count++;
-		}
-		fd++;
-	}
-	errno = prev_errno;
-	//if (LEAK_CHECK)// if some how dosnt work
-	if (open_fd_count)
-	{
-		fprintf(stderr, "open fds: %d\n", open_fd_count);
-	}
-}
+// 	int prev_errno = errno;
+// 	fd = 3;
+// 	while (fd < OPEN_MAX)
+// 	{
+// 		if (fcntl(fd, F_GETFD) != -1) // TODO: DEBUG: unallowed function for debugging and finding leaks (fcntl)
+// 		{
+// 			// close(fd);
+// 			fprintf(stderr, "%d is open(fd):\n", fd);
+// 			open_fd_count++;
+// 		}
+// 		fd++;
+// 	}
+// 	errno = prev_errno;
+// 	//if (LEAK_CHECK)// if some how dosnt work
+// 	if (open_fd_count)
+// 	{
+// 		fprintf(stderr, "open fds: %d\n", open_fd_count);
+// 	}
+// 	else
+// 		fprintf(stderr, "open fds: %d\n", open_fd_count);
+// }
 
 int	exec_intermediary(int fd_in, int fd_out, t_node *node, t_ms *ms);
 
@@ -85,30 +87,6 @@ static t_builtin	is_builtin(t_token *token)
 	return (NO_BUILTIN);
 }
 
-// static char	**create_cmd_args(t_node *node)
-// {
-// 	int		i;
-// 	int		j;
-// 	char	**args;
-
-// 	i = 0;
-// 	while (node->tokens[i])
-// 		i++;
-// 	args = (char **)ft_calloc((i + 1), sizeof(char *));
-// 	if (args == NULL)
-// 		return (NULL);
-// 	j = 0;
-// 	while (j < i)
-// 	{
-// 		args[j] = node->tokens[j]->str;
-// 		j++;
-// 	}
-// 	return (args);
-// }
-
-
-//Ich habe die funktion verbundet unten... es reicht mit von der lines und create_cmd_args wird nur 1 mall verwendet....
-//auf die dunktion unten..
 static int	create_cmd(t_cmd *cmd, t_node *node)
 {
 	int		i;
@@ -116,7 +94,6 @@ static int	create_cmd(t_cmd *cmd, t_node *node)
 	char	**args;
 
 	cmd->tokens = node->tokens;
-	// cmd->args = create_cmd_args(node);
 		i = 0;
 	while (node->tokens[i])
 		i++;
@@ -277,6 +254,31 @@ pid_t	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	return (pid);
 }
 
+void	execute_heredoc(int *fd_in, int *fd_out, char *lim, t_ms *ms)
+{
+	int	pid;
+	int	status;
+	int	fd_pipe[2];
+
+	status = 0;
+	if (pipe(fd_pipe))
+		perror(NINJASHELL);
+	ft_close_fd(*fd_in, 0);
+	*fd_in = dup(fd_pipe[0]);
+	pid = fork();
+	if (pid == -1)
+		perror(NINJASHELL);
+	if (pid == 0)
+	{
+		status = ft_heredoc(fd_pipe[1], lim);
+		ft_close_fd(fd_pipe[0], fd_pipe[1]);
+		ft_close_fd(*fd_in, *fd_out);
+		terminate(ms, NULL, status);
+	}
+	ft_close_fd(fd_pipe[0], fd_pipe[1]);
+	waitpid(pid, &status, 0);
+}
+
 static int	redirect_in(int *fd_in, t_node *node, t_ms *ms)
 {
 	if (expand_node(node, ms))
@@ -292,13 +294,13 @@ static int	redirect_out(int *fd_out, t_node *node, t_ms *ms)
 {
 	if (expand_node(node, ms))
 		return (EXIT_FAILURE);
-	if (access(node->tokens[0]->str, W_OK) == -1)
-		return (ft_error(node->tokens[1]->str, "Permission denied", NULL), EXIT_FAILURE);
+	// if (access(node->tokens[0]->str, W_OK) == -1)
+	// 	return (ft_error(node->tokens[1]->str, "Permission denied", NULL), EXIT_FAILURE);
 	close(*fd_out);
 	if (node->tokens[0]->type == TOKEN_DGREATER)
 		*fd_out = open(node->tokens[1]->str, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	else
-		*fd_out = open(node->tokens[1]->str, O_WRONLY | O_CREAT |O_TRUNC, 0644);
+		*fd_out = open(node->tokens[1]->str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (*fd_out < 0)
 		return (ft_error(node->tokens[1]->str, "Permission denied", NULL), EXIT_FAILURE);
 	return (EXIT_SUCCESS);
@@ -308,12 +310,16 @@ static pid_t	redirect_manager(int fd_in, int fd_out, t_node *node, t_ms *ms)
 {
 	pid_t	pid;
 
-	pid = EXIT_FAILURE;
+	pid = EXIT_SUCCESS;
 	if (node->tokens == NULL)
 		return (EXIT_FAILURE);
 	if (node->tokens[0]->type == TOKEN_DLESS)
 	{
-		;//nicht fertig
+		execute_heredoc(&fd_in, &fd_out, node->tokens[1]->str, ms);
+		if (node->left && (node->left->type == NODE_REDIRECT || node->left->type == NODE_COMMAND))
+			pid = exec_intermediary(fd_in, fd_out, node->left, ms);
+		else
+			close(fd_in);
 	}
 	else if (node->tokens[0]->type == TOKEN_LESS && node->tokens[1])
 	{
@@ -354,20 +360,19 @@ pid_t	exec_pipe(int fd_in, int fd_out, t_node *node, t_ms *ms)
 int	logical_operation_manager(t_node *node, t_ms *ms)
 {
 	pid_t	pid;
-	// t_node	*buff;
 	int 	status;
 
-	// buff = node->left;
 	pid = 0;
-	// while (buff->left && buff->type != NODE_COMMAND)
-	// 	buff = buff->left;
 	if (node->tokens[0]->type == TOKEN_DAND)
 	{
 		if (node->left)
 		{
 			pid = exec_intermediary(STDIN_FILENO, STDOUT_FILENO, node->left, ms);
 			waitpid(pid, &status, 0);
-			ms->exit_code = WEXITSTATUS(status);
+			if (pid > 255)
+				ms->exit_code = WEXITSTATUS(status);
+			else
+				ms->exit_code = pid;
 		}
 		if (node->right && ms->exit_code == 0)
 			pid = exec_intermediary(STDIN_FILENO, STDOUT_FILENO, node->right, ms);
@@ -378,7 +383,10 @@ int	logical_operation_manager(t_node *node, t_ms *ms)
 		{
 			pid = exec_intermediary(STDIN_FILENO, STDOUT_FILENO, node->left, ms);
 			waitpid(pid, &status, 0);
-			ms->exit_code = WEXITSTATUS(status);
+			if (pid > 255)
+				ms->exit_code = WEXITSTATUS(status);
+			else
+				ms->exit_code = pid;
 		}
 		if (node->right && ms->exit_code != 0)
 			pid = exec_intermediary(STDIN_FILENO, STDOUT_FILENO, node->right, ms);
@@ -425,7 +433,7 @@ int	exec_manager(t_ms *ms)
 	{
 		pid = exec_cmd(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);
 		waitpid(pid, &status, 0);
-		if (pid > 256)
+		if (pid > 255)
 			ms->exit_code = WEXITSTATUS(status);
 		else
 			ms->exit_code = pid;
@@ -436,7 +444,7 @@ int	exec_manager(t_ms *ms)
 		save_stdfds(std_fds);
 		pid = redirect_manager(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);
 		waitpid(pid, &status, 0);
-		if (pid > 256)
+		if (pid > 255)
 			ms->exit_code = WEXITSTATUS(status);
 		else
 			ms->exit_code = pid;
@@ -447,12 +455,10 @@ int	exec_manager(t_ms *ms)
 		save_stdfds(std_fds);
 		pid = exec_pipe(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);
 		waitpid(pid, &status, 0);
-		if (pid > 256)
-		{
-			while (waitpid(-1, NULL, 0) > 0)
-				;
+		while (waitpid(-1, NULL, 0) > 0)
+			;
+		if (pid > 255)
 			ms->exit_code = WEXITSTATUS(status);
-		}
 		else
 			ms->exit_code = pid;
 		reset_stdfds(std_fds);
@@ -462,7 +468,7 @@ int	exec_manager(t_ms *ms)
 		save_stdfds(std_fds);
 		pid = logical_operation_manager(ms->nodes, ms);
 		waitpid(pid, &status, 0);
-		if (pid > 256)
+		if (pid > 255)
 			ms->exit_code = WEXITSTATUS(status);
 		else
 			ms->exit_code = pid;

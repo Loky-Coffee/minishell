@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/07 16:38:49 by nmihaile          #+#    #+#             */
-/*   Updated: 2023/11/16 11:49:03 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/20 16:44:41 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
