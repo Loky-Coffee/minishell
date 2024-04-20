@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/20 17:54:56 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/20 23:17:26 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,41 @@ static int	create_cmd(t_cmd *cmd, t_node *node)
 		cmd->cmdpth = ft_strdup(node->tokens[0]->str);
 	return (0);
 }
+int	greate_subshell_cmd(t_cmd *cmd, t_node *node, t_ms *ms)
+{
+	int	i;
+	int	count_subshell;
+	int	outer_subshell = 0;
+
+	i = 0;
+	count_subshell = 0;
+	while (node->tokens[0]->str[i] != '\0')
+	{
+		if (node->tokens[0]->str[i] == '(' && count_subshell == 0)
+		{
+			node->tokens[0]->str[i] = '"';
+			outer_subshell = 1;
+		}
+		else if (node->tokens[0]->str[i] == ')' && outer_subshell && count_subshell == 0)
+		{
+			node->tokens[0]->str[i] = '"';
+			outer_subshell = 0;
+		}
+		if (node->tokens[0]->str[i] == '(')
+			count_subshell++;
+		else if (node->tokens[0]->str[i] == ')')
+			count_subshell--;
+		i++;
+	}
+	getcwd(cmd->cmdpth, ft_strlen(cmd->cmdpth));
+	fprintf(stderr, "cmd->cmdpth[%s]\n", cmd->path);
+	ms->ac = ms->ac;
+	// cmd->cmdpth = ft_substr(ms->av[0], 0, ft_strlen(ms->av[0]));
+	cmd->args[0] = "minishell";
+	cmd->args[1] = "-c";
+	cmd->args[2] = node->tokens[0]->str;
+	return (0);
+}
 
 static void	ft_cmd_is_dot(t_cmd *cmd, t_ms *ms)
 {
@@ -158,9 +193,6 @@ static int	ft_cmd_is_dir(char *cmd, int *exit_code)
 		return (0);
 	if (S_ISDIR(file_stat.st_mode) != 0)
 	{
-		// if (access(cmd, X_OK) != 0)
-		// 	return (ft_cmd_error(NINJASHELL, cmd, 1), 126);
-		// errno = EISDIR;
 		*exit_code = 126;
 		ft_error(cmd, "is a directory", NULL);
 		return (1);
@@ -216,29 +248,21 @@ pid_t	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 		ft_close_fd(node->cfd0, node->cfd1);
 		if (expand_node(node, ms))
 			return (-1);
-		create_cmd(&cmd, node);
+		if (node->type == NODE_COMMAND)
+			create_cmd(&cmd, node);
+		else if (node->type == NODE_SUBSHELL)
+			greate_subshell_cmd(&cmd, node, ms);
+		fprintf(stderr,"cmd.cmdpth [%s] \n cmd.args[0][%s] \n cmd.args[1][%s] \n" , cmd.cmdpth, cmd.args[0], cmd.args[1]);
 		dup2(fd_in, STDIN_FILENO);
 		dup2(fd_out, STDOUT_FILENO);
 		ft_cmd_is_dot(&cmd, ms);
 		ft_get_env_value(ms, cmd.path, "PATH");
-		// if (cmd.cmdpth[0] != '/'
-		// 	&& (cmd.cmdpth[0] == '\0'
-		// 	|| ft_cmd_is_dotdot(&cmd, &exit_code)					// 127
-		// 	|| ft_cmd_is_dir(cmd.cmdpth, &exit_code)				// 126
-		// 	|| ft_prepend_path(&cmd.cmdpth, cmd.path, &exit_code)	// 127
-		// 	|| ft_exec_permissions(cmd.cmdpth, &exit_code)))		// 126
-		// if (ft_cmd_has_slash(&cmd, &exit_code) && access(node->tokens[0]->str, ENOENT) == -1)
-		// 	return (ft_error(cmd.args[0], "is a directory\n", NULL), 126);
-		if ( \
-			ft_cmd_has_slash(&cmd, &exit_code)
-			// || cmd.cmdpth[0] == '\0'
-			|| ft_cmd_is_dotdot(&cmd, &exit_code)					// 127
-			|| ft_cmd_is_dir(cmd.cmdpth, &exit_code)				// 126
-			|| ft_prepend_path(&cmd.cmdpth, cmd.path, &exit_code)	// 127
-			|| ft_exec_permissions(cmd.cmdpth, &exit_code))			// 126
+		if (ft_cmd_has_slash(&cmd, &exit_code)
+			|| ft_cmd_is_dotdot(&cmd, &exit_code)
+			|| ft_cmd_is_dir(cmd.cmdpth, &exit_code)
+			|| ft_prepend_path(&cmd.cmdpth, cmd.path, &exit_code)
+			|| ft_exec_permissions(cmd.cmdpth, &exit_code))
 		{
-			// fprintf(stdout, "\n1 ms->exit [%d]\n", ms->exit_code);
-			// fprintf(stdout, "\n1 ms->exit [%d]\n", exit_code);
 			if (exit_code == 0)
 				exit_code = 1;
 			ms->exit_code = exit_code;
@@ -294,8 +318,6 @@ static int	redirect_out(int *fd_out, t_node *node, t_ms *ms)
 {
 	if (expand_node(node, ms))
 		return (EXIT_FAILURE);
-	// if (access(node->tokens[0]->str, W_OK) == -1)
-	// 	return (ft_error(node->tokens[1]->str, "Permission denied", NULL), EXIT_FAILURE);
 	close(*fd_out);
 	if (node->tokens[0]->type == TOKEN_DGREATER)
 		*fd_out = open(node->tokens[1]->str, O_WRONLY | O_CREAT | O_APPEND, 0644);
@@ -405,7 +427,7 @@ pid_t	exec_intermediary(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	builtin = is_builtin(node->tokens[0]);
 	if (node->type == NODE_COMMAND && builtin != NO_BUILTIN)
 		pid = exec_fork_builtin(fd_in, fd_out, builtin, node, ms);
-	else if (node->type == NODE_COMMAND)
+	else if (node->type == NODE_COMMAND || node->type == NODE_SUBSHELL)
 		pid = exec_cmd(fd_in, fd_out, node, ms);
 	else if (node->type == NODE_REDIRECT)
 		pid = redirect_manager(fd_in, fd_out, node, ms);
@@ -423,13 +445,13 @@ int	exec_manager(t_ms *ms)
 	t_builtin	builtin;
 	int			std_fds[2];
 
-	status = 0;
+	status= 0;
 	if (ms->nodes == NULL)
 		return (-1);
 	builtin = is_builtin(ms->nodes->tokens[0]);
 	if (ms->nodes->type == NODE_COMMAND && builtin != NO_BUILTIN)
 		ms->exit_code = exec_builtin(STDIN_FILENO, STDOUT_FILENO, builtin, ms->nodes, ms);
-	else if (ms->nodes->type == NODE_COMMAND)
+	else if (ms->nodes->type == NODE_COMMAND || ms->nodes->type == NODE_SUBSHELL)
 	{
 		pid = exec_cmd(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);
 		waitpid(pid, &status, 0);

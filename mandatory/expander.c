@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 05:50:33 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/20 19:01:12 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/20 21:28:33 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ int	expand_node(t_node *node, t_ms *ms)
 	token = node->tokens[i];
 	while (node->tokens[i])
 	{
+		// fprintf(stdout, "node->tokens[i]%s\n", node->tokens[i]->str);
 		if (expand_tkn(token, ms) == 1)
 			return (1);
 		i++;
