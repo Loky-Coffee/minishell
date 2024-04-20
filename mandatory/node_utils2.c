@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 16:34:41 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/16 22:16:07 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/20 18:15:01 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,24 @@ t_node	*make_word(t_token **ct)
 		n->tokens[i++] = *ct;
 		*ct = (*ct)->next;
 	}
+	return (n);
+}
+
+t_node	*make_subshell(t_token **ct)
+{
+	t_node	*n;
+
+	if (create_node(ct, &n))
+		return (NULL);
+	n->type = NODE_SUBSHELL;
+	n->tokens = (t_token **)ft_calloc(2, sizeof(t_token));
+	if (n->tokens == NULL)
+	{
+		free(n);
+		return (NULL);
+	}
+	n->tokens[0] = (*ct);
+	*ct = (*ct)->next;
 	return (n);
 }
 

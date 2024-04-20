@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 02:30:05 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/09 12:25:42 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/20 18:04:34 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,31 @@ static int	check_for_operators(t_ms *ms, int *i, int start)
 	return (free(str), 0);
 }
 
+static int	handle_subshell(int i, t_ms *ms)
+{
+	int		len;
+	int		p_mode;
+	char	*str;
+
+	len = 0;
+	p_mode = 0;
+	while (ms->line[i + len])
+	{
+		if (ms->line[i + len] == '(')
+			p_mode++;
+		else if (ms->line[i + len] == ')')
+			p_mode--;
+		len++;
+		if (p_mode == 0)
+			break ;
+	}
+	str = ft_calloc(len + 1, sizeof(char));
+	ft_strlcpy(str, &ms->line[i], len + 1);
+	add_new_token(ms, TOKEN_SUBSHELL, str);
+	i += len;
+	return (i);
+}
+
 static int	handle_word(int i, t_ms *ms)
 {
 	int		len;
@@ -97,6 +122,8 @@ int	ft_lexer(t_ms *ms)
 	{
 		if (check_for_operators(ms, &i, i))
 			continue ;
+		else if (ms->line[i] && ms->line[i] == '(')
+			i = handle_subshell(i, ms);
 		else if (ms->line[i] && !ft_isspace(ms->line[i]))
 			i = handle_word(i, ms);
 		else

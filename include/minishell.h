@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/18 01:13:24 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/20 18:15:44 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ typedef enum e_tokentype
 {
 	NO_TOKEN,
 	TOKEN_WORD,
+	TOKEN_SUBSHELL,
 	TOKEN_SQUOTE,	// 		'
 	TOKEN_DQUOTE,	// 		"
 	TOKEN_DOLLAR,	//		$
@@ -107,6 +108,7 @@ typedef enum e_tokentype
 typedef enum e_nodetype {
 	NO_NODE,
 	NODE_COMMAND,
+	NODE_SUBSHELL,
 	NODE_REDIRECT,
 	NODE_PIPE,
 	NODE_AND,
@@ -167,7 +169,6 @@ typedef struct s_ms
 	int				ac;
 	char			**av;
 	char			**envp;
-	// char			historypath[FT_PATH_MAX];
 	int				run;
 	int				error;
 	t_token			*tokens;
@@ -220,6 +221,7 @@ t_tokentype		node_is_andor(t_node *node);
 // Node_Utils2
 int				create_node(t_token **token, t_node **node);
 t_node			*make_word(t_token **ct);
+t_node			*make_subshell(t_token **ct);
 t_node			*make_operator(t_token **ct);
 t_node			*make_redirect(t_ms *ms, t_token **ct);
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/12 15:56:24 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/14 21:49:05 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/20 20:18:08 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,10 @@ static t_node	*parse_leaf(t_ms *ms, t_token **ct)
 	if (*ct == NULL)
 		return (NULL);
 	n = NULL;
-	if (tkn_is_word(*ct))
+	if ((*ct)->type == TOKEN_WORD)
 		n = make_word(ct);
+	else if ((*ct)->type == TOKEN_SUBSHELL)
+		n = make_subshell(ct);
 	else if (tkn_is_redirect(*ct))
 		n = make_redirect(ms, ct);
 	else if (tkn_is_operator(*ct))
@@ -42,7 +44,8 @@ t_node	*insert_cmd_to_redirect(t_node *curr, t_node *next, t_ms *ms)
 	buff = next;
 	while (next->left && next->left->type == NODE_REDIRECT)
 		next = next->left;
-	if (next->left && next->left->type == NODE_COMMAND)
+	if (next->left && (next->left->type == NODE_COMMAND \
+	|| next->left->type == NODE_SUBSHELL))
 	{
 		while (curr->tokens[i[0]])
 			i[0]++;
@@ -89,11 +92,21 @@ t_node *insert_node_left(t_node *curr, t_node *next)
 	return (next);
 }
 
-t_node	*insert_tree_right(t_node *node, t_node *tree)
+t_node	*insert_tree_right(t_node *curr, t_node *next)
 {
-	node->right = tree;
-	tree->parent = node;
-	return (node);
+	if (next->parent == NULL)
+	{
+		curr->right = next;
+		next->parent = curr;		
+	}
+	else
+	{
+		curr->right = next;
+		next->parent->left = curr;
+		curr->parent = next->parent;
+		next->parent = curr;
+	}
+	return (curr);
 }
 
 void	parse_error(t_token *tkn, t_ms *ms)
@@ -129,6 +142,10 @@ t_node	*insert_cmd(t_node *curr, t_node *next, t_ms *ms)
 			curr->parent = next;
 			return (curr);
 		}
+		else if (next->left && next->left->type == NODE_REDIRECT)
+		{
+			return (insert_cmd_to_redirect(curr, next, ms));
+		}
 		else
 			parse_error(curr->tokens[0], ms);
 	}
@@ -141,7 +158,7 @@ t_node	*insert_redirect(t_node *curr, t_node *next, t_ms *ms)
 {
 	if (next == NULL)
 		return (curr);
-	if (next->type == NODE_COMMAND || next->type == NODE_REDIRECT) // || next->type == NODE_SUBSHELL
+	if (next->type == NODE_COMMAND || next->type == NODE_SUBSHELL || next->type == NODE_REDIRECT) // || next->type == NODE_SUBSHELL
 	{
 		if (next->parent)
 		{
@@ -152,9 +169,9 @@ t_node	*insert_redirect(t_node *curr, t_node *next, t_ms *ms)
 		next->parent = curr;
 		return (curr);
 	}
-	else if (next->type == NODE_PIPE)
+	else if (next->type == NODE_PIPE || next->type == NODE_AND || next->type == NODE_OR)
 	{
-		if ((next->left == NULL) || (next->left->type == NODE_COMMAND || next->left->type == NODE_REDIRECT))
+		if (next->left == NULL || next->left->type == NODE_COMMAND || next->left->type == NODE_SUBSHELL || next->left->type == NODE_REDIRECT)
 			return (insert_node_left(curr, next));
 		else
 			parse_error(curr->tokens[0], ms);
@@ -166,7 +183,7 @@ t_node	*insert_pipe(t_node *curr, t_node *next, t_ms *ms)
 {
 	if (next == NULL || node_is_andor(next))
 		return (parse_error(curr->tokens[0], ms), NULL);
-	if (next->type == NODE_COMMAND || next->type == NODE_REDIRECT) // || next->type == NODE_SUBSHELL
+	if (next->type == NODE_COMMAND || next->type == NODE_SUBSHELL || next->type == NODE_REDIRECT) // || next->type == NODE_SUBSHELL
 	{
 		if (next->parent)
 		{
@@ -197,7 +214,7 @@ t_node	*insert_operator(t_node *curr, t_node *next, t_ms *ms)
 {
 	if (next == NULL || node_is_andor(next))
 		return (parse_error(curr->tokens[0], ms), NULL);
-	if (next->type == NODE_COMMAND || next->type == NODE_REDIRECT) // next->type == || NODE_SUBSHELL
+	if (next->type == NODE_COMMAND || next->type == NODE_SUBSHELL || next->type == NODE_REDIRECT) // next->type == || NODE_SUBSHELL
 		return (insert_tree_right(curr, next));
 	else if (next->type == NODE_PIPE)
 	{
@@ -236,9 +253,9 @@ t_node	*ft_parse(t_token *ct, t_node **root, t_ms *ms)
 			parse_error(curr->tokens[0], ms);
 		return (curr);
 	}
-	if (*root && (*root)->type <= curr->type)
+	if (*root && (*root)->type <= curr->type && (*root)->type <= NODE_PIPE)
 		*root = curr;
-	if (curr->type == NODE_COMMAND)
+	if (curr->type == NODE_COMMAND || curr->type == NODE_SUBSHELL)
 		ast = insert_cmd(curr, next, ms);
 	else if (curr->type == NODE_REDIRECT)
 		ast = insert_redirect(curr, next, ms);

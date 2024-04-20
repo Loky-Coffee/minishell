@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/20 17:07:50 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/20 17:54:56 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -437,7 +437,6 @@ int	exec_manager(t_ms *ms)
 			ms->exit_code = WEXITSTATUS(status);
 		else
 			ms->exit_code = pid;
-
 	}
 	else if (ms->nodes->type == NODE_REDIRECT)
 	{
