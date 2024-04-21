@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/20 18:15:44 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/21 15:30:47 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,6 +228,9 @@ t_node			*make_redirect(t_ms *ms, t_token **ct);
 // Parser
 void			parse_error(t_token *tkn, t_ms *ms);
 t_node			*ft_parse(t_token *ct, t_node **root, t_ms *ms);
+
+// parse_errors.c
+int				check_for_parse_errors(t_node *node, t_ms *ms);
 
 // Tree_Utils1
 void			add_right_right(t_node **node, t_node *curr, t_node *next);

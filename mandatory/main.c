@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/20 23:09:31 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/21 17:08:27 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	free_line(t_ms *ms)
 void	free_cmd(t_cmd *cmd)
 {
 	if (cmd->tokens)
-		free(cmd->tokens);
+		free(cmd->tokens);	//@TODO Do we need this??
 	cmd->tokens = NULL;
 	if (cmd->cmdpth)
 		free(cmd->cmdpth);
@@ -57,7 +57,6 @@ void	init_ms(int argc, char **argv, t_ms *ms)
 	ms->ac = argc;
 	ms->av = argv;
 	ms->envp = NULL;
-	// ms->historypath = getenv("PWD");
 	ms->parse_error = 0;
 	ms->parse_errtkn = NULL;
 	ms->run = 1;
@@ -73,8 +72,18 @@ int	handle_single_arg_input(t_ms *ms)
 		if (ft_lexer(ms))
 			return (terminate(ms, NULL, 0), 0);
 		ft_parse(ms->tokens, &ms->nodes, ms);
-		exit_code = exec_manager(ms);
-		ms->exit_code = WEXITSTATUS(exit_code);
+		if (ms->parse_error == 0)
+			check_for_parse_errors(ms->nodes, ms);
+		if (ms->parse_error && ms->parse_errtkn)
+		{
+			ms->exit_code = 258;
+			ft_error("syntax error near unexpected token", ms->parse_errtkn->str, NULL);
+		}
+		else
+		{
+			exit_code = exec_manager(ms);
+			ms->exit_code = WEXITSTATUS(exit_code);
+		}
 		cleanup_ms(ms);
 		terminate(ms, NULL, ms->shell_exit_code);
 	}
@@ -102,6 +111,15 @@ int	handle_arg_file(t_ms *ms)
 				continue ;
 			}
 			ft_parse(ms->tokens, &ms->nodes, ms);
+			if (ms->parse_error == 0)
+				check_for_parse_errors(ms->nodes, ms);
+			if (ms->parse_error && ms->parse_errtkn)
+			{
+				ms->exit_code = 258;
+				ft_error("syntax error near unexpected token", ms->parse_errtkn->str, NULL);
+				cleanup_ms(ms);
+				continue ;
+			}
 			exit_code = exec_manager(ms);
 			ms->exit_code = WEXITSTATUS(exit_code);
 			cleanup_ms(ms);
@@ -117,11 +135,6 @@ int	main(int argc, char **argv, char **env)
 {
 	static t_ms	ms;
 
-	//
-	// ✅	pwd sofort export
-	// ✅	Shellvl setzen
-	// ✅	load path of historyfile from av[0]
-	//
 	init_ms(argc, argv, &ms);
 	load_env(&ms, env);
 	handle_arg_file(&ms);
@@ -185,6 +198,8 @@ int	main(int argc, char **argv, char **env)
 
 		// PARSE IT aka Build TREE
 		ft_parse(ms.tokens, &ms.nodes, &ms);
+		if (ms.parse_error == 0)
+			check_for_parse_errors(ms.nodes, &ms);
 		if (ms.parse_error && ms.parse_errtkn)
 		{
 			ms.exit_code = 258;
@@ -194,13 +209,10 @@ int	main(int argc, char **argv, char **env)
 		}
 
 		// render NODES
-		render_nodes(0, ms.nodes, 'R');
+		// render_nodes(0, ms.nodes, 'R');
 
 		// EXECUTE IT
 		exec_manager(&ms);
-		// exit_code = exec_manager(&ms);
-		// ms.exit_code = WEXITSTATUS(exit_code);
-		// printf(YELLOW"=> %i\n"RESET, ms.exit_code);
 
 		// FREE line && tokens
 		cleanup_ms(&ms);

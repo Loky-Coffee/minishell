@@ -6,7 +6,8 @@
 
 TESTs
 
-| Hello
+-	✅	| Hello
+-	?	Hello |			what should we do?? >> BASH opens a PROMPT but should we???
 
 
 ### && Problem :

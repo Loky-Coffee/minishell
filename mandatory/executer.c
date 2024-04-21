@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/20 23:17:26 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/21 17:15:31 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ static int	create_cmd(t_cmd *cmd, t_node *node)
 		i++;
 	args = (char **)ft_calloc((i + 1), sizeof(char *));
 	if (args == NULL)
-		return (0);
+		return (1);
 	j = 0;
 	while (j < i)
 	{
@@ -113,39 +113,19 @@ static int	create_cmd(t_cmd *cmd, t_node *node)
 		cmd->cmdpth = ft_strdup(node->tokens[0]->str);
 	return (0);
 }
-int	greate_subshell_cmd(t_cmd *cmd, t_node *node, t_ms *ms)
-{
-	int	i;
-	int	count_subshell;
-	int	outer_subshell = 0;
 
-	i = 0;
-	count_subshell = 0;
-	while (node->tokens[0]->str[i] != '\0')
-	{
-		if (node->tokens[0]->str[i] == '(' && count_subshell == 0)
-		{
-			node->tokens[0]->str[i] = '"';
-			outer_subshell = 1;
-		}
-		else if (node->tokens[0]->str[i] == ')' && outer_subshell && count_subshell == 0)
-		{
-			node->tokens[0]->str[i] = '"';
-			outer_subshell = 0;
-		}
-		if (node->tokens[0]->str[i] == '(')
-			count_subshell++;
-		else if (node->tokens[0]->str[i] == ')')
-			count_subshell--;
-		i++;
-	}
-	getcwd(cmd->cmdpth, ft_strlen(cmd->cmdpth));
-	fprintf(stderr, "cmd->cmdpth[%s]\n", cmd->path);
-	ms->ac = ms->ac;
-	// cmd->cmdpth = ft_substr(ms->av[0], 0, ft_strlen(ms->av[0]));
-	cmd->args[0] = "minishell";
-	cmd->args[1] = "-c";
-	cmd->args[2] = node->tokens[0]->str;
+int	create_subshell_cmd(t_cmd *cmd, t_node *node, t_ms *ms)
+{
+	cmd->tokens = node->tokens;
+	cmd->cmdpth = ft_strdup(ms->av[0]);
+	cmd->args = (char **)ft_calloc(4, sizeof(char *));
+	if (cmd->args == NULL)
+		return (1);
+	cmd->args[0] = ft_strdup("minishell");
+	cmd->args[1] = ft_strdup("-c");
+	cmd->args[2] = ft_strdup(node->tokens[0]->str);
+	cmd->args[2][0] = ' ';
+	cmd->args[2][ft_strlen(cmd->args[2]) - 1] = ' ';
 	return (0);
 }
 
@@ -248,11 +228,7 @@ pid_t	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 		ft_close_fd(node->cfd0, node->cfd1);
 		if (expand_node(node, ms))
 			return (-1);
-		if (node->type == NODE_COMMAND)
-			create_cmd(&cmd, node);
-		else if (node->type == NODE_SUBSHELL)
-			greate_subshell_cmd(&cmd, node, ms);
-		fprintf(stderr,"cmd.cmdpth [%s] \n cmd.args[0][%s] \n cmd.args[1][%s] \n" , cmd.cmdpth, cmd.args[0], cmd.args[1]);
+		create_cmd(&cmd, node);
 		dup2(fd_in, STDIN_FILENO);
 		dup2(fd_out, STDOUT_FILENO);
 		ft_cmd_is_dot(&cmd, ms);
@@ -269,6 +245,28 @@ pid_t	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 			ft_close_fd(fd_in, fd_out);
 			terminate(ms, &cmd, exit_code);
 		}
+		execve(cmd.cmdpth, cmd.args, ms->envp);
+		ft_perror(cmd.args[0]);
+		ft_close_fd(fd_in, fd_out);
+		terminate(ms, &cmd, 0);
+	}
+	ft_close_fd(fd_in, fd_out);
+	return (pid);
+}
+
+pid_t	exec_subshell(int fd_in, int fd_out, t_node *node, t_ms *ms)
+{
+	pid_t	pid;
+	t_cmd	cmd;
+
+	pid = fork();
+	if (pid == 0)
+	{
+		ft_close_fd(node->cfd0, node->cfd1);		// ?? do we need that ??
+		ft_close_fd(fd_in, fd_out);					// ?? do we need that ??
+		if (expand_node(node, ms))
+			return (-1);
+		create_subshell_cmd(&cmd, node, ms);
 		execve(cmd.cmdpth, cmd.args, ms->envp);
 		ft_perror(cmd.args[0]);
 		ft_close_fd(fd_in, fd_out);
@@ -338,7 +336,7 @@ static pid_t	redirect_manager(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	if (node->tokens[0]->type == TOKEN_DLESS)
 	{
 		execute_heredoc(&fd_in, &fd_out, node->tokens[1]->str, ms);
-		if (node->left && (node->left->type == NODE_REDIRECT || node->left->type == NODE_COMMAND))
+		if (node->left && (node->left->type == NODE_REDIRECT || node->left->type == NODE_COMMAND || node->left->type == NODE_SUBSHELL))	// node->left->type == NODE_SUBSHELL
 			pid = exec_intermediary(fd_in, fd_out, node->left, ms);
 		else
 			close(fd_in);
@@ -367,7 +365,7 @@ pid_t	exec_pipe(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	if (pipe(fd_pipe))
 		perror(NINJASHELL);
 	buff = node->left;
-	while (buff->left && buff->type != NODE_COMMAND)
+	while (buff->left && buff->type != NODE_COMMAND && buff->type != NODE_SUBSHELL)	// buff->type != NODE_SUBSHELL
 		buff = buff->left;
 	buff->cfd0 = fd_pipe[0];
 	if (node->left)
@@ -427,8 +425,10 @@ pid_t	exec_intermediary(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	builtin = is_builtin(node->tokens[0]);
 	if (node->type == NODE_COMMAND && builtin != NO_BUILTIN)
 		pid = exec_fork_builtin(fd_in, fd_out, builtin, node, ms);
-	else if (node->type == NODE_COMMAND || node->type == NODE_SUBSHELL)
+	else if (node->type == NODE_COMMAND)
 		pid = exec_cmd(fd_in, fd_out, node, ms);
+	else if (node->type == NODE_SUBSHELL)
+		pid = exec_subshell(fd_in, fd_out, node, ms);
 	else if (node->type == NODE_REDIRECT)
 		pid = redirect_manager(fd_in, fd_out, node, ms);
 	else if (node->type == NODE_PIPE)
@@ -451,9 +451,18 @@ int	exec_manager(t_ms *ms)
 	builtin = is_builtin(ms->nodes->tokens[0]);
 	if (ms->nodes->type == NODE_COMMAND && builtin != NO_BUILTIN)
 		ms->exit_code = exec_builtin(STDIN_FILENO, STDOUT_FILENO, builtin, ms->nodes, ms);
-	else if (ms->nodes->type == NODE_COMMAND || ms->nodes->type == NODE_SUBSHELL)
+	else if (ms->nodes->type == NODE_COMMAND)
 	{
 		pid = exec_cmd(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);
+		waitpid(pid, &status, 0);
+		if (pid > 255)
+			ms->exit_code = WEXITSTATUS(status);
+		else
+			ms->exit_code = pid;
+	}
+	else if (ms->nodes->type == NODE_SUBSHELL)
+	{
+		pid = exec_subshell(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);
 		waitpid(pid, &status, 0);
 		if (pid > 255)
 			ms->exit_code = WEXITSTATUS(status);
