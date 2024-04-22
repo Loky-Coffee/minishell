@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/22 03:38:24 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/22 21:54:23 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,8 +229,8 @@ pid_t	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 		if (expand_node(node, ms))
 			return (-1);
 
-		render_tokens(ms);
-		render_nodes(0, ms->nodes, 'R');
+		// render_tokens(ms);
+		// render_nodes(0, ms->nodes, 'R');
 
 		create_cmd(&cmd, node);
 		dup2(fd_in, STDIN_FILENO);

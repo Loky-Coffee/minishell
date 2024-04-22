@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 18:27:30 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/18 01:13:31 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/22 21:51:12 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,12 @@ static int	has_equal_sign(char *str)
 	return (1);
 }
 
-static int	search_env_var(t_ms *ms)
+static int	keylen(char *str)
 {
 	int	i;
 
 	i = 0;
-	while (ms->tokens->next->str[i] != '=')
+	while (str[i] != '=')
 		i++;
 	return (i);
 }
@@ -42,7 +42,7 @@ static char	*tkn_to_str(t_token *token, t_ms *ms)
 	return (ft_strdup(token->str));
 }
 
-static int	add_new_env_var(t_ms *ms, int i)
+static int	add_new_env_var(char *key, t_ms *ms, int i)
 {
 	char	**new_envp;
 	int		j;
@@ -60,6 +60,7 @@ static int	add_new_env_var(t_ms *ms, int i)
 	new_envp[i] = tkn_to_str(ms->tokens->next, ms);
 	free(ms->envp);
 	ms->envp = new_envp;
+	ft_remove_unset_envvar(key, ms);
 	return (0);
 }
 
@@ -94,11 +95,105 @@ static int	has_valid_key(t_ms *ms, char *key)
 	return (0);
 }
 
-int	ft_export(t_ms *ms)
+static size_t	get_envp_size(char **envp)
+{
+	size_t	i;
+
+	i = 0;
+	while (envp[i])
+		i++;
+	return (i);
+}
+
+static int	add_unset_vars(char ***sortenv, t_ms *ms)
+{
+	size_t	i;
+	size_t	len1;
+	size_t	len2;
+	char	**new_sortenv;
+
+	if (ms->unset_envvars == NULL)
+		return (0);
+	i = 0;
+	len1 = get_envp_size(*sortenv);
+	len2 = get_envp_size(ms->unset_envvars);
+	new_sortenv = (char **)ft_calloc(len1 + len2 + 1, sizeof(char *));
+	if (new_sortenv == NULL)
+		return (1);
+	while ((*sortenv)[i])
+	{
+		new_sortenv[i] = (*sortenv)[i];
+		i++;
+	}
+	i = 0;
+	while (ms->unset_envvars[i])
+	{
+		new_sortenv[len1 + i] = ft_strdup(ms->unset_envvars[i]);
+		i++;
+	}
+	free(*sortenv);
+	*sortenv = new_sortenv;
+	return (0);
+}
+
+static void	sort_envp(char **envp)
+{
+	int		i;
+	int		j;
+	char	*buf;
+	size_t	len;
+
+	i = 0;
+	while (envp[i + 1])
+	{
+		j = i + 1;
+		while (envp[j])
+		{
+			if (ft_strlen(envp[i]) >= ft_strlen(envp[j]))
+				len = ft_strlen(envp[i]) + 1;
+			else
+				len = ft_strlen(envp[j]) + 1;
+			if (ft_strncmp(envp[i], envp[j], len) > 0)
+			{
+				buf = envp[i];
+				envp[i] = envp[j];
+				envp[j] = buf;
+			}
+			j++;			
+		}
+		i++;
+	}
+}
+
+static int	ft_export_print(t_ms *ms)
+{
+	size_t	i;
+	char	**sortenv;
+	
+	i = get_envp_size(ms->envp);
+	sortenv = (char **)ft_calloc(i + 1, sizeof(char *));
+	if (sortenv == NULL)
+		return (1);
+	i = 0;
+	while (ms->envp[i])
+	{
+		sortenv[i] = ft_strdup(ms->envp[i]);
+		i++;
+	}
+	add_unset_vars(&sortenv, ms);
+	sort_envp(sortenv);
+	render_envp("declare -x ", sortenv);
+	free_av(sortenv);
+	return (0);
+}
+
+int	ft_export(t_node *node, t_ms *ms)
 {
 	int		i;
 	char	key[FT_PATH_MAX];
 
+	if (node->tokens && node->tokens[0] && node->tokens[1] == NULL)
+		return (ft_export_print(ms));
 	if (has_valid_key(ms, key) == 1)
 	{
 		if (ms->tokens->next)
@@ -108,17 +203,18 @@ int	ft_export(t_ms *ms)
 			return (printf(LIGHTCYAN"export: Provide a valid key"RESET, NULL), 1);
 	}
 	if (ms->tokens->next && has_equal_sign(ms->tokens->next->str))
-		return (0);
+		return (ft_add_unset_envvar(ms->tokens->next->str, ms), 0);
 	i = 0;
 	while (ms->envp[i] != NULL && ft_strncmp(ms->envp[i], \
-	ms->tokens->next->str, search_env_var(ms)) != 0)
+	ms->tokens->next->str, keylen(ms->tokens->next->str)) != 0)
 		i++;
 	if (ms->envp[i] == NULL)
-		add_new_env_var(ms, i);
+		add_new_env_var(key, ms, i);
 	else
 	{
 		free(ms->envp[i]);
 		ms->envp[i] = tkn_to_str(ms->tokens->next, ms);
+		ft_remove_unset_envvar(key, ms);
 	}
 	return (0);
 }

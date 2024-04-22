@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/21 23:21:20 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/22 21:35:47 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,7 @@ typedef struct s_ms
 	int				ac;
 	char			**av;
 	char			**envp;
-	char			**variable_ohne_gleich_zeichen;
+	char			**unset_envvars;
 	int				run;
 	int				error;
 	t_token			*tokens;
@@ -247,13 +247,13 @@ void			swap_dup_right(t_node **node, t_node *curr, t_node *next);
 void			render_tokens(t_ms *ms);
 void			render_nodes(int depth, t_node *n, char p);
 void			render_ninjashell(void);
+void			render_envp(char *prefix, char **envp);
 
 // Terminate
 void			del_token_content(void *param);
 void			free_ms(t_ms *ms);
 void			free_av(char **av);
 void			ft_close_fd(int fdr, int fdw);
-// void			ft_force_close_fd(int fdr, int fdw);
 void			free_nodetree(t_node **n);
 void			terminate(t_ms *ms, t_cmd *cmd, int exit_code);
 
@@ -291,10 +291,14 @@ pid_t			fork_run_builtin(int fd_in, int fd_out, t_builtin builtin, t_cmd *cmd, t
 int				ft_echo(t_cmd *cmd);
 int				ft_cd(t_cmd *cmd, t_ms *ms);
 int				ft_pwd(void);
-int 			ft_export(t_ms *ms);
+int 			ft_export(t_node *node, t_ms *ms);
 int				ft_unset(t_ms *ms);
 int				ft_env(t_ms *ms);
 unsigned char	ft_exit(t_cmd *cmd, t_ms *ms);
+
+// unset_vars.c
+int				ft_add_unset_envvar(char *key, t_ms *ms);
+int				ft_remove_unset_envvar(char *key, t_ms *ms);
 
 // path.c
 int				ft_prepend_path(char **cmd, char *envpaths, int *exit_code);
@@ -308,6 +312,8 @@ void			ft_cmd_error(char *msg, char *cmd, int error_code);
 int				is_valid_envkey(char *key);
 int				add_new_index_to_envp(t_ms *ms, int len);
 void			load_env(t_ms *ms, char **env);
+char			*ft_env_getkey(char *str);
+char			*ft_env_getvalue(char *str);
 void			ft_get_env_value(t_ms *ms, char *str, char *key);
 int				ft_setenv(char *key, char *value, t_ms *ms);
 

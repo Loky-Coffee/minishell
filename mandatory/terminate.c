@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:48:38 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/16 23:04:50 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/22 18:32:52 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,5 +81,7 @@ void	terminate(t_ms *ms, t_cmd *cmd, int exit_code)
 	ms->tokens = NULL;
 	free_nodetree(&ms->nodes);
 	ft_token_clear(&ms->tokens, del_token_content);
+	if (ms->unset_envvars)
+		free_av(ms->unset_envvars);
 	exit(exit_code);
 }

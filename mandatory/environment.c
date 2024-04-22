@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 13:57:42 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/16 11:02:46 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/22 19:09:10 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,48 @@ void	load_env(t_ms *ms, char **env)
 	getcwd(pwd, FT_PATH_MAX);
 	ft_setenv("PWD", pwd, ms);
 	set_shlvl(ms);
+}
+
+char	*ft_env_getkey(char *str)
+{
+	size_t	i;
+	char	key[FT_PATH_MAX];
+
+	if (str == NULL)
+		return (NULL);
+	i = 0;
+	ft_memset(key, 0, FT_PATH_MAX);
+	while (str && str[i] && str[i] != '=' && i < FT_PATH_MAX)
+	{
+		// if (str[i] == '=')
+		// 	break ;
+		key[i] = str[i];
+		i++;
+	}
+	return (ft_strdup(key));
+}
+
+char	*ft_env_getvalue(char *str)
+{
+	size_t	i;
+	size_t	j;
+	char	value[FT_PATH_MAX];
+
+	i = 0;
+	j = 0;
+	if (str == NULL)
+		return (NULL);
+	ft_memset(value, 0, FT_PATH_MAX);
+	while (str[i] && str[i] != '=' && i < FT_PATH_MAX)
+		i++;
+	if (str[i] == '=')
+	{
+		i++;
+		while (str[i] && i < FT_PATH_MAX)
+			value[j++] = str[i++];
+		return (ft_strdup(value));
+	}
+	return (NULL);
 }
 
 void	ft_get_env_value(t_ms *ms, char *str, char *key)

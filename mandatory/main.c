@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/22 03:37:41 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/22 17:27:46 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ void	init_ms(int argc, char **argv, t_ms *ms)
 	ms->ac = argc;
 	ms->av = argv;
 	ms->envp = NULL;
+	ms->unset_envvars = NULL;
 	ms->parse_error = 0;
 	ms->parse_errtkn = NULL;
 	ms->run = 1;
@@ -77,7 +78,7 @@ int	handle_single_arg_input(t_ms *ms)
 		if (ms->parse_error && ms->parse_errtkn)
 		{
 			ms->exit_code = 258;
-			ft_error("syntax error near unexpected token1", ms->parse_errtkn->str, NULL);
+			ft_error("syntax error near unexpected token", ms->parse_errtkn->str, NULL);
 		}
 		else
 		{
@@ -116,7 +117,7 @@ int	handle_arg_file(t_ms *ms)
 			if (ms->parse_error && ms->parse_errtkn)
 			{
 				ms->exit_code = 258;
-				ft_error("syntax error near unexpected token2", ms->parse_errtkn->str, NULL);
+				ft_error("syntax error near unexpected token", ms->parse_errtkn->str, NULL);
 				cleanup_ms(ms);
 				continue ;
 			}
@@ -207,13 +208,13 @@ int	main(int argc, char **argv, char **env)
 		if (ms.parse_error && ms.parse_errtkn)
 		{
 			ms.exit_code = 258;
-			ft_error("syntax error near unexpected token3", ms.parse_errtkn->str, NULL);
+			ft_error("syntax error near unexpected token", ms.parse_errtkn->str, NULL);
 			cleanup_ms(&ms);
 			continue ;
 		}
 
 		// render NODES
-		render_nodes(0, ms.nodes, 'R');
+		// render_nodes(0, ms.nodes, 'R');
 
 		// EXECUTE IT
 		exec_manager(&ms);

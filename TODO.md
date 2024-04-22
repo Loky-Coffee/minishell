@@ -2,6 +2,20 @@
 - o		THE ROAD TO NINJASHELL
 - ✅		getting started
 - ✅		lexer
+- ✅		parser
+- ✅		expander
+- ✅		executer
+- ❌ 	Signals
+- ❌		Wildcards
+- ❌		export
+		✅	basic sorting
+		✅	displays original ms->envp
+		❌ export key without value in ms->unset_envvar
+			❌ free ms->unset_envvars
+		❌	displays keys with no value
+		❌	sort keys && key/value-pairs
+		❌	unset loescht auch aus ms->unset_envvars
+
 
 was machen die funktionen???? wir haben die nicht benutzt....
 lstat
@@ -42,7 +56,7 @@ if multiple commands --> fork
 ### first Expander and then parser!!!!!!!!!
 
 - *		expander
-			❌	$ Behandeln. in (OLD: replace_dollar NOW: expand_variable).
+			✅	$ Behandeln. in (OLD: replace_dollar NOW: expand_variable).
 
 - *		parser
 			* redirects
@@ -60,11 +74,11 @@ if multiple commands --> fork
 		{
 			echo
 			{
-				❌ Basic output functionality.
-				❌ Handling of command-line arguments.
+				❌ 	Basic output functionality.
+				❌ 	Handling of command-line arguments.
 				✅	Interpretation of escape sequences (optional, depends on shell specifications).
-				-	we doen't handel this: echo -nnnnnnnnnnnnnn "Hello world"
-				- 	we doen't handel this: echo -nnnnnnnnnnnnnnX "Hello world"
+				✅	we doen't handel this: echo -nnnnnnnnnnnnnn "Hello world"
+				✅ 	we doen't handel this: echo -nnnnnnnnnnnnnnX "Hello world"
 			}
 			cd ✅
 			{
@@ -73,19 +87,19 @@ if multiple commands --> fork
 				✅	cd ~ Switch to the user's home directory (use the HOME environment variable).
 				✅	cd ~/Documents Navigate to a directory relative to the home directory.
 				✅	==> check exit_codes Ensure correct exit status on success/failure.
-				✅ Must take the path from our environment. Use environmental variables for path resolution.
-				✅ handeln cd ../Desktop : Support relative path navigation.
-				✅ handeln "cd" 	=> cds into Home_Directory
-				❌ handeln cd $PATH Navigate using environment variable paths. // NEED expander
+				✅	Must take the path from our environment. Use environmental variables for path resolution.
+				✅	handeln cd ../Desktop : Support relative path navigation.
+				✅	handeln "cd" 	=> cds into Home_Directory
+				✅	handeln cd $PATH Navigate using environment variable paths. // NEED expander
 			}
 			pwd ✅
 			{
-				✅ Must take the path from our environment.  Ensure the output reflects the current directory from the environment, not just the working directory.
+				✅	M̶u̶s̶t̶ ̶t̶a̶k̶e̶ ̶t̶h̶e̶ ̶p̶a̶t̶h̶ ̶f̶r̶o̶m̶ ̶o̶u̶r̶ ̶e̶n̶v̶i̶r̶o̶n̶m̶e̶n̶t̶.̶  Ensure the output reflects the current directory from the environment, not just the working directory.
 			}
 			export
 			{
 				✅	Must take the path from our environment. Properly handle environment variable assignment and modification.
-				❌	export 1num=Hello
+				✅	export 1num=Hello
 					=> bash: export: `1num=Hello': not a valid identifier
 				❌	export PATH=$PATH:/Users/aalatzas/Desktop/mein_git/minishell  check with which minishell or minishell from other directory
 			}
@@ -106,23 +120,23 @@ if multiple commands --> fork
 				✅	exit 1
 				✅	exit -42
 				✅	exit abc def
-				✅	exit 12 34  (geht bis long_max)
+				✅	exit 123 456  (geht bis long_max)
+
+				✅	exit 123 456	=> prints "exit" then prints "bash: exit: too many arguments"					=> x	return 1
+				✅	exit 127 cd		=> prints "exit" then prints "bash: exit: too many arguments"					=> x	return 1
+
+				✅	exit ab 12		=> prints "exit" then prints "bash: exit: abc: numeric argument required"		=> ✓	exit_code: 255
+				✅	exit abc			=> prints "exit" then prints "bash: exit: abc: numeric argument required"	=> ✓	exit_code: 255
+				✅	exit 1			=> prints "exit"																=> ✓	1
+				✅	exit 0			=> prints "exit"																=> ✓	0
+				✅	exit			=> prints "exit"																=> ✓	0
+				✅	exit -42		=> prints "exit"																=> ✓	214
 			}
 		}
 
 - ✅		grepp
 		=> 127
 
--		exit should return the correct arguments and exit_code
-			* exit 123 456		=> prints "exit" then prints "bash: exit: too many arguments"				=> x	return 1
-			* exit 127 cd		=> prints "exit" then prints "bash: exit: too many arguments"				=> x	return 1
-
-			* exit ab 12		=> prints "exit" then prints "bash: exit: abc: numeric argument required"	=> ✓	exit_code: 255
-			* exit abc			=> prints "exit" then prints "bash: exit: abc: numeric argument required"	=> ✓	exit_code: 255
-			* exit 1			=> prints "exit"															=> ✓	1
-			* exit 0			=> prints "exit"															=> ✓	0
-			* exit				=> prints "exit"															=> ✓	0
-			* exit -42			=> prints "exit"															=> ✓	214
 
 -		Here_doc
 			bash-3.2$ cat << EOF
@@ -147,7 +161,7 @@ Additional Considerations
 --------------------------------------------------------------------------------
 Test CMDs
 
--		sleep 5 | sleep 3 | sleep 3 | sleep 3 | sleep | sleep 3 | sleep 3
+- ✅		sleep 5 | sleep 3 | sleep 3 | sleep 3 | sleep | sleep 3 | sleep 3
 
 --------------------------------------------------------------------------------
 

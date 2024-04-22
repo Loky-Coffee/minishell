@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   renderer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:50:40 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/18 01:45:42 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/22 16:20:38 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,13 +72,28 @@ void	render_ninjashell(void)
 	}
 }
 
-// void	render_ninjashell(void)
-// {
-// 	ft_printf(LIGHTRED
-// 		"        •  •  ┏┓┓┏┏┓┓ ┓       \n"
-// 		"      ┏┓┓┏┓┓┏┓┗┓┣┫┣ ┃ ┃       \n"
-// 		"━━━━━━┛┗┗┛┗┃┗┻┗┛┛┗┗┛┗┛┗┛━━━━━━\n"
-// 		"           ┛                  \n"
-// 		RESET);
-// 	ft_printf("\n");
-// }
+void	render_envp(char *prefix, char **envp)
+{
+	size_t	i;
+	char	*key;
+	char	*value;
+
+	i = 0;
+	while (envp[i])
+	{
+		printf("%s", prefix);
+		key = ft_env_getkey(envp[i]);
+		value = ft_env_getvalue(envp[i]);
+		if (key)
+		{
+			printf("%s", key);
+			if (value)
+				printf("=\"%s\"", value);
+			free(key);
+		}
+		if (value)
+			free(value);
+		printf("\n");
+		i++;
+	}
+}

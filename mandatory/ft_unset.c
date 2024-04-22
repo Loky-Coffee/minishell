@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 02:33:21 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/18 01:19:14 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/22 17:13:16 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static int is_valid_identifier(char *key)
 	return (0);
 }
 
-int	feel_empty_line(t_ms *ms, int *flag, int i)
+static int	free_empty_line(t_ms *ms, int *flag, int i)
 {
 	free(ms->envp[i]);
 	while (ms->envp[i + 1] != NULL)
@@ -65,7 +65,7 @@ int	ft_unset(t_ms *ms)
 	ft_strncmp(ms->envp[i], key, ft_strlen(key)) != 0)
 		i++;
 	if (ms->envp && ms->envp[i] != NULL)
-		return (feel_empty_line(ms, &flag, i));
+		return (free_empty_line(ms, &flag, i));
 	if (flag == 1)
 		return (1);
 	return (0);
