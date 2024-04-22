@@ -6,11 +6,51 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 05:50:33 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/20 21:28:33 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/22 05:04:33 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+void expand_wildcards(t_token **token)
+{
+	DIR *dir;
+	struct dirent *entry;
+	char expanded[FT_PATH_MAX] = {0};
+	char str_without_star[FT_PATH_MAX] = {0};
+	int i;
+	int j;
+
+	i = 0;
+	j = 0;
+	while ((*token)->str[i] != '\0')
+	{
+		if ((*token)->str[i] != '*')
+		{
+			str_without_star[j] = (*token)->str[i];
+			j++;
+		}
+		i++;
+	}
+	dir = opendir(".");
+	if (dir != NULL)
+	{
+		while ((entry = readdir(dir)) != NULL)
+		{
+			if (!*str_without_star)
+				printf("no str\n");
+			if(ft_strnstr(entry->d_name, str_without_star, ft_strlen(entry->d_name)) != 0)
+			{
+				ft_strlcat(expanded, " ", ft_strlen(expanded) + 2);
+				ft_strlcat(expanded, entry->d_name, ft_strlen(expanded) + ft_strlen(entry->d_name) + 1);
+			}
+		}
+		closedir(dir);
+	}
+	(*token)->str = ft_calloc(ft_strlen(expanded) + 1, sizeof(char));
+	ft_strlcpy((*token)->str, expanded, ft_strlen(expanded) + 1);
+}
+
 
 static int	set_key(char *str, char *dst, int *pos)
 {
@@ -85,6 +125,13 @@ int expand_tkn(t_token *token, t_ms *ms)
 			if (quote_mode == '\0' && token->str[i] == '\0')
 				str[j++] = ' ';
 		}
+		else if (token->str[i] == '*')// ||  (token->next && token->next->str[i] == '*')
+		{
+			// if (token->next && token->next->str[i] == '*')
+			// 	expand_wildcards(&token->next->str[i]);
+			// else
+				expand_wildcards(&token);
+		}
 		else
 			str[j++] = token->str[i];
 		i++;
@@ -113,7 +160,6 @@ int	expand_node(t_node *node, t_ms *ms)
 	token = node->tokens[i];
 	while (node->tokens[i])
 	{
-		// fprintf(stdout, "node->tokens[i]%s\n", node->tokens[i]->str);
 		if (expand_tkn(token, ms) == 1)
 			return (1);
 		i++;

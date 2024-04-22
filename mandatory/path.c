@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 17:32:46 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/17 21:00:20 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/21 20:01:10 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,6 @@ int	ft_prepend_path(char **cmd, char *envpaths, int *exit_code)
 	if (*cmd && (*cmd)[0] == '.' && access(*cmd, F_OK) == 0)
 		return (0);
 	*exit_code = 127;
-	ft_error(*cmd, "command not found\n", NULL);
+	ft_error(*cmd, "command not found", NULL);
 	return (1);
 }

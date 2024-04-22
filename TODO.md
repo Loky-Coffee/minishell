@@ -3,6 +3,25 @@
 - ✅		getting started
 - ✅		lexer
 
+was machen die funktionen???? wir haben die nicht benutzt....
+lstat
+fstat
+unlink
+opendir
+readdir
+closedir
+isatty
+ttyname
+ttyslot
+ioctl
+tcsetattr
+tcgetattr
+tgetent
+tgetflag
+tgetnum
+tgetstr
+tgoto
+tputs
 
 TESTs
 

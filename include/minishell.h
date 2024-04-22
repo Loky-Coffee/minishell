@@ -3,16 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/21 15:30:47 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/21 23:21:20 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+
+#include <fnmatch.h>
+#include <sys/types.h>
 # include <stdbool.h>
 # include <unistd.h>
 # include <stdio.h>
@@ -23,6 +26,7 @@
 # include <string.h>
 # include <stdlib.h>
 # include <limits.h>
+#include <dirent.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include "../libft/libft.h"
@@ -169,6 +173,7 @@ typedef struct s_ms
 	int				ac;
 	char			**av;
 	char			**envp;
+	char			**variable_ohne_gleich_zeichen;
 	int				run;
 	int				error;
 	t_token			*tokens;
@@ -297,7 +302,6 @@ int				ft_prepend_path(char **cmd, char *envpaths, int *exit_code);
 // error.c
 void			ft_error(char *s1, char *s2, char *s3);
 void			ft_perror(char *str);
-void			ft_double_perror(char *s1, char *s2);
 void			ft_cmd_error(char *msg, char *cmd, int error_code);
 
 // environment.c

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+         #
+#    By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/20 16:47:30 by aalatzas          #+#    #+#              #
-#    Updated: 2024/04/21 17:16:22 by nmihaile         ###   ########.fr        #
+#    Updated: 2024/04/21 22:34:36 by aalatzas         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 

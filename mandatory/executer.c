@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/21 17:15:31 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/22 03:38:24 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,6 +228,10 @@ pid_t	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 		ft_close_fd(node->cfd0, node->cfd1);
 		if (expand_node(node, ms))
 			return (-1);
+
+		render_tokens(ms);
+		render_nodes(0, ms->nodes, 'R');
+
 		create_cmd(&cmd, node);
 		dup2(fd_in, STDIN_FILENO);
 		dup2(fd_out, STDOUT_FILENO);
@@ -308,7 +312,7 @@ static int	redirect_in(int *fd_in, t_node *node, t_ms *ms)
 	close(*fd_in);
 	*fd_in = open(node->tokens[1]->str, O_RDONLY, 0644);
 	if (*fd_in < 0)
-		return (ft_error(node->tokens[1]->str, "No such file or directory\n", NULL), EXIT_FAILURE);
+		return (ft_error(node->tokens[1]->str, "No such file or directory", NULL), EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
 

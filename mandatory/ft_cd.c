@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 00:41:52 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/18 01:24:10 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/21 20:07:30 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static int	is_tilde(char *old_cwd, t_cmd *cmd, t_ms *ms)
 	getcwd(old_cwd, FT_PATH_MAX);
 	home_dir = getenv("HOME");
 	if (!home_dir)
-		return (ft_perror("cd"), 1);
+		return (ft_perror("cd1"), 1);
 	if (cmd->tokens[0]->next->next && is_word(cmd->tokens[0]->next->next->str))
 	{
 		full_path = ft_strjoin(home_dir, cmd->tokens[0]->next->next->str);
@@ -57,7 +57,7 @@ static int	is_tilde(char *old_cwd, t_cmd *cmd, t_ms *ms)
 	}
 	result = ft_chdir(ms, home_dir);
 	if (result != 0)
-		result = (ft_double_perror("cd", home_dir), 1);
+		result = (ft_error("cd2", home_dir, NULL), 1);
 	free(full_path);
 	full_path = NULL;
 	return (result);
@@ -75,7 +75,7 @@ int	ft_cd(t_cmd *cmd, t_ms *ms)
 		ft_get_env_value(ms, old_cwd, "PWD");
 		ft_get_env_value(ms, home, "HOME");
 		if (ft_chdir(ms, home) != 0)
-			return (ft_perror("cd"), 1);
+			return (ft_perror("cd3"), 1);
 		ft_get_env_value(ms, current_cwd, "PWD");
 		return (0);
 	}
@@ -90,10 +90,10 @@ static int	ft_cd2(t_cmd *cmd, t_ms *ms, char *old_cwd, char *current_cwd)
 	&& ft_strncmp(cmd->tokens[0]->next->str, "-\0", 2) == 0)
 	{
 		if (ft_strlen(old_cwd) == 0)
-			return (ft_error("cd", "OLDPWD not set", NULL), 1);
+			return (ft_error("cd4", "OLDPWD not set", NULL), 1);
 		ft_get_env_value(ms, current_cwd, "PWD");
 		if (ft_chdir(ms, old_cwd) != 0)
-			return (ft_double_perror("cd", old_cwd), 1);
+			return (ft_error("cd5", old_cwd, NULL), 1);
 		ft_strlcpy(old_cwd, current_cwd, ft_strlen(current_cwd) + 1);
 		return (0);
 	}
@@ -104,7 +104,7 @@ static int	ft_cd2(t_cmd *cmd, t_ms *ms, char *old_cwd, char *current_cwd)
 	{
 		ft_get_env_value(ms, old_cwd, "PWD");
 		if (ft_chdir(ms, cmd->tokens[0]->next->str) != 0)
-			return (ft_double_perror("cd", cmd->tokens[0]->next->str), 1);
+			return (ft_error("cd6", cmd->tokens[0]->next->str, NULL), 1);
 	}
 	return (0);
 }
