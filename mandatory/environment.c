@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 13:57:42 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/23 13:01:59 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/23 20:25:20 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,8 +98,6 @@ char	*ft_env_getkey(char *str)
 	ft_memset(key, 0, FT_PATH_MAX);
 	while (str && str[i] && str[i] != '=' && i < FT_PATH_MAX)
 	{
-		// if (str[i] == '=')
-		// 	break ;
 		key[i] = str[i];
 		i++;
 	}

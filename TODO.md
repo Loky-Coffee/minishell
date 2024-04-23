@@ -7,7 +7,7 @@
 - ✅		executer
 - ❌ 	Signals
 - ❌		Wildcards
-- ❌		export
+- ✅		export
 		✅	basic sorting
 		✅	displays original ms->envp
 		✅ export key without value in ms->unset_envvar
@@ -15,6 +15,11 @@
 		✅	displays keys with no value
 		✅	sort keys && key/value-pairs
 		✅	unset loescht auch aus ms->unset_envvars
+		✅	add ignore_case for export und unset of ms->unset_envvars	
+				(export helo=123 && export HaLo=abc)
+		✅	+=
+- ❌		retrieve History Path from env… "_=…………"
+- ❌ 	norminetten
 
 
 was machen die funktionen???? wir haben die nicht benutzt....
@@ -74,8 +79,8 @@ if multiple commands --> fork
 		{
 			echo
 			{
-				❌ 	Basic output functionality.
-				❌ 	Handling of command-line arguments.
+				✅ 	Basic output functionality.
+				✅ 	Handling of command-line arguments.
 				✅	Interpretation of escape sequences (optional, depends on shell specifications).
 				✅	we doen't handel this: echo -nnnnnnnnnnnnnn "Hello world"
 				✅ 	we doen't handel this: echo -nnnnnnnnnnnnnnX "Hello world"
@@ -83,7 +88,8 @@ if multiple commands --> fork
 			cd ✅
 			{
 				TODO=Use cmd struct .
-				✅	cd - Switch to the previous directory and update OLDPWD and PWD environment variables.
+				✅	"cd -" Switch to the previous directory and update OLDPWD and PWD environment variables.
+					❌ 	Print Path bei "cd -"
 				✅	cd ~ Switch to the user's home directory (use the HOME environment variable).
 				✅	cd ~/Documents Navigate to a directory relative to the home directory.
 				✅	==> check exit_codes Ensure correct exit status on success/failure.

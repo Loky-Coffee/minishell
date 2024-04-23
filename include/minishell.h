@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/22 21:35:47 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/23 20:26:56 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -291,7 +291,7 @@ pid_t			fork_run_builtin(int fd_in, int fd_out, t_builtin builtin, t_cmd *cmd, t
 int				ft_echo(t_cmd *cmd);
 int				ft_cd(t_cmd *cmd, t_ms *ms);
 int				ft_pwd(void);
-int 			ft_export(t_node *node, t_ms *ms);
+int				ft_export(int i, t_node *node, t_ms *ms);
 int				ft_unset(t_ms *ms);
 int				ft_env(t_ms *ms);
 unsigned char	ft_exit(t_cmd *cmd, t_ms *ms);
