@@ -10,11 +10,11 @@
 - ❌		export
 		✅	basic sorting
 		✅	displays original ms->envp
-		❌ export key without value in ms->unset_envvar
-			❌ free ms->unset_envvars
-		❌	displays keys with no value
-		❌	sort keys && key/value-pairs
-		❌	unset loescht auch aus ms->unset_envvars
+		✅ export key without value in ms->unset_envvar
+			✅ free ms->unset_envvars
+		✅	displays keys with no value
+		✅	sort keys && key/value-pairs
+		✅	unset loescht auch aus ms->unset_envvars
 
 
 was machen die funktionen???? wir haben die nicht benutzt....
