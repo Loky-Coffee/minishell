@@ -59,16 +59,16 @@ if multiple commands --> fork
 			✅	$ Behandeln. in (OLD: replace_dollar NOW: expand_variable).
 
 - *		parser
-			* redirects
-			* prescedance && || |
-			< mandatory | cat
+			✅	redirects
+			✅	prescedance && || |
+			✅	< mandatory | cat
 
 
 -		executer
-			* expander
-			* redirects
-			* Test for /bin/lss => no file fount
-			  lss => cmd not found
+			✅	expander
+			✅	redirects
+			✅	Test for /bin/lss => no file fount
+			  	lss => cmd not found
 
 -		built-ins:
 		{

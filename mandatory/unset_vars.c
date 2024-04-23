@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 17:15:41 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/23 12:23:57 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/23 14:57:52 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ int	ft_remove_unset_envvar(char *key, t_ms *ms)
 	size_t	j;
 
 	i = 0;
+	if (ms->unset_envvars == NULL)
+		return (0);
 	while (ms->unset_envvars[i])
 	{
 		if (ft_strncmp(key, ms->unset_envvars[i], ft_strlen(key)) == 0)
