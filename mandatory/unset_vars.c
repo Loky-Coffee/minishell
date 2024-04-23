@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 17:15:41 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/22 21:35:20 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/23 12:23:57 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,33 @@ static int	add_new_index_to_dptr(char ***arr)
 	return (0);
 }
 
+static int	key_is_existing(char *key, char **env)
+{
+	size_t	i;
+	size_t	len;
+
+	i = 0;
+	if (env == NULL)
+		return (0);
+	len = ft_strlen(key);
+	while (env[i])
+	{
+		if (ft_strncmp(env[i], key, len) == 0)
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 int	ft_add_unset_envvar(char *key, t_ms *ms)
 {
 	size_t	i;
+	
 
 	i = 0;
+	
+	if (key_is_existing(key, ms->envp) || key_is_existing(key, ms->unset_envvars))
+		return (0);
 	if (add_new_index_to_dptr(&ms->unset_envvars))
 		return (1);
 	while (ms->unset_envvars[i])

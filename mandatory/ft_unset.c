@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 02:33:21 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/22 17:13:16 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/23 13:03:33 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ int	ft_unset(t_ms *ms)
 		return (ft_error(str, "not a valid identifier", NULL), 1);
 	ft_memset(key, 0, FT_PATH_MAX);
 	ft_strlcat(key, str, FT_PATH_MAX);
+	ft_remove_unset_envvar(key, ms);
 	ft_strlcat(key, "=", FT_PATH_MAX);
 	i = 0;
 	while (ms->envp && ms->envp[i] && ms->tokens->next && \
