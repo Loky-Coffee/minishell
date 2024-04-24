@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 13:57:42 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/23 20:25:20 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/24 14:47:58 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ char	*ft_env_getvalue(char *str)
 	return (NULL);
 }
 
-void	ft_get_env_value(t_ms *ms, char *str, char *key)
+int	ft_get_env_value(t_ms *ms, char *str, char *key)
 {
 	int		i;
 	int		key_length;
@@ -143,11 +143,12 @@ void	ft_get_env_value(t_ms *ms, char *str, char *key)
 	if (ms->envp[i] == NULL)
 	{
 		ft_memset(str, 0, FT_PATH_MAX);
-		return ;
+		return (1);
 	}
 	key_length = ft_strlen(real_key);
 	ft_memmove(str, &ms->envp[i][key_length], \
 	ft_strlen(ms->envp[i]) - key_length + 1);
+	return (0);
 }
 
 int	ft_setenv(char *key, char *value, t_ms *ms)

@@ -18,7 +18,8 @@
 		✅	add ignore_case for export und unset of ms->unset_envvars	
 				(export helo=123 && export HaLo=abc)
 		✅	+=
-- ❌		retrieve History Path from env… "_=…………"
+- ✅		retrieve History Path from environent variable "_"
+			if you call "make t" we use av[0] which will be "./minishell"
 - ❌ 	norminetten
 
 

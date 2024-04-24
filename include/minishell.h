@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/23 20:26:56 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/24 14:58:12 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,13 @@
 #include <dirent.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <signal.h>
 # include "../libft/libft.h"
 
 /* ************************************************************************** */
 # define NINJASHELL "ninjaSHELL"
-# define HISTORY_FILE "ninjaSHELL.history"
+/*# define HISTORY_FILE "ninjaSHELL.history" */
+# define HISTORY_FILE ".ninjaSHELL_history"
 # define FALSE 0
 # define TRUE 1
 # define FT_PATH_MAX 4096
@@ -314,7 +316,7 @@ int				add_new_index_to_envp(t_ms *ms, int len);
 void			load_env(t_ms *ms, char **env);
 char			*ft_env_getkey(char *str);
 char			*ft_env_getvalue(char *str);
-void			ft_get_env_value(t_ms *ms, char *str, char *key);
+int				ft_get_env_value(t_ms *ms, char *str, char *key);
 int				ft_setenv(char *key, char *value, t_ms *ms);
 
 // fd_utils.c

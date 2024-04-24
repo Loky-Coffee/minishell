@@ -6,20 +6,25 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 20:44:33 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/24 12:32:30 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/24 15:13:44 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static char	*ft_historyfile(t_ms *ms)
+static char	*set_path(t_ms *ms)
 {
-	static char	historyfile[FT_PATH_MAX];
+	static char	pn[FT_PATH_MAX];
 	char		*slash;
 	char		*path;
-	char		pn[FT_PATH_MAX];
 
-	if (historyfile[0] == '\0')
+	path = NULL;
+	if (ft_get_env_value(ms, pn, "HOME") == 0)
+	{
+		pn[ft_strlen(pn)] = '/';
+		path = ft_strdup(pn);
+	}
+	else
 	{
 		ft_get_env_value(ms, pn, "_");
 		slash = ft_strrchr(pn, '/');
@@ -31,8 +36,20 @@ static char	*ft_historyfile(t_ms *ms)
 		if (slash > pn + 2 && *(slash - 1) == '.' && *(slash - 2) == '/')
 			slash -= 2;
 		path = ft_substr(pn, 0, ft_strlen(pn) - ft_strlen(slash + 1));
+	}
+	return (path);
+}
+
+static char	*ft_historyfile(t_ms *ms)
+{
+	static char	historyfile[FT_PATH_MAX];
+	char		*path;
+
+	if (historyfile[0] == '\0')
+	{
+		path = set_path(ms);
 		if (path == NULL)
-			return (ft_perror("Initializing history filepath failed"), NULL);
+			return (ft_perror("init history filepath failed"), NULL);
 		ft_strlcat(historyfile, path, FT_PATH_MAX);
 		ft_strlcat(historyfile, HISTORY_FILE, FT_PATH_MAX);
 		free(path);
