@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   history.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 20:44:33 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/16 15:15:36 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/24 12:32:30 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,20 @@ static char	*ft_historyfile(t_ms *ms)
 	static char	historyfile[FT_PATH_MAX];
 	char		*slash;
 	char		*path;
+	char		pn[FT_PATH_MAX];
 
 	if (historyfile[0] == '\0')
 	{
-		slash = ft_strrchr(ms->av[0], '/');
-		path = ft_substr(ms->av[0], 0, ft_strlen(ms->av[0]) - ft_strlen(slash + 1));
+		ft_get_env_value(ms, pn, "_");
+		slash = ft_strrchr(pn, '/');
+		if (ft_strncmp((slash + 1), "make", 5) == 0)
+		{
+			ft_memmove(pn, ms->av[0], ft_strlen(ms->av[0]) + 1);
+			slash = ft_strrchr(pn, '/');
+		}
+		if (slash > pn + 2 && *(slash - 1) == '.' && *(slash - 2) == '/')
+			slash -= 2;
+		path = ft_substr(pn, 0, ft_strlen(pn) - ft_strlen(slash + 1));
 		if (path == NULL)
 			return (ft_perror("Initializing history filepath failed"), NULL);
 		ft_strlcat(historyfile, path, FT_PATH_MAX);

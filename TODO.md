@@ -89,7 +89,7 @@ if multiple commands --> fork
 			{
 				TODO=Use cmd struct .
 				✅	"cd -" Switch to the previous directory and update OLDPWD and PWD environment variables.
-					❌ 	Print Path bei "cd -"
+					✅ 	Print Path bei "cd -"
 				✅	cd ~ Switch to the user's home directory (use the HOME environment variable).
 				✅	cd ~/Documents Navigate to a directory relative to the home directory.
 				✅	==> check exit_codes Ensure correct exit status on success/failure.
