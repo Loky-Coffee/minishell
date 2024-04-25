@@ -3,6 +3,7 @@
 - ✅		getting started
 - ✅		lexer
 - ✅		parser
+		✅ 	SORT REDIRECTS (HERE_DOC has to be before REDIRECT_OUTs // so we should put REDIRECT_Ins && HERE_DOC before REDIRECT_OUTs)
 - ✅		expander
 - ✅		executer
 - ❌ 	Signals
@@ -18,8 +19,12 @@
 		✅	add ignore_case for export und unset of ms->unset_envvars	
 				(export helo=123 && export HaLo=abc)
 		✅	+=
-- ✅		retrieve History Path from environent variable "_"
+- ✅		historyfile will now be stored in $HOME first // than in "_" // han in argv[0]
+			retrieve History Path from environent variable "_"
 			if you call "make t" we use av[0] which will be "./minishell"
+- ❌ 	Multiple HereDocs: only the last HEREDOC should write into STDIN_FILENO
+			 >> f11 << f1 << f2 << f3 cat
+			 ----> mandatory/here_doc.c:35:9
 - ❌ 	norminetten
 
 

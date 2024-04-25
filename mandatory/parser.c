@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/12 15:56:24 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/20 20:18:08 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/25 12:49:39 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,11 +154,44 @@ t_node	*insert_cmd(t_node *curr, t_node *next, t_ms *ms)
 	return (NULL);
 }
 
+t_node	*push_redirectout_into_place(t_node *curr, t_node *next)
+{
+	t_node	*buff;
+
+	buff = next;
+	if (curr->tokens[0]->type == TOKEN_GREATER || curr->tokens[0]->type == TOKEN_DGREATER)
+		while (next->left && (next->left->tokens[0]->type == TOKEN_LESS || next->left->tokens[0]->type == TOKEN_DLESS))
+			next = next->left;
+	if (curr->tokens[0]->type == TOKEN_LESS || curr->tokens[0]->type == TOKEN_DLESS)
+	{
+		// curr == R_IN
+		if (next->parent)
+		{
+			curr->parent = next->parent;
+			next->parent->left = curr;
+		}
+		curr->left = next;
+		next->parent = curr;
+		return (curr);
+	}
+	else
+	{
+		if (next->left)
+		{
+			next->left->parent = curr;
+			curr->left = next->left;
+		}
+		next->left = curr;
+		curr->parent = next;
+	}
+	return (buff);
+}
+
 t_node	*insert_redirect(t_node *curr, t_node *next, t_ms *ms)
 {
 	if (next == NULL)
 		return (curr);
-	if (next->type == NODE_COMMAND || next->type == NODE_SUBSHELL || next->type == NODE_REDIRECT) // || next->type == NODE_SUBSHELL
+	if (next->type == NODE_COMMAND || next->type == NODE_SUBSHELL)
 	{
 		if (next->parent)
 		{
@@ -169,6 +202,8 @@ t_node	*insert_redirect(t_node *curr, t_node *next, t_ms *ms)
 		next->parent = curr;
 		return (curr);
 	}
+	else if (next->type == NODE_REDIRECT)
+		return (push_redirectout_into_place(curr, next));
 	else if (next->type == NODE_PIPE || next->type == NODE_AND || next->type == NODE_OR)
 	{
 		if (next->left == NULL || next->left->type == NODE_COMMAND || next->left->type == NODE_SUBSHELL || next->left->type == NODE_REDIRECT)
@@ -254,7 +289,16 @@ t_node	*ft_parse(t_token *ct, t_node **root, t_ms *ms)
 		return (curr);
 	}
 	if (*root && (*root)->type <= curr->type && (*root)->type <= NODE_PIPE)
-		*root = curr;
+	{
+		if ((*root)->type == NODE_REDIRECT && curr->type == NODE_REDIRECT)
+		{
+			// if (tkn_is_redirect_out((*root)->tokens[0]) && tkn_is_redirect_in(curr->tokens[0]))
+			if (tkn_is_redirect_in(curr->tokens[0]))
+				*root = curr;
+		}
+		else
+			*root = curr;
+	}
 	if (curr->type == NODE_COMMAND || curr->type == NODE_SUBSHELL)
 		ast = insert_cmd(curr, next, ms);
 	else if (curr->type == NODE_REDIRECT)

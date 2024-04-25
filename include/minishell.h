@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/24 14:58:12 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/25 12:22:40 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,20 +172,21 @@ typedef struct s_node
 /* ************************************************************************** */
 typedef struct s_ms
 {
-	int				ac;
-	char			**av;
-	char			**envp;
-	char			**unset_envvars;
-	int				run;
-	int				error;
-	t_token			*tokens;
-	t_node			*nodes;
-	char			*line;
-	char			*prompt;
-	int				parse_error;
-	t_token			*parse_errtkn;
-	int				exit_code;
-	unsigned char	shell_exit_code;
+	int					ac;
+	char				**av;
+	char				**envp;
+	char				**unset_envvars;
+	int					run;
+	int					error;
+	t_token				*tokens;
+	t_node				*nodes;
+	char				*line;
+	char				*prompt;
+	int					parse_error;
+	t_token				*parse_errtkn;
+	int					exit_code;
+	unsigned char		shell_exit_code;
+	struct sigaction	sa;
 }					t_ms;
 
 /* ************************************************************************** */
@@ -211,6 +212,9 @@ int				create_prompt(t_ms *ms);
 // History
 int				dump_history(t_ms *ms);
 int				restore_history(t_ms *ms);
+
+// signals.c
+void			init_signals(t_ms *ms);
 
 // Lexer
 int				ft_lexer(t_ms *ms);
@@ -269,6 +273,8 @@ t_tokentype		is_not_word(char *s);
 t_tokentype		tkn_is_word(t_token *token);
 t_tokentype		tkn_is_operator(t_token *token);
 t_tokentype		tkn_is_redirect(t_token *token);
+t_tokentype		tkn_is_redirect_out(t_token *token);
+t_tokentype		tkn_is_redirect_in(t_token *token);
 t_tokentype		tkn_is_pipe(t_token *token);
 t_tokentype		tkn_is_andor(t_token *token);
 

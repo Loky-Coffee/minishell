@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/22 17:27:46 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/24 20:38:39 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ void	init_ms(int argc, char **argv, t_ms *ms)
 	ms->parse_error = 0;
 	ms->parse_errtkn = NULL;
 	ms->run = 1;
+	init_signals(ms);
 }
 
 int	handle_single_arg_input(t_ms *ms)
@@ -214,7 +215,7 @@ int	main(int argc, char **argv, char **env)
 		}
 
 		// render NODES
-		// render_nodes(0, ms.nodes, 'R');
+		render_nodes(0, ms.nodes, 'R');
 
 		// EXECUTE IT
 		exec_manager(&ms);

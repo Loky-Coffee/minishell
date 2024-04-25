@@ -1,38 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   here_doc.c                                         :+:      :+:    :+:   */
+/*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/05 19:03:23 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/24 21:00:36 by nmihaile         ###   ########.fr       */
+/*   Created: 2024/04/24 15:27:28 by nmihaile          #+#    #+#             */
+/*   Updated: 2024/04/25 10:27:41 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-int	ft_heredoc(int fd_write, char *lim)
+void	ctrl_c_handler(int signal)
 {
-	char	*line;
-
-	ft_putstr_fd("> ", 1);
-	while (1)
+	if (signal == SIGINT)
 	{
-		line = get_next_line(STDIN_FILENO);
-		if (line == NULL)
-		{
-			close(fd_write);
-			return (1);
-		}
-		if (ft_strncmp(line, lim, ft_strlen(lim)) == 0)
-		{
-			free(line);
-			close(fd_write);
-			return (0);
-		}
-		write(fd_write, line, ft_strlen(line));
-		ft_putstr_fd("> ", 1);
-		free(line);
+		// printf("\n✓ CTRL-C detected…\n");
+		printf("\n");
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		rl_redisplay();
 	}
+}
+
+void	init_signals(t_ms *ms)
+{
+	ft_memset(&ms->sa, 0, sizeof(ms->sa));
+	ms->sa.sa_handler = &ctrl_c_handler;
+	sigaction(SIGINT, &ms->sa, NULL);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utoken.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:51:40 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/18 01:23:47 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/25 12:22:22 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,20 @@ t_tokentype	tkn_is_redirect(t_token *token)
 	if (token && (token->type == TOKEN_LESS || token->type == TOKEN_GREATER \
 		|| token->type == TOKEN_DLESS || token->type == TOKEN_DGREATER \
 		|| token->type == TOKEN_TLESS))
+		return (token->type);
+	return (NO_TOKEN);
+}
+
+t_tokentype	tkn_is_redirect_in(t_token *token)
+{
+	if (token && (token->type == TOKEN_LESS || token->type == TOKEN_DLESS))
+		return (token->type);
+	return (NO_TOKEN);
+}
+
+t_tokentype	tkn_is_redirect_out(t_token *token)
+{
+	if (token && (token->type == TOKEN_GREATER || token->type == TOKEN_DGREATER))
 		return (token->type);
 	return (NO_TOKEN);
 }
