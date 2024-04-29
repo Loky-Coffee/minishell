@@ -4,9 +4,21 @@
 - ✅		lexer
 - ✅		parser
 		✅ 	SORT REDIRECTS (HERE_DOC has to be before REDIRECT_OUTs // so we should put REDIRECT_Ins && HERE_DOC before REDIRECT_OUTs)
+		✅	FIX REDIRECT_IN / OUT PARSING:
+				✅	ls > f11 > f12
+				✅	>> f11 << f1 << f2 << f3 cat
 - ✅		expander
 - ✅		executer
 - ❌ 	Signals
+			✅ for minishell -c args
+			✅ for minishell testfile
+			✅ if OUT is no STDOUT_FILENO aka not a Terminal we don't use (tcgetattr && tcsetattr) and we should show ^C
+			✅ for minishell 
+			✅ RESET or SET SIGNALS accordingly for SUBSHELLS
+			✅ "wc" //=> returns 130 for ctrl-c
+			❌ Sigansl for HERE_DOC		(WIFEXITED(status) / WIFSIGNALED(status))
+			❌ correct EXIT_CODE (child_exit_status // …) was habe ich damit wohl gemeint?? vielelicht den Fehler bei Subshells???: (wc) || echo A
+			✅ wc | sleep 30 | sleep 30
 - ❌		Wildcards
 - ✅		export
 		✅	basic sorting
@@ -19,12 +31,11 @@
 		✅	add ignore_case for export und unset of ms->unset_envvars	
 				(export helo=123 && export HaLo=abc)
 		✅	+=
-- ✅		historyfile will now be stored in $HOME first // than in "_" // han in argv[0]
+- ✅		historyfile will now be stored in $HOME first // than in "_" // than in argv[0]
 			retrieve History Path from environent variable "_"
 			if you call "make t" we use av[0] which will be "./minishell"
-- ❌ 	Multiple HereDocs: only the last HEREDOC should write into STDIN_FILENO
-			 >> f11 << f1 << f2 << f3 cat
-			 ----> mandatory/here_doc.c:35:9
+- ✅ 	Multiple HereDocs: only the last HEREDOC should write into STDIN_FILENO
+			✅ >> f11 << f1 << f2 << f3 cat ----> mandatory/here_doc.c:35:9
 - ❌ 	norminetten
 
 
@@ -179,6 +190,9 @@ Test CMDs
 
 RESOURCES
 
+-		BASH REFERENCE MANUAL
+		https://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html
+
 -		Abstract syntax tree
 		https://en.wikipedia.org/wiki/Abstract_syntax_tree
 
@@ -188,7 +202,32 @@ RESOURCES
 -		SHELL Language explanation:
 		https://pubs.opengroup.org/onlinepubs/009695399/utilities/xcu_chap02.html
 
+-		Signal - TERMIOS => tcgetattr / tcsetattr
+		https://stackoverflow.com/questions/68602211/forcing-a-terminal-not-to-print-ctrl-hotkeys-when-signals-are-caught
 
+-		DEFAULT $PATH (trotz env -i)
+		Der Default-PATH wird fuer Bash beim compelieren in config-top.h gesetzt:
+		https://github.com/bminor/bash/blob/master/config-top.h
+
+-		from trusanov Pratt-Parser-In-RUST
+		Simple but Powerful Pratt Parsing:
+		https://matklad.github.io/2020/04/13/simple-but-powerful-pratt-parsing.html
+
+-		Shunting yard algorithm
+		https://en.wikipedia.org/wiki/Shunting_yard_algorithm
+
+-		Operator-precedence parser
+		https://en.wikipedia.org/wiki/Operator-precedence_parser
+
+-		Order of operations
+		https://en.wikipedia.org/wiki/Order_of_operations
+		Operator associativity
+		https://en.wikipedia.org/wiki/Operator_associativity
+
+-		other Minishells
+		Timofei Rusanov / trusanov:	https://github.com/taaae/minishell/blob/main/include/lexer.h
+		Markus Kurz / makurz: 		https://github.com/kurz-m/minishell/blob/main/src/expander/expander_main.c
+		@twagger / @iamwen1023		https://github.com/twagger/minishell?tab=readme-ov-file
 
 ### EXPANDER:
 

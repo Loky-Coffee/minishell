@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/25 12:22:40 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/28 23:53:28 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <signal.h>
+# include <termios.h>
 # include "../libft/libft.h"
 
 /* ************************************************************************** */
@@ -186,7 +187,7 @@ typedef struct s_ms
 	t_token				*parse_errtkn;
 	int					exit_code;
 	unsigned char		shell_exit_code;
-	struct sigaction	sa;
+	// struct sigaction	sa;
 }					t_ms;
 
 /* ************************************************************************** */
@@ -214,7 +215,10 @@ int				dump_history(t_ms *ms);
 int				restore_history(t_ms *ms);
 
 // signals.c
-void			init_signals(t_ms *ms);
+void			set_echoctl(int enable);
+void			sigint_parent_handler(int signal, siginfo_t *siginfo, void *param);
+void			set_signal_handler(int signal, void (handler)(int));
+void			set_signal_sigaction(int signal, void (handler)(int, siginfo_t *, void *));
 
 // Lexer
 int				ft_lexer(t_ms *ms);
@@ -277,6 +281,7 @@ t_tokentype		tkn_is_redirect_out(t_token *token);
 t_tokentype		tkn_is_redirect_in(t_token *token);
 t_tokentype		tkn_is_pipe(t_token *token);
 t_tokentype		tkn_is_andor(t_token *token);
+t_tokentype		exptkn(t_token *token, t_tokentype type);
 
 // token_list_utils
 t_token			*ft_token_new(void);

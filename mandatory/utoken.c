@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:51:40 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/25 12:22:22 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/28 17:47:23 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,5 +165,13 @@ t_tokentype	tkn_is_andor(t_token *token)
 {
 	if (token && (token->type == TOKEN_DAND || token->type == TOKEN_OR))
 		return (token->type);
+	return (NO_TOKEN);
+}
+
+// expect_peek_
+t_tokentype	exptkn(t_token *token, t_tokentype type)
+{
+	if (token && (token->type == type))
+		return (type);
 	return (NO_TOKEN);
 }

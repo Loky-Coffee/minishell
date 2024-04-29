@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 10:24:09 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/16 18:32:40 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/04/25 22:11:06 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ unsigned char	ft_exit(t_cmd *cmd, t_ms *ms)
 	int		ac;
 	long	exit_code;
 
-	exit_code = 0;
+	exit_code = ms->exit_code;
 	ac = get_ac(cmd->args);
 	printf("exit\n");
 	if (ac > 1)

@@ -6,7 +6,7 @@
 #    By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/20 16:47:30 by aalatzas          #+#    #+#              #
-#    Updated: 2024/04/24 15:27:46 by nmihaile         ###   ########.fr        #
+#    Updated: 2024/04/28 14:37:05 by nmihaile         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ NC		= \033[0m
 NAME	= minishell
 CC		= cc
 CFLAGS	= -Wall -Wextra -Werror  			-g # -fsanitize=address
-#NCOLORS =  -DDISABLE_NINJA_COLORS
+NCOLORS =  -DDISABLE_NINJA_COLORS
 
 SRC_DIR	= mandatory/
 OBJ_DIR = mandatory/obj/

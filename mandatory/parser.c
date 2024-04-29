@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/12 15:56:24 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/25 12:49:39 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/28 17:44:14 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,10 +159,14 @@ t_node	*push_redirectout_into_place(t_node *curr, t_node *next)
 	t_node	*buff;
 
 	buff = next;
+	
+	// You can use Bitwise operators for a fast and short if check
+	// if (curr->tokens[0]->type & (TOKEN_GREATER | TOKEN_DGREATER)) /// for 1 2 4 8 use single bit for each Token e.g. (1 << 0), (1 << 1), (1 << 2), … 0 1 2 4 8 16 32 …
+	
 	if (curr->tokens[0]->type == TOKEN_GREATER || curr->tokens[0]->type == TOKEN_DGREATER)
 		while (next->left && (next->left->tokens[0]->type == TOKEN_LESS || next->left->tokens[0]->type == TOKEN_DLESS))
 			next = next->left;
-	if (curr->tokens[0]->type == TOKEN_LESS || curr->tokens[0]->type == TOKEN_DLESS)
+	if (curr->tokens[0]->type == TOKEN_LESS || curr->tokens[0]->type == TOKEN_DLESS || (tkn_is_redirect_out(curr->tokens[0]) && tkn_is_redirect_out(next->tokens[0])))  // Aris was sagen wir hierzu?? mit den 2 func ist es serh viel einfacher, als wenn wenn wir alle 4 faelle aufschreiben… ich weiss ja auch nicht ¯\_(ツ)_/¯
 	{
 		// curr == R_IN
 		if (next->parent)
@@ -176,6 +180,8 @@ t_node	*push_redirectout_into_place(t_node *curr, t_node *next)
 	}
 	else
 	{
+		// curr == R_OUT
+		// ich muss das hier richtig machen
 		if (next->left)
 		{
 			next->left->parent = curr;
@@ -293,7 +299,7 @@ t_node	*ft_parse(t_token *ct, t_node **root, t_ms *ms)
 		if ((*root)->type == NODE_REDIRECT && curr->type == NODE_REDIRECT)
 		{
 			// if (tkn_is_redirect_out((*root)->tokens[0]) && tkn_is_redirect_in(curr->tokens[0]))
-			if (tkn_is_redirect_in(curr->tokens[0]))
+			if (tkn_is_redirect_in(curr->tokens[0]) || (tkn_is_redirect_out((*root)->tokens[0]) && tkn_is_redirect_out(curr->tokens[0])))
 				*root = curr;
 		}
 		else

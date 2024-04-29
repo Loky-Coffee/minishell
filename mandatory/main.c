@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/24 20:38:39 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/28 23:15:18 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,10 @@ void	init_ms(int argc, char **argv, t_ms *ms)
 	ms->parse_error = 0;
 	ms->parse_errtkn = NULL;
 	ms->run = 1;
-	init_signals(ms);
+	sigint_parent_handler(0, NULL, ms);
+	set_echoctl(0);
+	set_signal_sigaction(SIGINT, sigint_parent_handler);
+	set_signal_handler(SIGQUIT, SIG_IGN);
 }
 
 int	handle_single_arg_input(t_ms *ms)
@@ -70,6 +73,9 @@ int	handle_single_arg_input(t_ms *ms)
 
 	if (ft_strncmp(ms->av[1], "-c", 3) == 0)
 	{
+		set_echoctl(1);
+		set_signal_handler(SIGINT, SIG_DFL);
+		set_signal_handler(SIGQUIT, SIG_DFL);
 		ms->line = ft_strdup(ms->av[2]);
 		if (ft_lexer(ms))
 			return (terminate(ms, NULL, 0), 0);
@@ -87,7 +93,7 @@ int	handle_single_arg_input(t_ms *ms)
 			ms->exit_code = WEXITSTATUS(exit_code);
 		}
 		cleanup_ms(ms);
-		terminate(ms, NULL, ms->shell_exit_code);
+		terminate(ms, NULL, ms->exit_code);
 	}
 	return (ft_error("Wrong arguments", "usage", "./minishell -c 'input_line'"), terminate(ms, NULL, 1), 1);
 }
@@ -102,6 +108,9 @@ int	handle_arg_file(t_ms *ms)
 		fd = open(ms->av[1], O_RDONLY);
 		if (fd == -1)
 			return (ft_perror(ms->av[1]), terminate(ms, NULL, 1), 1);
+		set_echoctl(1);
+		set_signal_handler(SIGINT, SIG_DFL);
+		set_signal_handler(SIGQUIT, SIG_DFL);
 		while (1)
 		{
 			ms->line = get_next_line(fd);
@@ -126,7 +135,7 @@ int	handle_arg_file(t_ms *ms)
 			ms->exit_code = WEXITSTATUS(exit_code);
 			cleanup_ms(ms);
 		}
-		terminate(ms, NULL, ms->shell_exit_code);
+		terminate(ms, NULL, ms->exit_code);
 	}
 	else if (ms->ac == 3)
 		handle_single_arg_input(ms);
@@ -145,7 +154,9 @@ int	main(int argc, char **argv, char **env)
 	while (ms.run)
 	{
 		create_prompt(&ms);
+		// set_signal_sigaction(SIGINT, sigint_parent_handler);
 		ms.line = readline(ms.prompt);
+		// set_signal_handler(SIGINT,SIG_IGN);
 		if (ms.line)
 			dump_history(&ms);
 		else
@@ -215,7 +226,7 @@ int	main(int argc, char **argv, char **env)
 		}
 
 		// render NODES
-		render_nodes(0, ms.nodes, 'R');
+		// render_nodes(0, ms.nodes, 'R');
 
 		// EXECUTE IT
 		exec_manager(&ms);
