@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 18:27:30 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/23 20:13:58 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/30 11:54:24 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,8 +225,7 @@ int	ft_export(int i, t_node *node, t_ms *ms)
 			return (ft_error("export", ms->tokens->next->str, \
 			"not a valid identifier"), 1);
 		else
-			return (printf(LIGHTCYAN"export: Provide a valid key"RESET, \
-			NULL), 1);
+			return (printf(LIGHTCYAN"export: Provide a valid key"RESET), 1);
 	}
 	operator = has_valid_operator(ms->nodes->tokens[1]->str);
 	if (operator == -1)

@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/21 15:19:30 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/21 17:02:03 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/30 11:42:44 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,12 @@ static int	check_node(t_node *node, t_ms *ms)
 {
 	if (node == NULL)
 		return (0);
-	if (node->type == NODE_COMMAND)
-		;
-	else if (node->type == NODE_SUBSHELL)
-		;
-	else if (node->type == NODE_REDIRECT)
-		;
+	// if (node->type == NODE_COMMAND)
+	// 	;
+	// else if (node->type == NODE_SUBSHELL)
+	// 	;
+	// else if (node->type == NODE_REDIRECT)
+	// 	;
 	else if (node->type == NODE_PIPE)
 	{
 		if (node->left == NULL || node->right == NULL)
@@ -31,8 +31,8 @@ static int	check_node(t_node *node, t_ms *ms)
 			return (1);
 		}
 	}
-	else if (node->type == NODE_AND || node->type == NODE_OR)
-		;
+	// else if (node->type == NODE_AND || node->type == NODE_OR)
+	// 	;
 	return (0);
 }
 

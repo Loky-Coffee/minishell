@@ -6,16 +6,15 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/28 23:53:28 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/30 11:45:11 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-
-#include <fnmatch.h>
-#include <sys/types.h>
+# include <fnmatch.h>
+# include <sys/types.h>
 # include <stdbool.h>
 # include <unistd.h>
 # include <stdio.h>
@@ -26,7 +25,7 @@
 # include <string.h>
 # include <stdlib.h>
 # include <limits.h>
-#include <dirent.h>
+# include <dirent.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <signal.h>
@@ -35,7 +34,6 @@
 
 /* ************************************************************************** */
 # define NINJASHELL "ninjaSHELL"
-/*# define HISTORY_FILE "ninjaSHELL.history" */
 # define HISTORY_FILE ".ninjaSHELL_history"
 # define FALSE 0
 # define TRUE 1
@@ -187,8 +185,8 @@ typedef struct s_ms
 	t_token				*parse_errtkn;
 	int					exit_code;
 	unsigned char		shell_exit_code;
-	// struct sigaction	sa;
-}					t_ms;
+	int					hd_interupt;
+}						t_ms;
 
 /* ************************************************************************** */
 typedef struct s_cmd
@@ -291,8 +289,7 @@ int				tokens_size(t_token *tokens);
 void			ft_token_clear(t_token **token, void (*del)(void*));
 
 // executer
-// int				execute(int fdr, int fdw, t_node *node, t_ms *ms, int is_rgt);
-// int				execute_cmd(int fdr, int fdw, t_node *node, t_ms *ms, int exit_code);
+int				exec_intermediary(int fd_in, int fd_out, t_node *node, t_ms *ms);
 int				exec_manager(t_ms *ms);
 
 // here_doc
@@ -329,9 +326,6 @@ char			*ft_env_getkey(char *str);
 char			*ft_env_getvalue(char *str);
 int				ft_get_env_value(t_ms *ms, char *str, char *key);
 int				ft_setenv(char *key, char *value, t_ms *ms);
-
-// fd_utils.c
-
 
 /* ************************************************************************** */
 

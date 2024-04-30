@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/28 23:15:18 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/30 10:27:06 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ void	cleanup_ms(t_ms *ms)
 	free_nodetree(&ms->nodes);
 	ms->parse_error = 0;
 	ms->parse_errtkn = NULL;
+	ms->hd_interupt = 0;
 }
 
 void	init_ms(int argc, char **argv, t_ms *ms)
@@ -60,6 +61,7 @@ void	init_ms(int argc, char **argv, t_ms *ms)
 	ms->unset_envvars = NULL;
 	ms->parse_error = 0;
 	ms->parse_errtkn = NULL;
+	ms->hd_interupt = 0;
 	ms->run = 1;
 	sigint_parent_handler(0, NULL, ms);
 	set_echoctl(0);
@@ -154,9 +156,7 @@ int	main(int argc, char **argv, char **env)
 	while (ms.run)
 	{
 		create_prompt(&ms);
-		// set_signal_sigaction(SIGINT, sigint_parent_handler);
 		ms.line = readline(ms.prompt);
-		// set_signal_handler(SIGINT,SIG_IGN);
 		if (ms.line)
 			dump_history(&ms);
 		else

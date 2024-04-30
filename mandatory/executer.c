@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/29 14:16:58 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/30 12:15:45 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,6 @@
 // 		fprintf(stderr, "open fds: %d\n", open_fd_count);
 // }
 
-int	exec_intermediary(int fd_in, int fd_out, t_node *node, t_ms *ms);
-
 static void save_stdfds(int *fds)
 {
 	fds[0] = dup(STDIN_FILENO);
@@ -58,9 +56,15 @@ static void reset_stdfds(int *fds)
 void	set_exit_code(int status, t_ms *ms)
 {
 	if (WIFSIGNALED(status))
-		ms->exit_code = WTERMSIG(status) + 128;
+		ms->exit_code = 128 + WTERMSIG(status);
 	else if (WIFEXITED(status))
 		ms->exit_code = WEXITSTATUS(status);	
+}
+
+void	set_hd_exit_code(int status, t_ms *ms)
+{
+	set_exit_code(status, ms);
+	ms->hd_interupt = 1;
 }
 
 static int	ft_strncmp_ignorecase(const char *s1, const char *s2, size_t n)
@@ -137,6 +141,39 @@ int	create_subshell_cmd(t_cmd *cmd, t_node *node, t_ms *ms)
 	return (0);
 }
 
+static void	ft_collaps_args(int i, t_cmd *cmd)
+{
+	while (cmd->args[i + 1])
+	{
+		cmd->args[i] = cmd->args[i + 1];
+		i++;
+	}
+	cmd->args[i] = NULL;	
+}
+
+static void	ft_cmd_is_empty(int fd_in, int fd_out, t_cmd *cmd, t_ms *ms)
+{
+	int	i;
+	
+	i = 0;
+	if (cmd->cmdpth[0] == '\0')
+	{
+		while (cmd->args[i])
+		{
+			if (cmd->args[i][0] == '\0' && cmd->args[i + 1] && cmd->args[i + 1][0] != '\0')
+				ft_collaps_args(i, cmd);
+			i++;
+		}
+		if (cmd->args == NULL || (cmd->args[0] && cmd->args[0][0] == '\0'))
+		{
+			ft_close_fd(fd_in, fd_out);
+			terminate(ms, cmd, 0);		
+		}
+		free(cmd->cmdpth);
+		cmd->cmdpth = ft_strdup(cmd->args[0]);
+	}
+}
+
 static void	ft_cmd_is_dot(t_cmd *cmd, t_ms *ms)
 {
 	if (ft_strncmp(cmd->cmdpth, ".", 2) == 0)
@@ -147,6 +184,19 @@ static void	ft_cmd_is_dot(t_cmd *cmd, t_ms *ms)
 		ft_putstr_fd(": usage: ", 2);
 		ft_putstr_fd(". filename [arguments]"RESET, 2);
 		terminate(ms, cmd, 2);
+	}
+	if (ft_strncmp(cmd->cmdpth, "./", 2) == 0)
+	{
+		if (access(cmd->cmdpth, F_OK) != 0)
+		{
+			ft_perror(cmd->cmdpth);
+			terminate(ms, cmd, 127);
+		}		
+		if (access(cmd->cmdpth, X_OK) != 0)
+		{
+			ft_perror(cmd->cmdpth);
+			terminate(ms, cmd, 126);
+		}		
 	}
 }
 
@@ -175,7 +225,7 @@ static int	ft_cmd_is_dir(char *cmd, int *exit_code)
 {
 	struct stat	file_stat;
 
-	if (ft_strchr(cmd, '/') == NULL || ft_strchr(cmd, '.') == NULL)
+	if (ft_strchr(cmd, '/') == NULL ) // || ft_strchr(cmd, '.') == NULL
 		return (0);
 	if (stat(cmd, &file_stat) != 0)
 		return (0);
@@ -223,6 +273,7 @@ pid_t	exec_fork_builtin(int fd_in, int fd_out, t_builtin builtin, t_node *node, 
 	return (pid);
 }
 
+
 pid_t	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 {
 	pid_t	pid;
@@ -242,11 +293,12 @@ pid_t	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 		create_cmd(&cmd, node);
 		dup2(fd_in, STDIN_FILENO);
 		dup2(fd_out, STDOUT_FILENO);
+		ft_cmd_is_empty(fd_in, fd_out, &cmd, ms);
 		ft_cmd_is_dot(&cmd, ms);
 		ft_get_env_value(ms, cmd.path, "PATH");
-		if (ft_cmd_has_slash(&cmd, &exit_code)
+		if (ft_cmd_is_dir(cmd.cmdpth, &exit_code)
+			|| ft_cmd_has_slash(&cmd, &exit_code)
 			|| ft_cmd_is_dotdot(&cmd, &exit_code)
-			|| ft_cmd_is_dir(cmd.cmdpth, &exit_code)
 			|| ft_prepend_path(&cmd.cmdpth, cmd.path, &exit_code)
 			|| ft_exec_permissions(cmd.cmdpth, &exit_code))
 		{
@@ -270,13 +322,12 @@ pid_t	exec_subshell(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	pid_t	pid;
 	t_cmd	cmd;
 
-
 	pid = fork();
 	if (pid == 0)
 	{
 		ft_close_fd(node->cfd0, node->cfd1);		// ?? do we need that ??
 		ft_close_fd(fd_in, fd_out);					// ?? do we need that ??
-		if (expand_node(node, ms))
+		if (expand_node(node, ms))					/// brauchen wir das hier schon ?????
 			return (-1);
 		create_subshell_cmd(&cmd, node, ms);
 		set_echoctl(1);
@@ -285,7 +336,7 @@ pid_t	exec_subshell(int fd_in, int fd_out, t_node *node, t_ms *ms)
 		execve(cmd.cmdpth, cmd.args, ms->envp);
 		ft_perror(cmd.args[0]);
 		ft_close_fd(fd_in, fd_out);
-		terminate(ms, &cmd, 0);
+		terminate(ms, &cmd, 0);						// muss hier nicht terminate 1 hin
 	}
 	ft_close_fd(fd_in, fd_out);
 	return (pid);
@@ -315,7 +366,7 @@ void	execute_heredoc(int *fd_in, int *fd_out, char *lim, t_ms *ms)
 	}
 	ft_close_fd(fd_pipe[0], fd_pipe[1]);
 	waitpid(pid, &status, 0);
-	set_exit_code(status, ms);
+	set_hd_exit_code(status, ms);
 }
 
 static int	redirect_in(int *fd_in, t_node *node, t_ms *ms)
@@ -385,10 +436,10 @@ pid_t	exec_pipe(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	while (buff->left && buff->type != NODE_COMMAND && buff->type != NODE_SUBSHELL)	// buff->type != NODE_SUBSHELL
 		buff = buff->left;
 	buff->cfd0 = fd_pipe[0];
-	if (node->left)
+	if (ms->hd_interupt == 0 && node->left)
 		pid = exec_intermediary(fd_in, fd_pipe[1], node->left, ms);
 	ft_close_fd(fd_in, fd_pipe[1]);
-	if (node->right)
+	if (ms->hd_interupt == 0 && node->right)
 		pid = exec_intermediary(fd_pipe[0], fd_out, node->right, ms);
 	ft_close_fd(fd_pipe[0], fd_out);
 	return (pid);
@@ -400,83 +451,29 @@ int	exec_interm_wait(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	int		status;
 	
 	pid = exec_intermediary(fd_in, fd_out, node, ms);
-	if (waitpid(pid, &status, 0) == -1)
-		ft_perror("waitpid");
+	waitpid(pid, &status, 0);
 	set_exit_code(status, ms);
-	// if (WIFSIGNALED(status))
-	// 	ms->exit_code = WTERMSIG(status) + 128;
-	// else if (WIFEXITED(status))
-	// 	ms->exit_code = WEXITSTATUS(status);
 	return (ms->exit_code);
 }
 
 int	logical_operator_manager(t_node *node, t_ms *ms)
 {
-	// pid_t	pid;
-	// int 	status;
 	int	ec;
 
-	// pid = 0;
 	ec = 0;
 	if (node->type == NODE_AND)
 	{
 		if (node->left)
-		{
 			ec = exec_interm_wait(STDIN_FILENO, STDOUT_FILENO, node->left, ms);
-			// pid = exec_intermediary(STDIN_FILENO, STDOUT_FILENO, node->left, ms);
-			// if (waitpid(pid, &status, 0) == -1)
-			// 	ft_perror("waitpid");
-			// if (WIFSIGNALED(status))
-			// 	ms->exit_code = WTERMSIG(status) + 128;
-			// else if (WIFEXITED(status))
-			// 	ms->exit_code = WEXITSTATUS(status);
-
-			// if (pid > 255)
-			// 	ms->exit_code = WEXITSTATUS(status);
-			// else
-			// 	ms->exit_code = pid;
-		}
 		if (node->right && ms->exit_code == 0)
-		{
 			ec = exec_interm_wait(STDIN_FILENO, STDOUT_FILENO, node->right, ms);
-			// pid = exec_intermediary(STDIN_FILENO, STDOUT_FILENO, node->right, ms);
-			// if (waitpid(pid, &status, 0) == -1)
-			// 	ft_perror("waitpid");
-			// if (WIFSIGNALED(status))
-			// 	ms->exit_code = WTERMSIG(status) + 128;
-			// else if (WIFEXITED(status))
-			// 	ms->exit_code = WEXITSTATUS(status);			
-		}
 	}
 	else if (node->type == NODE_OR)
 	{
 		if (node->left)
-		{
 			ec = exec_interm_wait(STDIN_FILENO, STDOUT_FILENO, node->left, ms);
-			// pid = exec_intermediary(STDIN_FILENO, STDOUT_FILENO, node->left, ms);
-			// if (waitpid(pid, &status, 0) == -1)
-			// 	ft_perror("waitpid");
-			// if (WIFSIGNALED(status))
-			// 	ms->exit_code = WTERMSIG(status) + 128;
-			// else if (WIFEXITED(status))
-			// 	ms->exit_code = WEXITSTATUS(status);
-			// --------------
-			// if (pid > 255)
-			// 	ms->exit_code = WEXITSTATUS(status);
-			// else
-			// 	ms->exit_code = pid;
-		}
 		if (node->right && ms->exit_code != 0)
-		{
 			ec = exec_interm_wait(STDIN_FILENO, STDOUT_FILENO, node->right, ms);
-			// pid = exec_intermediary(STDIN_FILENO, STDOUT_FILENO, node->right, ms);
-			// if (waitpid(pid, &status, 0) == -1)
-			// 	ft_perror("waitpid");
-			// if (WIFSIGNALED(status))
-			// 	ms->exit_code = WTERMSIG(status) + 128;
-			// else if (WIFEXITED(status))
-			// 	ms->exit_code = WEXITSTATUS(status);
-		}
 	}
 	return (ec);
 }
@@ -521,84 +518,47 @@ int	exec_manager(t_ms *ms)
 	else if (ms->nodes->type == NODE_COMMAND)
 	{
 		pid = exec_cmd(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);
-		if (waitpid(pid, &status, 0) == -1)
-			ft_perror("waitpid");
+		waitpid(pid, &status, 0);
 		set_exit_code(status, ms);
-		// if (WIFSIGNALED(status))
-		// 	ms->exit_code = WTERMSIG(status) + 128;
-		// else if (WIFEXITED(status))
-		//  	ms->exit_code = WEXITSTATUS(status);
-		// if (pid > 255)
-		// 	ms->exit_code = WEXITSTATUS(status);
-		// else
-		// 	ms->exit_code = pid;
 	}
 	else if (ms->nodes->type == NODE_SUBSHELL)
 	{
 		pid = exec_subshell(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);
-		if (waitpid(pid, &status, 0) == -1)
-			ft_perror("waitpid");
+		waitpid(pid, &status, 0);
 		set_exit_code(status, ms);
-		// if (WIFSIGNALED(status))
-		// 	ms->exit_code = WTERMSIG(status) + 128;
-		// else if (WIFEXITED(status))
-		//  	ms->exit_code = WEXITSTATUS(status);
-		// if (pid > 255)
-		// 	ms->exit_code = WEXITSTATUS(status);
-		// else
-		// 	ms->exit_code = pid;
 	}
 	else if (ms->nodes->type == NODE_REDIRECT)
 	{
 		save_stdfds(std_fds);
 		pid = redirect_manager(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);
-		if (waitpid(pid, &status, 0) == -1)
-			ft_perror("waitpid");
-		set_exit_code(status, ms);
-		// if (WIFSIGNALED(status))
-		// 	ms->exit_code = WTERMSIG(status) + 128;
-		// else if (WIFEXITED(status))
-		//  	ms->exit_code = WEXITSTATUS(status);
-		// if (pid > 255)
-		// 	ms->exit_code = WEXITSTATUS(status);
-		// else
-		// 	ms->exit_code = pid;
+		if (pid > 255)
+		{
+			waitpid(pid, &status, 0);
+			set_exit_code(status, ms);
+		}
+		else
+			ms->exit_code = 1;
 		reset_stdfds(std_fds);
 	}
 	else if (ms->nodes->type == NODE_PIPE)
 	{
 		save_stdfds(std_fds);
 		pid = exec_pipe(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);
-		if (waitpid(pid, &status, 0) == -1)
-			ft_perror("waitpid");
-		while (waitpid(-1, NULL, 0) > 0)
-			;
-		set_exit_code(status, ms);
-		// if (WIFSIGNALED(status))
-		// 	ms->exit_code = WTERMSIG(status) + 128;
-		// else if (WIFEXITED(status))
-		//  	ms->exit_code = WEXITSTATUS(status);
-		// if (pid > 255)
-		// 	ms->exit_code = WEXITSTATUS(status);
-		// else
-		// 	ms->exit_code = pid;
+		if (pid > 255)
+		{
+			waitpid(pid, &status, 0);
+			while (waitpid(-1, NULL, 0) > 0)
+				;
+			set_exit_code(status, ms);			
+		}
+		else
+			ms->exit_code = 1;		
 		reset_stdfds(std_fds);
 	}
 	else if (ms->nodes->type == NODE_AND || ms->nodes->type == NODE_OR)
 	{
 		save_stdfds(std_fds);
 		logical_operator_manager(ms->nodes, ms);
-		// pid = logical_operation_manager(ms->nodes, ms);
-		// if (waitpid(pid, &status, 0) == -1)
-		// 	ft_perror("waitpid");
-		// if (WIFSIGNALED(status))
-		// 	ms->exit_code = WTERMSIG(status) + 128;
-		// else if (WIFEXITED(status))
-		//  	ms->exit_code = WEXITSTATUS(status);
-		// if (pid > 255)
-		// 	ms->exit_code = WEXITSTATUS(status);
-		// else
-		// 	ms->exit_code = pid;
 		reset_stdfds(std_fds);
 	}
 	set_echoctl(0);				// fixes wc ctrl-c: if you just have wc and you use ctrl-c it returns the shell to hide ctrl-c output again

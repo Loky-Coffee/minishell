@@ -20,6 +20,7 @@
 			❌ correct EXIT_CODE (child_exit_status // …) was habe ich damit wohl gemeint?? vielelicht den Fehler bei Subshells???: (wc) || echo A
 			✅ wc | sleep 30 | sleep 30
 - ❌		Wildcards
+- ❌		single argument errorcode for "./minishell ls" should behave like "bash ls"
 - ✅		export
 		✅	basic sorting
 		✅	displays original ms->envp
