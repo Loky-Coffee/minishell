@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/30 11:45:11 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/01 20:25:53 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,8 @@ typedef enum e_builtin
 	BI_EXPORT,
 	BI_UNSET,
 	BI_ENV,
-	BI_EXIT
+	BI_EXIT,
+	BI_ECHO_NINJASHELL
 }	t_builtin;
 
 /* ************************************************************************** */
@@ -197,6 +198,15 @@ typedef struct s_cmd
 	char	path[FT_PATH_MAX];
 }			t_cmd;
 
+// s_expand_pattern_var
+typedef struct s_epv
+{
+	uint64_t		count;
+	DIR				*dir;
+	struct dirent	*entry;
+	char			pattern[FT_PATH_MAX];	
+}					t_epv;
+
 /* ************************************************************************** */
 
 // main
@@ -224,6 +234,13 @@ int				ft_lexer(t_ms *ms);
 // expender.c
 int				expand_tkn(t_token *token, t_ms *ms);
 int				expand_node(t_node *node, t_ms *ms);
+
+// wildcards.c
+void			expand_wildcard(t_token *token);
+
+// wildcards_utils.c
+int				has_wildcards(char *pattern);
+int				ft_strlchr(char *dst, const char src, size_t dstsize);
 
 // Node_Utils1
 t_tokentype		node_is_word(t_node *node);
@@ -289,6 +306,7 @@ int				tokens_size(t_token *tokens);
 void			ft_token_clear(t_token **token, void (*del)(void*));
 
 // executer
+int				ft_strncmp_ignorecase(const char *s1, const char *s2, size_t n);
 int				exec_intermediary(int fd_in, int fd_out, t_node *node, t_ms *ms);
 int				exec_manager(t_ms *ms);
 
@@ -296,6 +314,7 @@ int				exec_manager(t_ms *ms);
 int				ft_heredoc(int fd_write, char *lim);
 
 // builtins
+int				cmd_is_echo_ninjashell(t_token *token);
 int				run_builtin(int fd_in, int fd_out, t_builtin builtin, t_cmd *cmd, t_ms *ms);
 pid_t			fork_run_builtin(int fd_in, int fd_out, t_builtin builtin, t_cmd *cmd, t_ms *ms);
 int				ft_echo(t_cmd *cmd);

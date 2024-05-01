@@ -9,17 +9,21 @@
 				✅	>> f11 << f1 << f2 << f3 cat
 - ✅		expander
 - ✅		executer
-- ❌ 	Signals
+- ✅ 	Signals
 			✅ for minishell -c args
 			✅ for minishell testfile
 			✅ if OUT is no STDOUT_FILENO aka not a Terminal we don't use (tcgetattr && tcsetattr) and we should show ^C
 			✅ for minishell 
 			✅ RESET or SET SIGNALS accordingly for SUBSHELLS
 			✅ "wc" //=> returns 130 for ctrl-c
-			❌ Sigansl for HERE_DOC		(WIFEXITED(status) / WIFSIGNALED(status))
-			❌ correct EXIT_CODE (child_exit_status // …) was habe ich damit wohl gemeint?? vielelicht den Fehler bei Subshells???: (wc) || echo A
+			✅ Sigansl for HERE_DOC		(WIFEXITED(status) / WIFSIGNALED(status))
+			?❌✅? correct EXIT_CODE (child_exit_status // …) was habe ich damit wohl gemeint?? vielelicht den Fehler bei Subshells???: (wc) || echo A
 			✅ wc | sleep 30 | sleep 30
-- ❌		Wildcards
+- ✅		Wildcards
+			✅	basic implementation
+			❌	expand "*"	// BUT BASH 3.2 DOESN'T HANDLE THIS AS WELL SO WE COULD LEAVE IT AS IS 
+				echo "> >> < * ? [ ] | ; [ ] || && ( ) & # $  <<" 
+			❌	** 	=>	matches only directories
 - ❌		single argument errorcode for "./minishell ls" should behave like "bash ls"
 - ✅		export
 		✅	basic sorting
@@ -224,6 +228,10 @@ RESOURCES
 		https://en.wikipedia.org/wiki/Order_of_operations
 		Operator associativity
 		https://en.wikipedia.org/wiki/Operator_associativity
+
+-		WILDCARDS (*) - pattern matching
+		https://www.youtube.com/watch?v=fWeTjhgDt3A
+		https://www.youtube.com/watch?v=7SHV_QfVROE
 
 -		other Minishells
 		Timofei Rusanov / trusanov:	https://github.com/taaae/minishell/blob/main/include/lexer.h

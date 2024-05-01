@@ -6,11 +6,22 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 20:33:21 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/23 20:13:07 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/01 22:00:33 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+int	cmd_is_echo_ninjashell(t_token *token)
+{
+	if (RENDER_NS_HEADER == 1
+		&& token
+		&& ft_strncmp_ignorecase(token->str, "echo", 5) == 0
+		&& token->next
+		&& ft_strncmp_ignorecase(token->next->str, "$0", 3) == 0)
+		return (1);
+	return (0);
+}
 
 int	run_builtin(int fd_in, int fd_out, t_builtin builtin, t_cmd *cmd, t_ms *ms)
 {
@@ -33,8 +44,8 @@ int	run_builtin(int fd_in, int fd_out, t_builtin builtin, t_cmd *cmd, t_ms *ms)
 		exit_code = ft_env(ms);
 	else if (builtin == BI_EXIT)
 		exit_code = ft_exit(cmd, ms);
-	// if (exit_code != 0)
-	// 	ms->exit_code = exit_code;
+	else if (builtin == BI_ECHO_NINJASHELL)
+		render_ninjashell();
 	ft_close_fd(fd_in, fd_out);
 	return (exit_code);
 }
@@ -64,6 +75,8 @@ pid_t	fork_run_builtin(int fd_in, int fd_out, t_builtin builtin, t_cmd *cmd, t_m
 			exit_code = ft_env(ms);
 		else if (builtin == BI_EXIT)
 			exit_code = ft_exit(cmd, ms);
+		else if (builtin == BI_ECHO_NINJASHELL) // sollen wir das lassen ???
+			render_ninjashell();
 		if (exit_code != 0)
 			ms->exit_code = exit_code;
 		ft_close_fd(fd_in, fd_out);

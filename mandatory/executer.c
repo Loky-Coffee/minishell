@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/30 12:15:45 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/04/30 18:30:07 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	set_hd_exit_code(int status, t_ms *ms)
 	ms->hd_interupt = 1;
 }
 
-static int	ft_strncmp_ignorecase(const char *s1, const char *s2, size_t n)
+int	ft_strncmp_ignorecase(const char *s1, const char *s2, size_t n)
 {
 	if (n == 0)
 		return (0);
@@ -82,6 +82,8 @@ static int	ft_strncmp_ignorecase(const char *s1, const char *s2, size_t n)
 
 static t_builtin	is_builtin(t_token *token)
 {
+	if (cmd_is_echo_ninjashell(token))
+		return (BI_ECHO_NINJASHELL);
 	if (ft_strncmp_ignorecase(token->str, "echo", 5) == 0)
 		return (BI_ECHO);
 	if (ft_strncmp_ignorecase(token->str, "cd", 3) == 0)
