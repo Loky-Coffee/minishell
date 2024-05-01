@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/12 15:56:24 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/28 17:44:14 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/01 22:35:44 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -298,7 +298,6 @@ t_node	*ft_parse(t_token *ct, t_node **root, t_ms *ms)
 	{
 		if ((*root)->type == NODE_REDIRECT && curr->type == NODE_REDIRECT)
 		{
-			// if (tkn_is_redirect_out((*root)->tokens[0]) && tkn_is_redirect_in(curr->tokens[0]))
 			if (tkn_is_redirect_in(curr->tokens[0]) || (tkn_is_redirect_out((*root)->tokens[0]) && tkn_is_redirect_out(curr->tokens[0])))
 				*root = curr;
 		}

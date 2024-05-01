@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/01 20:25:53 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/01 23:08:39 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,6 +225,7 @@ int				restore_history(t_ms *ms);
 // signals.c
 void			set_echoctl(int enable);
 void			sigint_parent_handler(int signal, siginfo_t *siginfo, void *param);
+// void			sigquit_child_handler(int signal);
 void			set_signal_handler(int signal, void (handler)(int));
 void			set_signal_sigaction(int signal, void (handler)(int, siginfo_t *, void *));
 

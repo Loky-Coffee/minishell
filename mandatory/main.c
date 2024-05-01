@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/30 10:27:06 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/01 23:22:41 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,40 +165,6 @@ int	main(int argc, char **argv, char **env)
 			printf("exit\n");
 			continue ;
 		}
-
-
-
-		// tester einstellungen bitte nicht losen!
-		// if (isatty(fileno(stdin))) // Überprüfe, ob die Eingabe von der Konsole kommt
-		// {
-		// 	create_prompt(&ms);
-		// 	ms.line = readline(ms.prompt);
-		// 	if (ms.line)
-		// 		dump_history(&ms);
-		// 	else
-		// 	{
-		// 		ms.run = 0;
-		// 		printf("exit\n");
-		// 		continue;
-		// 	}
-		// }
-		// else // Wenn die Eingabe von einem anderen Programm/Testframework kommt
-		// {
-		// 	char *line;
-		// 	line = get_next_line(fileno(stdin));
-		// 	ms.prompt = ft_strtrim(line, "\n");
-		// 	free(line);
-		// 	ms.line = readline(ms.prompt);
-		// 	if (ms.line)
-		// 		dump_history(&ms);
-		// 	else
-		// 	{
-		// 		ms.run = 0;
-		// 		printf("exit\n");
-		// 		continue;
-		// 	}
-		// }
-
 
 		if (ft_strncmp(ms.line, "\0", 1) == 0)
 			continue ;

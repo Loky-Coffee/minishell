@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 20:33:21 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/01 22:00:33 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/01 22:11:13 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ pid_t	fork_run_builtin(int fd_in, int fd_out, t_builtin builtin, t_cmd *cmd, t_m
 		dup2(fd_in, STDIN_FILENO);
 		dup2(fd_out, STDOUT_FILENO);
 		exit_code = 1;
-		if (builtin == BI_ECHO)
+		if (builtin == BI_ECHO || builtin == BI_ECHO_NINJASHELL)
 			exit_code = ft_echo(cmd);
 		else if (builtin == BI_CD)
 			exit_code = ft_cd(cmd, ms);
@@ -75,8 +75,8 @@ pid_t	fork_run_builtin(int fd_in, int fd_out, t_builtin builtin, t_cmd *cmd, t_m
 			exit_code = ft_env(ms);
 		else if (builtin == BI_EXIT)
 			exit_code = ft_exit(cmd, ms);
-		else if (builtin == BI_ECHO_NINJASHELL) // sollen wir das lassen ???
-			render_ninjashell();
+		// else if (builtin == BI_ECHO_NINJASHELL) // sollen wir das lassen ???
+		// 	render_ninjashell();
 		if (exit_code != 0)
 			ms->exit_code = exit_code;
 		ft_close_fd(fd_in, fd_out);

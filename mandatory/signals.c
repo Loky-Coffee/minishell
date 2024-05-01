@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 15:27:28 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/30 10:29:18 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/01 23:08:33 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,12 @@ void	sigint_parent_handler(int signal, siginfo_t *siginfo, void *param)
 			write(1, "\n", 1);
 	}
 }
+
+// void	sigquit_child_handler(int signal)
+// {
+// 	fprintf(stderr, "Quit: %i\n", signal);
+// 	exit(signal);
+// }
 
 void	set_signal_handler(int signal, void (handler)(int))
 {

@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/30 18:30:07 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/01 23:22:56 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -275,7 +275,6 @@ pid_t	exec_fork_builtin(int fd_in, int fd_out, t_builtin builtin, t_node *node, 
 	return (pid);
 }
 
-
 pid_t	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 {
 	pid_t	pid;
@@ -289,6 +288,7 @@ pid_t	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 		set_echoctl(1);
 		set_signal_handler(SIGINT, SIG_DFL);
 		set_signal_handler(SIGQUIT, SIG_DFL);
+		// set_signal_handler(SIGQUIT, sigquit_child_handler);
 		ft_close_fd(node->cfd0, node->cfd1);
 		if (expand_node(node, ms))
 			return (-1);

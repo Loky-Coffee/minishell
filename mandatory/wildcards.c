@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 18:32:04 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/01 21:39:54 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/01 23:19:27 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,6 @@ static int	is_matching(size_t i, size_t j, char *str, char *pattern)
 		}
 		i++;
 	}
-	// print_mat(mat, str, pattern);
 	return (mat[--i * 2048 + --j]);
 }
 
