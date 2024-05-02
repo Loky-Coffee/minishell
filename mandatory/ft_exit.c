@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 10:24:09 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/29 20:27:09 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/03 01:03:25 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,10 +91,7 @@ unsigned char	ft_exit(t_cmd *cmd, t_ms *ms)
 		if (is_long(cmd->args[1]))
 		{
 			if (ac > 2)
-			{
-				ft_error("exit", "too many arguments", NULL);
-				return (1);
-			}
+				return (ft_error("exit", "too many arguments", NULL), 1);
 			exit_code = ft_atol(cmd->args[1]);
 		}
 		else

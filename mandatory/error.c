@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 18:56:31 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/28 14:38:21 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/03 01:16:05 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ void	ft_cmd_error(char *msg, char *cmd, int error_code)
 		ft_putstr_fd(cmd, 2);
 	ft_putstr_fd(": ", 2);
 	if (error_code == 126)
-		// ft_putstr_fd(strerror(errno), 2);
 		ft_putstr_fd("is a directory", 2);
 	else
 		ft_putstr_fd("command not found", 2);

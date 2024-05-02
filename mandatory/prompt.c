@@ -6,31 +6,12 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 23:53:16 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/02 16:41:09 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/03 00:33:40 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-/*
-PROBLEM: MULTIBLE NWELINE NACH test BEFEHL.---------------------------------------------
-ninjaSHELL: /minishell $
-ninjaSHELL: /minishell $
-ninjaSHELL: /minishell $ test
-
-ninjaSHELL: /minishell $
-
-ninjaSHELL: /minishell $
-
-ninjaSHELL: /minishell $
-
-ninjaSHELL: /minishell $ echo a
-a
-ninjaSHELL: /minishell $
-ninjaSHELL: /minishell $
-ninjaSHELL: /minishell $
-ninjaSHELL: /minishell $
-*/
 int	create_prompt(t_ms *ms)
 {
 	size_t	size;
@@ -50,8 +31,6 @@ int	create_prompt(t_ms *ms)
 	ms->prompt = (char *)ft_calloc(size, sizeof(char));
 	if (ms->prompt == NULL)
 		return (1);
-	// if (ms->exit_code > 0)
-	// 	ft_strlcat(ms->prompt, "\n", size);
 	ft_strlcat(ms->prompt, LIGHTGREEN, size);
 	ft_strlcat(ms->prompt, NINJASHELL, size);
 	ft_strlcat(ms->prompt, ": /", size);

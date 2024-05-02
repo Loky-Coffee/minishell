@@ -6,66 +6,11 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 13:57:42 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/02 16:52:04 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/03 01:23:04 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
-
-int	is_valid_envkey(char *key)
-{
-	int	i;
-
-	i = 0;
-	if (key[i] == '_' || ft_isalpha(key[i]))
-	{
-		i++;
-		while (key[i])
-		{
-			if (ft_isalnum(key[i]) || key[i] == '_')
-				i++;
-			else
-				return (0);
-		}
-	}
-	else
-		return (0);
-	return (1);
-}
-
-int	add_new_index_to_envp(t_ms *ms, int len)
-{
-	char	**new_envp;
-	int		j;
-
-	j = 0;
-	new_envp = NULL;
-	new_envp = ft_calloc(len + 2, sizeof(char *));
-	if (new_envp == NULL)
-		return (-1);
-	while (j < len)
-	{
-		new_envp[j] = ms->envp[j];
-		j++;
-	}
-	free(ms->envp);
-	ms->envp = new_envp;
-	return (0);
-}
-
-static void	set_shlvl(t_ms *ms)
-{
-	int		lvl;
-	char	lvlstr[FT_PATH_MAX];
-	char	*newlvl;
-
-	ft_get_env_value(ms, lvlstr, "SHLVL");
-	lvl = ft_atoi(lvlstr);
-	lvl++;
-	newlvl = ft_itoa(lvl);
-	ft_setenv("SHLVL", newlvl, ms);
-	free(newlvl);
-}
 
 void	load_env(t_ms *ms, char **env)
 {
@@ -78,7 +23,7 @@ void	load_env(t_ms *ms, char **env)
 	ms->envp = ft_calloc(count_pointer + 1, sizeof(char *));
 	while (env[i])
 	{
-		if(ft_strncmp(env[i],"OLDPWD", 6) == 0)
+		if (ft_strncmp(env[i], "OLDPWD", 6) == 0)
 			ms->envp[i] = ft_strdup("OLDPWD");
 		else
 			ms->envp[i] = ft_strdup(env[i]);
@@ -163,10 +108,11 @@ int	ft_setenv(char *key, char *value, t_ms *ms)
 	if (!is_valid_envkey(key))
 		return (1);
 	i = 0;
-	while (ms->envp[i] != NULL && strncmp(ms->envp[i], key, ft_strlen(key)) != 0)
+	while (ms->envp[i] != NULL \
+	&& strncmp(ms->envp[i], key, ft_strlen(key)) != 0)
 		i++;
 	if (ms->envp[i] == NULL && add_new_index_to_envp(ms, i) == -1)
-			return (1);
+		return (1);
 	len = ft_strlen(key) + ft_strlen(value) + 2;
 	nkv = (char *)ft_calloc(len, sizeof(char));
 	if (nkv == NULL)

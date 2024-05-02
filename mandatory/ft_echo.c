@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 02:35:00 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/18 01:44:59 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/03 01:04:41 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static int	set_flag(char *str)
 			else if (str[i])
 			{
 				flag = 0;
-				break;
+				break ;
 			}
 			i++;
 		}
@@ -50,9 +50,10 @@ int	ft_echo(t_cmd *cmd)
 		i++;
 	while (cmd->tokens[i] != NULL)
 	{
-		if (!is_operator(cmd->tokens[i]->str) && !is_single_token(*cmd->tokens[i]->str))
+		if (!is_operator(cmd->tokens[i]->str) \
+		&& !is_single_token(*cmd->tokens[i]->str))
 			printf("%s", cmd->tokens[i]->str);
-		if(cmd->tokens[i + 1])
+		if (cmd->tokens[i + 1])
 			printf(" ");
 		i++;
 	}

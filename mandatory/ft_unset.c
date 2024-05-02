@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   ft_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 02:33:21 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/23 13:03:33 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/03 00:49:06 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static int is_valid_identifier(char *key)
+static int	is_valid_identifier(char *key)
 {
-	int i;
+	int	i;
 
 	if (key[0] == '_' || ft_isalpha(key[0]))
 	{

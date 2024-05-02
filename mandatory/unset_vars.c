@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset_vars.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 17:15:41 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/23 14:57:52 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/02 23:54:56 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ static int	add_new_index_to_dptr(char ***arr)
 	len = 0;
 	while ((*arr) && (*arr)[len])
 		len++;
-	// new_arr = NULL;
 	new_arr = ft_calloc(len + 2, sizeof(char *));
 	if (new_arr == NULL)
 		return (1);
@@ -57,11 +56,10 @@ static int	key_is_existing(char *key, char **env)
 int	ft_add_unset_envvar(char *key, t_ms *ms)
 {
 	size_t	i;
-	
 
 	i = 0;
-	
-	if (key_is_existing(key, ms->envp) || key_is_existing(key, ms->unset_envvars))
+	if (key_is_existing(key, ms->envp)
+		|| key_is_existing(key, ms->unset_envvars))
 		return (0);
 	if (add_new_index_to_dptr(&ms->unset_envvars))
 		return (1);

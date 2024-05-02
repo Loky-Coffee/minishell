@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   history.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 20:44:33 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/02 22:13:40 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/03 00:48:23 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static char	*set_path(t_ms *ms)
 	{
 		ft_get_env_value(ms, pn, "_");
 		slash = ft_strrchr(pn, '/');
-		if (slash == NULL)					 //(ft_strncmp((slash + 1), "make", 5) == 0)
+		if (slash == NULL)
 		{
 			ft_memmove(pn, ms->av[0], ft_strlen(ms->av[0]) + 1);
 			slash = ft_strrchr(pn, '/');

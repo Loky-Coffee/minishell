@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 00:41:52 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/01 21:45:13 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/03 01:05:28 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,10 @@ static int	ft_cd2(t_cmd *cmd, t_ms *ms, char *old_cwd, char *current_cwd)
 	{
 		ft_get_env_value(ms, old_cwd, "PWD");
 		if (ft_chdir(ms, cmd->tokens[0]->next->str) != 0)
-			return (ft_error("cd", cmd->tokens[0]->next->str, strerror(errno)), 1);
+		{
+			ft_error("cd", cmd->tokens[0]->next->str, strerror(errno));
+			return (1);
+		}
 	}
 	return (0);
 }

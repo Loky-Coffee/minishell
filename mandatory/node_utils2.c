@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   node_utils2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 16:34:41 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/20 18:15:01 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/03 00:38:57 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ int	create_node(t_token **token, t_node **node)
 	n->left = NULL;
 	n->right = NULL;
 	n->tokens = NULL;
-	n->cfd0	= -1;
-	n->cfd1	= -1;
+	n->cfd0 = -1;
+	n->cfd1 = -1;
 	*node = n;
 	return (0);
 }
@@ -50,10 +50,7 @@ t_node	*make_word(t_token **ct)
 	}
 	n->tokens = (t_token **)ft_calloc(i + 1, sizeof(t_token));
 	if (n->tokens == NULL)
-	{
-		free(n);
-		return (NULL);
-	}
+		return (free(n), NULL);
 	i = 0;
 	while (*ct && !tkn_is_operator(*ct) && !tkn_is_redirect(*ct))
 	{
@@ -83,7 +80,7 @@ t_node	*make_subshell(t_token **ct)
 
 t_node	*make_operator(t_token **ct)
 {
-	t_node *n;
+	t_node	*n;
 
 	if (create_node(ct, &n))
 		return (NULL);

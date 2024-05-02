@@ -3,53 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 05:50:33 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/01 21:53:40 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/03 01:08:28 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
-
-// void expand_wildcards(t_token **token)
-// {
-// 	DIR				*dir;
-// 	struct dirent	*entry;
-// 	char			expanded[FT_PATH_MAX] = {0};
-// 	char			str_without_star[FT_PATH_MAX] = {0};
-// 	int				i;
-// 	int				j;
-
-// 	i = 0;
-// 	j = 0;
-// 	while ((*token)->str[i] != '\0')
-// 	{
-// 		if ((*token)->str[i] != '*')
-// 		{
-// 			str_without_star[j] = (*token)->str[i];
-// 			j++;
-// 		}
-// 		i++;
-// 	}
-// 	dir = opendir(".");
-// 	if (dir != NULL)
-// 	{
-// 		while ((entry = readdir(dir)) != NULL)
-// 		{
-// 			if (!*str_without_star)
-// 				printf("no str\n");
-// 			if(ft_strnstr(entry->d_name, str_without_star, ft_strlen(entry->d_name)) != 0)
-// 			{
-// 				ft_strlcat(expanded, " ", ft_strlen(expanded) + 2);
-// 				ft_strlcat(expanded, entry->d_name, ft_strlen(expanded) + ft_strlen(entry->d_name) + 1);
-// 			}
-// 		}
-// 		closedir(dir);
-// 	}
-// 	(*token)->str = ft_calloc(ft_strlen(expanded) + 1, sizeof(char));
-// 	ft_strlcpy((*token)->str, expanded, ft_strlen(expanded) + 1);
-// }
 
 static int	set_key(char *str, char *dst, int *pos)
 {
@@ -108,18 +69,19 @@ static void	expand_quote(char *qm, char *dst, int *j, char *src)
 	else if (*qm == *src)
 		*qm = '\0';
 	else
-		dst[(*j)++] = *src;	
+		dst[(*j)++] = *src;
 }
 
-int expand_tkn(t_token *token, t_ms *ms)
+int	expand_tkn(t_token *token, t_ms *ms)
 {
 	char	expstr[FT_PATH_MAX];
 	int		i;
 	int		j;
-	char	quote_mode = '\0';
+	char	quote_mode;
 
 	i = 0;
 	j = 0;
+	quote_mode = '\0';
 	expand_wildcard(token);
 	ft_memset(expstr, 0, sizeof(expstr));
 	while (token->str[i] != '\0')
@@ -128,7 +90,9 @@ int expand_tkn(t_token *token, t_ms *ms)
 			expand_single_char(expstr, &j, token->str, &i);
 		else if (token->str[i] == '\"' || token->str[i] == '\'')
 			expand_quote(&quote_mode, expstr, &j, &token->str[i]);
-		else if (token->str[i] == '$' && (token->str[i + 1] != '\0' && token->str[i + 1] != '\"' && token->str[i + 1] != ' ') && quote_mode != '\'')
+		else if (token->str[i] == '$' && (token->str[i + 1] != '\0' \
+		&& token->str[i + 1] != '\"' && token->str[i + 1] != ' ') \
+		&& quote_mode != '\'')
 		{
 			expand_variable(&i, token, expstr, ms);
 			j = ft_strlen(expstr);

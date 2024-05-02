@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_errors.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/21 15:19:30 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/02 23:06:28 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/03 00:37:20 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static void	set_error(t_token *token, t_ms *ms)
 {
 	ms->parse_error = 1;
-	ms->parse_errtkn = token;	
+	ms->parse_errtkn = token;
 }
 
 static int	check_node(t_node *node, t_ms *ms)
@@ -35,7 +35,7 @@ static int	check_node(t_node *node, t_ms *ms)
 	else if (node->type == NODE_AND || node->type == NODE_OR)
 	{
 		if (node->left == NULL)
-			return (set_error(node->tokens[0], ms), 1);		
+			return (set_error(node->tokens[0], ms), 1);
 	}
 	return (0);
 }

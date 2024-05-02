@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/02 16:39:27 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/03 01:30:19 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -245,7 +245,6 @@ int				has_wildcards(char *pattern);
 int				ft_strlchr(char *dst, const char src, size_t dstsize);
 
 // Node_Utils1
-t_tokentype		node_is_word(t_node *node);
 t_tokentype		node_is_pipe(t_node *node);
 t_tokentype		node_is_redirect(t_node *node);
 t_tokentype		node_is_andor(t_node *node);
@@ -290,15 +289,13 @@ t_tokentype		is_double_token(char *s);
 t_tokentype		is_tripple_token(char *s);
 t_tokentype		is_operator(char *s);
 t_tokentype		is_word(char *str);
+
+// uToken2
 t_tokentype		is_not_word(char *s);
-t_tokentype		tkn_is_word(t_token *token);
 t_tokentype		tkn_is_operator(t_token *token);
 t_tokentype		tkn_is_redirect(t_token *token);
 t_tokentype		tkn_is_redirect_out(t_token *token);
 t_tokentype		tkn_is_redirect_in(t_token *token);
-t_tokentype		tkn_is_pipe(t_token *token);
-t_tokentype		tkn_is_andor(t_token *token);
-t_tokentype		exptkn(t_token *token, t_tokentype type);
 
 // token_list_utils
 t_token			*ft_token_new(void);
@@ -339,14 +336,18 @@ void			ft_error(char *s1, char *s2, char *s3);
 void			ft_perror(char *str);
 void			ft_cmd_error(char *msg, char *cmd, int error_code);
 
+
 // environment.c
-int				is_valid_envkey(char *key);
-int				add_new_index_to_envp(t_ms *ms, int len);
 void			load_env(t_ms *ms, char **env);
 char			*ft_env_getkey(char *str);
 char			*ft_env_getvalue(char *str);
 int				ft_get_env_value(t_ms *ms, char *str, char *key);
 int				ft_setenv(char *key, char *value, t_ms *ms);
+
+// environment2.c
+int				is_valid_envkey(char *key);
+int				add_new_index_to_envp(t_ms *ms, int len);
+void			set_shlvl(t_ms *ms);
 
 /* ************************************************************************** */
 
