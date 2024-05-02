@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/02 16:34:00 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/02 19:23:33 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -397,6 +397,13 @@ static int	redirect_out(int *fd_out, t_node *node, t_ms *ms)
 	return (EXIT_SUCCESS);
 }
 
+static int	is_redirect_wildcards(char *str)
+{
+	if (*str == '*')
+		return (1);
+	return (0);
+}
+
 static pid_t	redirect_manager(int fd_in, int fd_out, t_node *node, t_ms *ms)
 {
 	pid_t	pid;
@@ -414,12 +421,16 @@ static pid_t	redirect_manager(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	}
 	else if (node->tokens[0]->type == TOKEN_LESS && node->tokens[1])
 	{
+		if (is_redirect_wildcards(node->tokens[1]->str))
+			return (ft_error("*", "ambiguous redirect", NULL), 1);
 		if (redirect_in(&fd_in, node, ms) > 0)
 			return (1);
 		pid = exec_intermediary(fd_in, fd_out, node->left, ms);
 	}
 	else if (node->tokens[0]->type == TOKEN_GREATER || node->tokens[0]->type == TOKEN_DGREATER)
 	{
+		if (is_redirect_wildcards(node->tokens[1]->str))
+			return (ft_error("*", "ambiguous redirect", NULL), 1);
 		if (redirect_out(&fd_out, node, ms) > 0)
 			return (1);
 		pid = exec_intermediary(fd_in, fd_out, node->left, ms);
@@ -461,20 +472,28 @@ int	exec_interm_wait(int fd_in, int fd_out, t_node *node, t_ms *ms)
 
 int	logical_operator_manager(t_node *node, t_ms *ms)
 {
+	int	std_fds[2];
 	int	ec;
 
 	ec = 0;
+	save_stdfds(std_fds);
 	if (node->type == NODE_AND)
 	{
 		if (node->left)
+		{
 			ec = exec_interm_wait(STDIN_FILENO, STDOUT_FILENO, node->left, ms);
+			reset_stdfds(std_fds);
+		}
 		if (node->right && ms->exit_code == 0)
 			ec = exec_interm_wait(STDIN_FILENO, STDOUT_FILENO, node->right, ms);
 	}
 	else if (node->type == NODE_OR)
 	{
 		if (node->left)
+		{
 			ec = exec_interm_wait(STDIN_FILENO, STDOUT_FILENO, node->left, ms);
+			reset_stdfds(std_fds);
+		}
 		if (node->right && ms->exit_code != 0)
 			ec = exec_interm_wait(STDIN_FILENO, STDOUT_FILENO, node->right, ms);
 	}

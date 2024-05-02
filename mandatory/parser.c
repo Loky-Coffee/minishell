@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/12 15:56:24 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/01 22:35:44 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/02 23:07:27 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,7 +168,6 @@ t_node	*push_redirectout_into_place(t_node *curr, t_node *next)
 			next = next->left;
 	if (curr->tokens[0]->type == TOKEN_LESS || curr->tokens[0]->type == TOKEN_DLESS || (tkn_is_redirect_out(curr->tokens[0]) && tkn_is_redirect_out(next->tokens[0])))  // Aris was sagen wir hierzu?? mit den 2 func ist es serh viel einfacher, als wenn wenn wir alle 4 faelle aufschreiben… ich weiss ja auch nicht ¯\_(ツ)_/¯
 	{
-		// curr == R_IN
 		if (next->parent)
 		{
 			curr->parent = next->parent;
@@ -180,8 +179,6 @@ t_node	*push_redirectout_into_place(t_node *curr, t_node *next)
 	}
 	else
 	{
-		// curr == R_OUT
-		// ich muss das hier richtig machen
 		if (next->left)
 		{
 			next->left->parent = curr;
@@ -224,7 +221,7 @@ t_node	*insert_pipe(t_node *curr, t_node *next, t_ms *ms)
 {
 	if (next == NULL || node_is_andor(next))
 		return (parse_error(curr->tokens[0], ms), NULL);
-	if (next->type == NODE_COMMAND || next->type == NODE_SUBSHELL || next->type == NODE_REDIRECT) // || next->type == NODE_SUBSHELL
+	if (next->type == NODE_COMMAND || next->type == NODE_SUBSHELL || next->type == NODE_REDIRECT)
 	{
 		if (next->parent)
 		{
@@ -255,7 +252,7 @@ t_node	*insert_operator(t_node *curr, t_node *next, t_ms *ms)
 {
 	if (next == NULL || node_is_andor(next))
 		return (parse_error(curr->tokens[0], ms), NULL);
-	if (next->type == NODE_COMMAND || next->type == NODE_SUBSHELL || next->type == NODE_REDIRECT) // next->type == || NODE_SUBSHELL
+	if (next->type == NODE_COMMAND || next->type == NODE_SUBSHELL || next->type == NODE_REDIRECT)
 		return (insert_tree_right(curr, next));
 	else if (next->type == NODE_PIPE)
 	{

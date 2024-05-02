@@ -6,33 +6,37 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/21 15:19:30 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/30 11:42:44 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/02 23:06:28 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
+static void	set_error(t_token *token, t_ms *ms)
+{
+	ms->parse_error = 1;
+	ms->parse_errtkn = token;	
+}
+
 static int	check_node(t_node *node, t_ms *ms)
 {
 	if (node == NULL)
 		return (0);
-	// if (node->type == NODE_COMMAND)
-	// 	;
-	// else if (node->type == NODE_SUBSHELL)
-	// 	;
-	// else if (node->type == NODE_REDIRECT)
-	// 	;
+	else if (node->type == NODE_REDIRECT)
+	{
+		if (node->tokens[0] && node->tokens[1] == NULL)
+			return (set_error(node->tokens[0], ms), 1);
+	}
 	else if (node->type == NODE_PIPE)
 	{
 		if (node->left == NULL || node->right == NULL)
-		{
-			ms->parse_error = 1;
-			ms->parse_errtkn = node->tokens[0];
-			return (1);
-		}
+			return (set_error(node->tokens[0], ms), 1);
 	}
-	// else if (node->type == NODE_AND || node->type == NODE_OR)
-	// 	;
+	else if (node->type == NODE_AND || node->type == NODE_OR)
+	{
+		if (node->left == NULL)
+			return (set_error(node->tokens[0], ms), 1);		
+	}
 	return (0);
 }
 

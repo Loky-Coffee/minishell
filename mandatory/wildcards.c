@@ -6,39 +6,11 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 18:32:04 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/01 23:19:27 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/02 23:14:16 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
-
-// void	print_mat(char *mat, const char *str, const char *pattern)
-// {
-// 	// Delete This function
-// 	// it's for DEBUGGING only
-// 	// Print mat
-// 	size_t	i;
-// 	size_t	j;
-
-// 	fprintf(stderr, "\n");
-// 	i = 0;
-// 	while (i < ft_strlen(str) - 1 + 3)
-// 	{
-// 		j = 0;
-// 		while  (j < ft_strlen(pattern) - 1 + 3)
-// 		{
-// 			if (mat[i * 2048 + j] == '\0')
-// 				fprintf(stderr, "0");
-// 			else if (mat[i * 2048 + j] == 1)
-// 				fprintf(stderr, "1");
-// 			else
-// 				fprintf(stderr, "%c", mat[i * 2048 + j]);
-// 			j++;
-// 		}
-// 		fprintf(stderr, "\n");
-// 		i++;
-// 	}
-// }
 
 static void	compress_wildcard_pattern(char *pattern)
 {
@@ -113,10 +85,8 @@ static int	is_matching(size_t i, size_t j, char *str, char *pattern)
 	return (mat[--i * 2048 + --j]);
 }
 
-static int	expand_pattern(char *pattern, char *expstr)
+static int	expand_pattern(t_epv epv, char *pattern, char *expstr)
 {
-	t_epv	epv;
-
 	if (has_wildcards(pattern))
 		return (1);
 	epv.dir = opendir(".");
@@ -128,7 +98,8 @@ static int	expand_pattern(char *pattern, char *expstr)
 	epv.entry = readdir(epv.dir);
 	while (epv.entry)
 	{
-		if (epv.entry->d_name[0] != '.' && is_matching(2, 2, epv.entry->d_name, epv.pattern))
+		if (epv.entry->d_name[0] != '.'
+			&& is_matching(2, 2, epv.entry->d_name, epv.pattern))
 		{
 			if (epv.count)
 				ft_strlcat(expstr, " ", FT_PATH_MAX);
@@ -148,7 +119,9 @@ void	expand_wildcard(t_token *token)
 	int		j;
 	char	expstr[FT_PATH_MAX];
 	char	pattern[FT_PATH_MAX];
+	t_epv	epv;
 
+	epv = (t_epv){0};
 	if (token == NULL || token->str == NULL || token->str[0] == '\0')
 		return ;
 	i = 0;
@@ -161,8 +134,9 @@ void	expand_wildcard(t_token *token)
 			ft_strlchr(expstr, token->str[i++], FT_PATH_MAX);
 		while (token->str[i] && !ft_isspace(token->str[i]))
 			pattern[j++] = token->str[i++];
-		if (expand_pattern(pattern, expstr))
+		if (expand_pattern(epv, pattern, expstr))
 			ft_strlcat(expstr, pattern, FT_PATH_MAX);
+		/// ft_split arguments…………
 	}
 	free(token->str);
 	token->str = ft_strdup(expstr);
