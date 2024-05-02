@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   environment.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 13:57:42 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/24 14:47:58 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/02 16:52:04 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static void	set_shlvl(t_ms *ms)
 	int		lvl;
 	char	lvlstr[FT_PATH_MAX];
 	char	*newlvl;
-	
+
 	ft_get_env_value(ms, lvlstr, "SHLVL");
 	lvl = ft_atoi(lvlstr);
 	lvl++;
@@ -78,7 +78,10 @@ void	load_env(t_ms *ms, char **env)
 	ms->envp = ft_calloc(count_pointer + 1, sizeof(char *));
 	while (env[i])
 	{
-		ms->envp[i] = ft_strdup(env[i]);
+		if(ft_strncmp(env[i],"OLDPWD", 6) == 0)
+			ms->envp[i] = ft_strdup("OLDPWD");
+		else
+			ms->envp[i] = ft_strdup(env[i]);
 		i++;
 	}
 	ms->envp[i] = NULL;
@@ -156,7 +159,7 @@ int	ft_setenv(char *key, char *value, t_ms *ms)
 	size_t	i;
 	size_t	len;
 	char	*nkv;
-	
+
 	if (!is_valid_envkey(key))
 		return (1);
 	i = 0;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/01 23:22:56 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/02 16:34:00 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	set_exit_code(int status, t_ms *ms)
 	if (WIFSIGNALED(status))
 		ms->exit_code = 128 + WTERMSIG(status);
 	else if (WIFEXITED(status))
-		ms->exit_code = WEXITSTATUS(status);	
+		ms->exit_code = WEXITSTATUS(status);
 }
 
 void	set_hd_exit_code(int status, t_ms *ms)
@@ -150,13 +150,13 @@ static void	ft_collaps_args(int i, t_cmd *cmd)
 		cmd->args[i] = cmd->args[i + 1];
 		i++;
 	}
-	cmd->args[i] = NULL;	
+	cmd->args[i] = NULL;
 }
 
 static void	ft_cmd_is_empty(int fd_in, int fd_out, t_cmd *cmd, t_ms *ms)
 {
 	int	i;
-	
+
 	i = 0;
 	if (cmd->cmdpth[0] == '\0')
 	{
@@ -169,7 +169,7 @@ static void	ft_cmd_is_empty(int fd_in, int fd_out, t_cmd *cmd, t_ms *ms)
 		if (cmd->args == NULL || (cmd->args[0] && cmd->args[0][0] == '\0'))
 		{
 			ft_close_fd(fd_in, fd_out);
-			terminate(ms, cmd, 0);		
+			terminate(ms, cmd, 0);
 		}
 		free(cmd->cmdpth);
 		cmd->cmdpth = ft_strdup(cmd->args[0]);
@@ -193,12 +193,12 @@ static void	ft_cmd_is_dot(t_cmd *cmd, t_ms *ms)
 		{
 			ft_perror(cmd->cmdpth);
 			terminate(ms, cmd, 127);
-		}		
+		}
 		if (access(cmd->cmdpth, X_OK) != 0)
 		{
 			ft_perror(cmd->cmdpth);
 			terminate(ms, cmd, 126);
-		}		
+		}
 	}
 }
 
@@ -310,6 +310,7 @@ pid_t	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 			ft_close_fd(fd_in, fd_out);
 			terminate(ms, &cmd, exit_code);
 		}
+		// ft_setenv("_", cmd.cmdpth, ms);
 		execve(cmd.cmdpth, cmd.args, ms->envp);
 		ft_perror(cmd.args[0]);
 		ft_close_fd(fd_in, fd_out);
@@ -392,7 +393,7 @@ static int	redirect_out(int *fd_out, t_node *node, t_ms *ms)
 	else
 		*fd_out = open(node->tokens[1]->str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (*fd_out < 0)
-		return (ft_error(node->tokens[1]->str, "Permission denied", NULL), EXIT_FAILURE);
+		return (ft_error(node->tokens[1]->str, strerror(errno), NULL), EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
 
@@ -451,7 +452,7 @@ int	exec_interm_wait(int fd_in, int fd_out, t_node *node, t_ms *ms)
 {
 	pid_t	pid;
 	int		status;
-	
+
 	pid = exec_intermediary(fd_in, fd_out, node, ms);
 	waitpid(pid, &status, 0);
 	set_exit_code(status, ms);
@@ -551,10 +552,10 @@ int	exec_manager(t_ms *ms)
 			waitpid(pid, &status, 0);
 			while (waitpid(-1, NULL, 0) > 0)
 				;
-			set_exit_code(status, ms);			
+			set_exit_code(status, ms);
 		}
 		else
-			ms->exit_code = 1;		
+			ms->exit_code = 1;
 		reset_stdfds(std_fds);
 	}
 	else if (ms->nodes->type == NODE_AND || ms->nodes->type == NODE_OR)

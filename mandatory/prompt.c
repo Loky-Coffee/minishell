@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 23:53:16 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/18 02:15:20 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/02 16:41:09 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,8 @@ int	create_prompt(t_ms *ms)
 	// if (ms->exit_code > 0)
 	// 	ft_strlcat(ms->prompt, "\n", size);
 	ft_strlcat(ms->prompt, LIGHTGREEN, size);
-	ft_strlcat(ms->prompt, "ninjaSHELL: /", size);
+	ft_strlcat(ms->prompt, NINJASHELL, size);
+	ft_strlcat(ms->prompt, ": /", size);
 	ft_strlcat(ms->prompt, last_slash, size);
 	ft_strlcat(ms->prompt, " $ ", size + 1);
 	ft_strlcat(ms->prompt, RESET, size + 1);

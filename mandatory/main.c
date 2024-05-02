@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/01 23:22:41 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/02 00:15:20 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,7 +168,6 @@ int	main(int argc, char **argv, char **env)
 
 		if (ft_strncmp(ms.line, "\0", 1) == 0)
 			continue ;
-
 		// TOKENIZE IT
 		if (ft_lexer(&ms))
 		{

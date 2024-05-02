@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 18:27:30 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/30 11:54:24 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/02 17:02:14 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ static size_t	get_envp_size(char **envp)
 
 static int	add_unset_vars(char ***sortenv, t_ms *ms)
 {
-	size_t	i[3];	
+	size_t	i[3];
 	char	**new_sortenv;
 
 	if (ms->unset_envvars == NULL)
@@ -221,7 +221,10 @@ int	ft_export(int i, t_node *node, t_ms *ms)
 		return (ft_export_print(ms));
 	if (has_valid_key(0, ms, key) == 1)
 	{
-		if (ms->tokens->next)
+		if (ms->tokens->next && ms->tokens->next->str[0] == '-')
+			return (ft_error("export", ms->tokens->next->str, \
+			"invalid option"), 2);
+		else if (ms->tokens->next)
 			return (ft_error("export", ms->tokens->next->str, \
 			"not a valid identifier"), 1);
 		else

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/01 23:08:39 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/02 16:39:27 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@
 # include "../libft/libft.h"
 
 /* ************************************************************************** */
-# define NINJASHELL "ninjaSHELL"
+// # define NINJASHELL "ninjaSHELL"
+# define NINJASHELL "minishell"
 # define HISTORY_FILE ".ninjaSHELL_history"
 # define FALSE 0
 # define TRUE 1
@@ -204,7 +205,7 @@ typedef struct s_epv
 	uint64_t		count;
 	DIR				*dir;
 	struct dirent	*entry;
-	char			pattern[FT_PATH_MAX];	
+	char			pattern[FT_PATH_MAX];
 }					t_epv;
 
 /* ************************************************************************** */
