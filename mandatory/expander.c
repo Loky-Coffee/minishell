@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 05:50:33 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/03 16:29:47 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/03 16:36:52 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,10 +118,7 @@ int	expand_tkn(t_token *token, t_ms *ms)
 	if (quote_mode != '\0')
 		return (ft_error("Syntax error", "Unclosed quote detected.", NULL), 1);
 	if (do_wildcards == 1)
-	{
-		fprintf(stderr, "~~~~~~?\n");
 		expand_wildcard(token);
-	}
 	return (0);
 }
 
