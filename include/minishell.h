@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/03 01:30:19 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/03 15:12:45 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -245,9 +245,9 @@ int				has_wildcards(char *pattern);
 int				ft_strlchr(char *dst, const char src, size_t dstsize);
 
 // Node_Utils1
-t_tokentype		node_is_pipe(t_node *node);
-t_tokentype		node_is_redirect(t_node *node);
-t_tokentype		node_is_andor(t_node *node);
+t_nodetype		node_is_pipe(t_node *node);
+t_nodetype		node_is_redirect(t_node *node);
+t_nodetype		node_is_logical_operator(t_node *node);
 
 // Node_Utils2
 int				create_node(t_token **token, t_node **node);
@@ -314,8 +314,8 @@ int				ft_heredoc(int fd_write, char *lim);
 
 // builtins
 int				cmd_is_echo_ninjashell(t_token *token);
-int				run_builtin(int fd_in, int fd_out, t_builtin builtin, t_cmd *cmd, t_ms *ms);
-pid_t			fork_run_builtin(int fd_in, int fd_out, t_builtin builtin, t_cmd *cmd, t_ms *ms);
+int				run_builtin(int *fds, t_builtin builtin, t_cmd *cmd, t_ms *ms);
+pid_t			fork_run_builtin(int *fds, t_builtin builtin, t_cmd *cmd, t_ms *ms);
 int				ft_echo(t_cmd *cmd);
 int				ft_cd(t_cmd *cmd, t_ms *ms);
 int				ft_pwd(void);

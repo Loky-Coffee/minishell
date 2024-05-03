@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 05:50:33 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/03 01:08:28 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/03 15:17:48 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,11 +78,13 @@ int	expand_tkn(t_token *token, t_ms *ms)
 	int		i;
 	int		j;
 	char	quote_mode;
+	// int		do_wildcards;
 
 	i = 0;
 	j = 0;
-	quote_mode = '\0';
+	// do_wildcards = 0;
 	expand_wildcard(token);
+	quote_mode = '\0';
 	ft_memset(expstr, 0, sizeof(expstr));
 	while (token->str[i] != '\0')
 	{
@@ -98,11 +100,17 @@ int	expand_tkn(t_token *token, t_ms *ms)
 			j = ft_strlen(expstr);
 			if (quote_mode == '\0' && token->str[i] == '\0')
 				expstr[j++] = ' ';
+			// {
+			// 	do_wildcards = 1;
+			// }
 		}
 		else
 			expstr[j++] = token->str[i];
 		i++;
 	}
+// fprintf(stderr, "~~~> |%s|\n", token->str);
+	// if (do_wildcards == 1)
+	// 	expand_wildcard(token);
 	if (j != i)
 	{
 		free(token->str);
@@ -113,6 +121,7 @@ int	expand_tkn(t_token *token, t_ms *ms)
 	}
 	if (quote_mode != '\0')
 		return (ft_error("Syntax error", "Unclosed quote detected.", NULL), 1);
+// fprintf(stderr, "~~~> |%s|\n", token->str);
 	return (0);
 }
 
@@ -129,6 +138,7 @@ int	expand_node(t_node *node, t_ms *ms)
 		token = node->tokens[i];
 		if (token && expand_tkn(token, ms) == 1)
 			return (1);
+		// expand_wildcard(token);
 		i++;
 	}
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/02 19:23:33 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/03 15:12:40 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -258,7 +258,7 @@ int	exec_builtin(int fd_in, int fd_out, t_builtin builtin, t_node *node, t_ms *m
 		if (expand_node(node, ms))
 			return (-1);
 	create_cmd(&cmd, node);
-	exit_code = run_builtin(fd_in, fd_out, builtin, &cmd, ms);
+	exit_code = run_builtin((int [2]){fd_in, fd_out}, builtin, &cmd, ms);
 	return (exit_code);
 }
 
@@ -271,7 +271,7 @@ pid_t	exec_fork_builtin(int fd_in, int fd_out, t_builtin builtin, t_node *node, 
 		if (expand_node(node, ms))
 			return (-1);
 	create_cmd(&cmd, node);
-	pid = fork_run_builtin(fd_in, fd_out, builtin, &cmd, ms);
+	pid = fork_run_builtin((int [2]){fd_in, fd_out}, builtin, &cmd, ms);
 	return (pid);
 }
 
@@ -509,7 +509,7 @@ pid_t	exec_intermediary(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	if (node == NULL)
 		return (0);
 	builtin = is_builtin(node->tokens[0]);
-	if (node->type == NODE_COMMAND && builtin != NO_BUILTIN)
+	if (node->type == NODE_COMMAND && builtin)
 		pid = exec_fork_builtin(fd_in, fd_out, builtin, node, ms);
 	else if (node->type == NODE_COMMAND)
 		pid = exec_cmd(fd_in, fd_out, node, ms);

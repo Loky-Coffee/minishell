@@ -8,7 +8,14 @@
 				✅	ls > f11 > f12
 				✅	>> f11 << f1 << f2 << f3 cat
 - ✅		expander
+			❌	order of expansions: (3.5 Shell Expansions)
+					❌ 1.	parameter and variable expansion
+					❌ 2.	word splitting
+					❌ 3.	filename expansion
+					❌ 4.	quote characters present in the original word are removed unless they have been quoted themselves (quote removal)
 - ✅		executer
+			❌ HERE_DOC
+				❌	here_doc Prompt txt-cursor movable with ARROW-KEYs
 - ✅ 	Signals
 			✅ for minishell -c args
 			✅ for minishell testfile
@@ -20,7 +27,8 @@
 			?❌✅? correct EXIT_CODE (child_exit_status // …) was habe ich damit wohl gemeint?? vielelicht den Fehler bei Subshells???: (wc) || echo A
 			✅ wc | sleep 30 | sleep 30
 - ✅		Wildcards
-			✅	basic implementation
+			✅	basic implemen`tation
+			❌	echo *b
 			❌	expand "*"	// BUT BASH 3.2 DOESN'T HANDLE THIS AS WELL SO WE COULD LEAVE IT AS IS 
 				echo "> >> < * ? [ ] | ; [ ] || && ( ) & # $  <<" 
 			❌	** 	=>	matches only directories
@@ -198,6 +206,12 @@ RESOURCES
 -		BASH REFERENCE MANUAL
 		https://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html
 
+		BASH GUIDE FOR BEGINNERS
+		https://tldp.org/LDP/Bash-Beginners-Guide/html/index.html
+
+-		BASH Exit_Codes
+		https://www.adminschoice.com/exit-error-codes-in-bash-and-linux-os
+
 -		Abstract syntax tree
 		https://en.wikipedia.org/wiki/Abstract_syntax_tree
 
@@ -237,6 +251,7 @@ RESOURCES
 		Timofei Rusanov / trusanov:	https://github.com/taaae/minishell/blob/main/include/lexer.h
 		Markus Kurz / makurz: 		https://github.com/kurz-m/minishell/blob/main/src/expander/expander_main.c
 		@twagger / @iamwen1023		https://github.com/twagger/minishell?tab=readme-ov-file
+									(uses / explains grammer [maybe explains it…])
 
 ### EXPANDER:
 

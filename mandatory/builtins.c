@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 20:33:21 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/01 22:11:13 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/03 15:12:58 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,12 @@ int	cmd_is_echo_ninjashell(t_token *token)
 	return (0);
 }
 
-int	run_builtin(int fd_in, int fd_out, t_builtin builtin, t_cmd *cmd, t_ms *ms)
+int	run_builtin(int *fds, t_builtin builtin, t_cmd *cmd, t_ms *ms)
 {
 	int		exit_code;
 
-	dup2(fd_in, STDIN_FILENO);
-	dup2(fd_out, STDOUT_FILENO);
+	dup2(fds[0], STDIN_FILENO);
+	dup2(fds[1], STDOUT_FILENO);
 	exit_code = 1;
 	if (builtin == BI_ECHO)
 		exit_code = ft_echo(cmd);
@@ -46,11 +46,11 @@ int	run_builtin(int fd_in, int fd_out, t_builtin builtin, t_cmd *cmd, t_ms *ms)
 		exit_code = ft_exit(cmd, ms);
 	else if (builtin == BI_ECHO_NINJASHELL)
 		render_ninjashell();
-	ft_close_fd(fd_in, fd_out);
+	ft_close_fd(fds[0], fds[1]);
 	return (exit_code);
 }
 
-pid_t	fork_run_builtin(int fd_in, int fd_out, t_builtin builtin, t_cmd *cmd, t_ms *ms)
+pid_t	fork_run_builtin(int *fds, t_builtin builtin, t_cmd *cmd, t_ms *ms)
 {
 	pid_t	pid;
 	int		exit_code;
@@ -58,8 +58,8 @@ pid_t	fork_run_builtin(int fd_in, int fd_out, t_builtin builtin, t_cmd *cmd, t_m
 	pid = fork();
 	if (pid == 0)
 	{	
-		dup2(fd_in, STDIN_FILENO);
-		dup2(fd_out, STDOUT_FILENO);
+		dup2(fds[0], STDIN_FILENO);
+		dup2(fds[1], STDOUT_FILENO);
 		exit_code = 1;
 		if (builtin == BI_ECHO || builtin == BI_ECHO_NINJASHELL)
 			exit_code = ft_echo(cmd);
@@ -79,9 +79,9 @@ pid_t	fork_run_builtin(int fd_in, int fd_out, t_builtin builtin, t_cmd *cmd, t_m
 		// 	render_ninjashell();
 		if (exit_code != 0)
 			ms->exit_code = exit_code;
-		ft_close_fd(fd_in, fd_out);
+		ft_close_fd(fds[0], fds[1]);
 		terminate(ms, cmd, exit_code);
 	}
-	ft_close_fd(fd_in, fd_out);
+	ft_close_fd(fds[0], fds[1]);
 	return (pid);
 }

@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 19:03:23 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/24 21:00:36 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/03 15:08:24 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,9 @@ int	ft_heredoc(int fd_write, char *lim)
 {
 	char	*line;
 
-	ft_putstr_fd("> ", 1);
 	while (1)
 	{
-		line = get_next_line(STDIN_FILENO);
+		line = readline("> ");
 		if (line == NULL)
 		{
 			close(fd_write);
@@ -32,7 +31,7 @@ int	ft_heredoc(int fd_write, char *lim)
 			return (0);
 		}
 		write(fd_write, line, ft_strlen(line));
-		ft_putstr_fd("> ", 1);
+		write(fd_write, "\n", 1);
 		free(line);
 	}
 }

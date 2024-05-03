@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/12 15:56:24 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/02 23:07:27 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/03 10:53:29 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,7 +219,7 @@ t_node	*insert_redirect(t_node *curr, t_node *next, t_ms *ms)
 
 t_node	*insert_pipe(t_node *curr, t_node *next, t_ms *ms)
 {
-	if (next == NULL || node_is_andor(next))
+	if (next == NULL || node_is_logical_operator(next))
 		return (parse_error(curr->tokens[0], ms), NULL);
 	if (next->type == NODE_COMMAND || next->type == NODE_SUBSHELL || next->type == NODE_REDIRECT)
 	{
@@ -250,7 +250,7 @@ t_node	*insert_pipe(t_node *curr, t_node *next, t_ms *ms)
 
 t_node	*insert_operator(t_node *curr, t_node *next, t_ms *ms)
 {
-	if (next == NULL || node_is_andor(next))
+	if (next == NULL || node_is_logical_operator(next))
 		return (parse_error(curr->tokens[0], ms), NULL);
 	if (next->type == NODE_COMMAND || next->type == NODE_SUBSHELL || next->type == NODE_REDIRECT)
 		return (insert_tree_right(curr, next));
