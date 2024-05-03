@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   node_utils2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 16:34:41 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/03 00:38:57 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/03 16:51:34 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,10 +111,10 @@ t_node	*make_redirect(t_ms *ms, t_token **ct)
 	if (create_node(ct, &n))
 		return (NULL);
 	i = 1;
-	if ((*ct)->next->type == TOKEN_WORD)
+	if ((*ct)->next && (*ct)->next->type == TOKEN_WORD)
 		i++;
 	else
-		return (parse_error((*ct)->next, ms), NULL);
+		return (parse_error((*ct), ms), NULL);
 	n->tokens = (t_token **)ft_calloc(i + 1, sizeof(t_token));
 	if (n->tokens == NULL)
 	{
