@@ -6,39 +6,38 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 18:32:04 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/03 15:44:12 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/03 16:06:14 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	print_mat(char mat[2048][2048], const char *str, const char *pattern)
-{
-	// Delete This function
-	// it's for DEBUGGING only
-	// Print mat
-	size_t	i;
-	size_t	j;
+// void	print_mat(char mat[2048][2048], const char *str, const char *pattern)
+// {
+// 	size_t	i;
+// 	size_t	j;
 
-	fprintf(stderr, "\n");
-	i = 0;
-	while (i < ft_strlen(str) - 1 + 3)
-	{
-		j = 0;
-		while  (j < ft_strlen(pattern) - 1 + 3)
-		{
-			if (mat[i][j] == '\0')
-				fprintf(stderr, "0");
-			else if (mat[i][j] == 1)
-				fprintf(stderr, "1");
-			else
-				fprintf(stderr, "%c", mat[i][j]);
-			j++;
-		}
-		fprintf(stderr, "\n");
-		i++;
-	}
-}
+// 	fprintf(stderr, "\n");
+// 	i = 0;
+// 	while (i < ft_strlen(str) - 1 + 3)
+// 	{
+// 		j = 0;
+// 		while  (j < ft_strlen(pattern) - 1 + 3)
+// 		{
+// 			if (mat[i][j] == '\0')
+// 				fprintf(stderr, "0");
+// 			else if (mat[i][j] == 1)
+// 				fprintf(stderr, "1");
+// 			else
+// 				fprintf(stderr, "%c", mat[i][j]);
+// 			j++;
+// 		}
+// 		fprintf(stderr, "\n");
+// 		i++;
+// 	}
+// }
+// print_mat(mat, str, pattern);
+
 
 static void	compress_wildcard_pattern(char *pattern)
 {
@@ -77,7 +76,15 @@ static int	init_mat(char mat[2048][2048], const char *str, const char *pattern)
 	mat[1][1] = 1;
 	i = 0;
 	while (i < ft_strlen(pattern))
-		mat[1][i++ + 2] = 0;
+	{
+		if (pattern[i] == '*')
+		{
+			mat[1][i + 2] = mat[1][i + 1];
+			i++;
+		}
+		else
+			mat[1][i++ + 2] = 0;
+	}
 	i = 0;
 	while (i < ft_strlen(str))
 		mat[i++ + 2][1] = 0;
@@ -110,7 +117,6 @@ static int	is_matching(size_t i, size_t j, char *str, char *pattern)
 		}
 		i++;
 	}
-print_mat(mat, str, pattern);
 	return (mat[--i][--j]);
 }
 

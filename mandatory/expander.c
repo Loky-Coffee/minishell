@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 05:50:33 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/03 15:17:48 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/03 16:29:47 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,12 +78,11 @@ int	expand_tkn(t_token *token, t_ms *ms)
 	int		i;
 	int		j;
 	char	quote_mode;
-	// int		do_wildcards;
+	int		do_wildcards;
 
 	i = 0;
 	j = 0;
-	// do_wildcards = 0;
-	expand_wildcard(token);
+	do_wildcards = 1;
 	quote_mode = '\0';
 	ft_memset(expstr, 0, sizeof(expstr));
 	while (token->str[i] != '\0')
@@ -91,7 +90,10 @@ int	expand_tkn(t_token *token, t_ms *ms)
 		if (token->str[i] == '\\')
 			expand_single_char(expstr, &j, token->str, &i);
 		else if (token->str[i] == '\"' || token->str[i] == '\'')
+		{
 			expand_quote(&quote_mode, expstr, &j, &token->str[i]);
+			do_wildcards = 0;
+		}
 		else if (token->str[i] == '$' && (token->str[i + 1] != '\0' \
 		&& token->str[i + 1] != '\"' && token->str[i + 1] != ' ') \
 		&& quote_mode != '\'')
@@ -100,28 +102,26 @@ int	expand_tkn(t_token *token, t_ms *ms)
 			j = ft_strlen(expstr);
 			if (quote_mode == '\0' && token->str[i] == '\0')
 				expstr[j++] = ' ';
-			// {
-			// 	do_wildcards = 1;
-			// }
 		}
 		else
 			expstr[j++] = token->str[i];
 		i++;
 	}
-// fprintf(stderr, "~~~> |%s|\n", token->str);
-	// if (do_wildcards == 1)
-	// 	expand_wildcard(token);
 	if (j != i)
 	{
 		free(token->str);
 		token->str = ft_calloc((j + 1), sizeof(char));
 		if (token->str == NULL)
 			return (1);
-		ft_strlcpy(token->str, expstr, j + 1);
 	}
+	ft_strlcpy(token->str, expstr, j + 1);
 	if (quote_mode != '\0')
 		return (ft_error("Syntax error", "Unclosed quote detected.", NULL), 1);
-// fprintf(stderr, "~~~> |%s|\n", token->str);
+	if (do_wildcards == 1)
+	{
+		fprintf(stderr, "~~~~~~?\n");
+		expand_wildcard(token);
+	}
 	return (0);
 }
 
@@ -136,9 +136,9 @@ int	expand_node(t_node *node, t_ms *ms)
 	while (node->tokens[i])
 	{
 		token = node->tokens[i];
+		expand_wildcard(token);
 		if (token && expand_tkn(token, ms) == 1)
 			return (1);
-		// expand_wildcard(token);
 		i++;
 	}
 	return (0);

@@ -27,6 +27,7 @@
 			?❌✅? correct EXIT_CODE (child_exit_status // …) was habe ich damit wohl gemeint?? vielelicht den Fehler bei Subshells???: (wc) || echo A
 			✅ wc | sleep 30 | sleep 30
 - ✅		Wildcards
+			(for a recursive version look below to: A RECURSIVE WILDCARDS PATTERN MATCHING FUNCTION)
 			✅	basic implemen`tation
 			❌	echo *b
 			❌	expand "*"	// BUT BASH 3.2 DOESN'T HANDLE THIS AS WELL SO WE COULD LEAVE IT AS IS 
@@ -310,6 +311,31 @@ Escape-Zeichen
 
 12) Entfernung von Anführungszeichen: Schlussendlich sollten Anführungszeichen entfernt werden, wenn sie nicht mehr benötigt werden, was nach allen anderen Expansionsarten erfolgen sollte.
 
+
+
+--------------------------------------------------------------------------------
+
+A recursive WILDCARDS PATTERN MATCHING FUNCTION:
+
+
+static int	is_matching(const char *str, const char *pattern)
+{
+	if (*pattern == '\0')
+		return (*str == '\0');
+	if (*pattern == '*')
+	{
+		while (*str)
+		{
+			if (is_matching(str, pattern + 1))
+				return (1);
+			str++;
+		}
+		return (is_matching(str, pattern + 1));
+	}
+	else if (*pattern == '?' || *str == *pattern)
+		return (is_matching(str + 1, pattern + 1));
+	return (0);
+}
 
 
 
