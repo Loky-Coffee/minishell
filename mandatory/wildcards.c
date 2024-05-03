@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 18:32:04 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/03 16:06:14 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/03 19:33:45 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@
 
 // 	fprintf(stderr, "\n");
 // 	i = 0;
-// 	while (i < ft_strlen(str) - 1 + 3)
+// 	while (i < ft_strlen(str) + 2)
 // 	{
 // 		j = 0;
-// 		while  (j < ft_strlen(pattern) - 1 + 3)
+// 		while  (j < ft_strlen(pattern) + 2)
 // 		{
 // 			if (mat[i][j] == '\0')
 // 				fprintf(stderr, "0");
@@ -36,8 +36,6 @@
 // 		i++;
 // 	}
 // }
-// print_mat(mat, str, pattern);
-
 
 static void	compress_wildcard_pattern(char *pattern)
 {
@@ -119,6 +117,9 @@ static int	is_matching(size_t i, size_t j, char *str, char *pattern)
 	}
 	return (mat[--i][--j]);
 }
+
+
+//----------------------------------------
 
 // static int	init_mat(char *mat, const char *str, const char *pattern)
 // {

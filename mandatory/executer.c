@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/03 17:22:41 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/03 20:10:04 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,12 +59,6 @@ void	set_exit_code(int status, t_ms *ms)
 		ms->exit_code = 128 + WTERMSIG(status);
 	else if (WIFEXITED(status))
 		ms->exit_code = WEXITSTATUS(status);
-}
-
-void	set_hd_exit_code(int status, t_ms *ms)
-{
-	set_exit_code(status, ms);
-	ms->hd_interupt = 1;
 }
 
 int	ft_strncmp_ignorecase(const char *s1, const char *s2, size_t n)
@@ -369,7 +363,9 @@ void	execute_heredoc(int *fd_in, int *fd_out, char *lim, t_ms *ms)
 	}
 	ft_close_fd(fd_pipe[0], fd_pipe[1]);
 	waitpid(pid, &status, 0);
-	set_hd_exit_code(status, ms);
+	set_exit_code(status, ms);
+	if (WIFSIGNALED(status))
+		ms->hd_interupt = 1;
 }
 
 void	execute_herestring(int *fd_in, int *fd_out, char *str, t_ms *ms)
@@ -446,7 +442,7 @@ static pid_t	redirect_manager(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	else if (node->tokens[0]->type == TOKEN_DLESS)
 	{
 		execute_heredoc(&fd_in, &fd_out, node->tokens[1]->str, ms);
-		if (node->left && (node->left->type == NODE_REDIRECT || node->left->type == NODE_COMMAND || node->left->type == NODE_SUBSHELL))	// node->left->type == NODE_SUBSHELL
+		if (ms->hd_interupt == 0 && node->left && (node->left->type == NODE_REDIRECT || node->left->type == NODE_COMMAND || node->left->type == NODE_SUBSHELL))	// node->left->type == NODE_SUBSHELL
 			pid = exec_intermediary(fd_in, fd_out, node->left, ms);
 		else
 			close(fd_in);

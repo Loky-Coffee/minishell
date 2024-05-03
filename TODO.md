@@ -14,8 +14,9 @@
 					❌ 3.	filename expansion
 					❌ 4.	quote characters present in the original word are removed unless they have been quoted themselves (quote removal)
 - ✅		executer
-			❌ HERE_DOC
-				❌	here_doc Prompt txt-cursor movable with ARROW-KEYs
+			✅ HERE_DOC
+				✅	here_doc Prompt txt-cursor movable with ARROW-KEYs
+				✅	cat << EOF  ctrl+c
 - ✅ 	Signals
 			✅ for minishell -c args
 			✅ for minishell testfile
@@ -29,10 +30,10 @@
 - ✅		Wildcards
 			(for a recursive version look below to: A RECURSIVE WILDCARDS PATTERN MATCHING FUNCTION)
 			✅	basic implemen`tation
-			❌	echo *b
-			❌	expand "*"	// BUT BASH 3.2 DOESN'T HANDLE THIS AS WELL SO WE COULD LEAVE IT AS IS 
+			✅	echo *b
+			-	expand "*"	// BUT BASH 3.2 DOESN'T HANDLE THIS AS WELL SO WE COULD LEAVE IT AS IS 
 				echo "> >> < * ? [ ] | ; [ ] || && ( ) & # $  <<" 
-			❌	** 	=>	matches only directories
+			-	** 	=>	matches only directories  //=> not aplicable for Minisshell_bonus we only have to implemnt *
 - ❌		single argument errorcode for "./minishell ls" should behave like "bash ls"
 - ✅		export
 		✅	basic sorting

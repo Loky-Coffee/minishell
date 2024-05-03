@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 05:50:33 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/03 17:29:37 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/03 19:33:16 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,7 @@ int	expand_node(t_node *node, t_ms *ms)
 	while (node->tokens[i])
 	{
 		token = node->tokens[i];
-		// expand_wildcard(token, node->tokens[0]->type);
+		expand_wildcard(token);
 		if (token && expand_tkn(token, node->tokens[0]->type, ms) == 1)
 			return (1);
 		i++;
