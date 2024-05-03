@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/03 15:12:40 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/03 17:22:41 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -372,6 +372,29 @@ void	execute_heredoc(int *fd_in, int *fd_out, char *lim, t_ms *ms)
 	set_hd_exit_code(status, ms);
 }
 
+void	execute_herestring(int *fd_in, int *fd_out, char *str, t_ms *ms)
+{
+	int	pid;
+	int	fd_pipe[2];
+	
+	if (pipe(fd_pipe))
+		perror(NINJASHELL);
+	ft_close_fd(*fd_in, 0);
+	*fd_in = dup(fd_pipe[0]);
+	pid = fork();
+	if (pid == -1)
+		perror(NINJASHELL);
+	if (pid == 0)
+	{
+		write(fd_pipe[1], str, ft_strlen(str));
+		write(fd_pipe[1], "\n", 1);
+		ft_close_fd(fd_pipe[0], fd_pipe[1]);
+		ft_close_fd(*fd_in, *fd_out);
+		terminate(ms, NULL, 0);
+	}
+	ft_close_fd(fd_pipe[0], fd_pipe[1]);
+}
+
 static int	redirect_in(int *fd_in, t_node *node, t_ms *ms)
 {
 	if (expand_node(node, ms))
@@ -411,7 +434,16 @@ static pid_t	redirect_manager(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	pid = EXIT_SUCCESS;
 	if (node->tokens == NULL)
 		return (EXIT_FAILURE);
-	if (node->tokens[0]->type == TOKEN_DLESS)
+	if (node->tokens[0]->type == TOKEN_TLESS)
+	{
+		expand_node(node, ms);
+		execute_herestring(&fd_in, &fd_out, node->tokens[1]->str, ms);
+		if (node->left && (node->left->type == NODE_REDIRECT || node->left->type == NODE_COMMAND || node->left->type == NODE_SUBSHELL))
+			pid = exec_intermediary(fd_in, fd_out, node->left, ms);
+		else
+			close(fd_in);
+	}
+	else if (node->tokens[0]->type == TOKEN_DLESS)
 	{
 		execute_heredoc(&fd_in, &fd_out, node->tokens[1]->str, ms);
 		if (node->left && (node->left->type == NODE_REDIRECT || node->left->type == NODE_COMMAND || node->left->type == NODE_SUBSHELL))	// node->left->type == NODE_SUBSHELL

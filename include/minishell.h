@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/03 15:12:45 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/03 17:30:11 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,7 +234,7 @@ void			set_signal_sigaction(int signal, void (handler)(int, siginfo_t *, void *)
 int				ft_lexer(t_ms *ms);
 
 // expender.c
-int				expand_tkn(t_token *token, t_ms *ms);
+int				expand_tkn(t_token *token, t_tokentype node_type, t_ms *ms);
 int				expand_node(t_node *node, t_ms *ms);
 
 // wildcards.c
@@ -311,6 +311,7 @@ int				exec_manager(t_ms *ms);
 
 // here_doc
 int				ft_heredoc(int fd_write, char *lim);
+int				ft_herestring(int fd_write, char *str);
 
 // builtins
 int				cmd_is_echo_ninjashell(t_token *token);

@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 05:50:33 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/03 16:36:52 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/03 17:29:37 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ static void	expand_quote(char *qm, char *dst, int *j, char *src)
 		dst[(*j)++] = *src;
 }
 
-int	expand_tkn(t_token *token, t_ms *ms)
+int	expand_tkn(t_token *token, t_tokentype node_type, t_ms *ms)
 {
 	char	expstr[FT_PATH_MAX];
 	int		i;
@@ -82,7 +82,7 @@ int	expand_tkn(t_token *token, t_ms *ms)
 
 	i = 0;
 	j = 0;
-	do_wildcards = 1;
+	do_wildcards = -1;
 	quote_mode = '\0';
 	ft_memset(expstr, 0, sizeof(expstr));
 	while (token->str[i] != '\0')
@@ -99,6 +99,7 @@ int	expand_tkn(t_token *token, t_ms *ms)
 		&& quote_mode != '\'')
 		{
 			expand_variable(&i, token, expstr, ms);
+			do_wildcards = 1;
 			j = ft_strlen(expstr);
 			if (quote_mode == '\0' && token->str[i] == '\0')
 				expstr[j++] = ' ';
@@ -117,7 +118,7 @@ int	expand_tkn(t_token *token, t_ms *ms)
 	ft_strlcpy(token->str, expstr, j + 1);
 	if (quote_mode != '\0')
 		return (ft_error("Syntax error", "Unclosed quote detected.", NULL), 1);
-	if (do_wildcards == 1)
+	if (do_wildcards == 1 && node_type != TOKEN_TLESS)
 		expand_wildcard(token);
 	return (0);
 }
@@ -133,8 +134,8 @@ int	expand_node(t_node *node, t_ms *ms)
 	while (node->tokens[i])
 	{
 		token = node->tokens[i];
-		expand_wildcard(token);
-		if (token && expand_tkn(token, ms) == 1)
+		// expand_wildcard(token, node->tokens[0]->type);
+		if (token && expand_tkn(token, node->tokens[0]->type, ms) == 1)
 			return (1);
 		i++;
 	}

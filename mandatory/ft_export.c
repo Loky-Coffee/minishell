@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 18:27:30 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/03 00:54:40 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/03 17:30:52 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static int	keylen(char *str)
 
 static char	*tkn_to_str(t_token *token, t_ms *ms)
 {
-	expand_tkn(token, ms);
+	expand_tkn(token, token->type, ms);
 	return (ft_strdup(token->str));
 }
 
