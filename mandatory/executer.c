@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/03 20:10:04 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/04 18:26:17 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,8 +76,6 @@ int	ft_strncmp_ignorecase(const char *s1, const char *s2, size_t n)
 
 static t_builtin	is_builtin(t_token *token)
 {
-	if (cmd_is_echo_ninjashell(token))
-		return (BI_ECHO_NINJASHELL);
 	if (ft_strncmp_ignorecase(token->str, "echo", 5) == 0)
 		return (BI_ECHO);
 	if (ft_strncmp_ignorecase(token->str, "cd", 3) == 0)
@@ -372,7 +370,7 @@ void	execute_herestring(int *fd_in, int *fd_out, char *str, t_ms *ms)
 {
 	int	pid;
 	int	fd_pipe[2];
-	
+
 	if (pipe(fd_pipe))
 		perror(NINJASHELL);
 	ft_close_fd(*fd_in, 0);

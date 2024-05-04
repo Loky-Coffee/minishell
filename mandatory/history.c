@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 20:44:33 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/03 00:48:23 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/04 19:17:46 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,9 @@ int	dump_history(t_ms *ms)
 	int	fd;
 
 	add_history(ms->line);
-	fd = open(ft_historyfile(ms), O_WRONLY | O_CREAT | O_APPEND, 0644);
+	fd = open(ft_historyfile(ms), O_WRONLY | O_CREAT | O_APPEND, 0600);
 	if (fd == -1)
-		return (ft_perror("Dump to history file failed"), 1);
+		return (1);
 	if (ft_strncmp(ms->line, "", 1) == 0)
 		return (close(fd), 1);
 	write(fd, ms->line, ft_strlen(ms->line));

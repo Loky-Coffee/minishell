@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 18:56:31 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/03 01:16:05 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/04 18:38:11 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,20 @@ void	ft_error(char *s1, char *s2, char *s3)
 	{
 		ft_putstr_fd(": ", 2);
 		ft_putstr_fd(s3, 2);
+	}
+	ft_putstr_fd(RESET"\n", 2);
+}
+
+void	ft_syntax_error(char *s1, char *s2)
+{
+	ft_putstr_fd(LIGHTRED NINJASHELL": ", 2);
+	if (s1)
+		ft_putstr_fd(s1, 2);
+	if (s2)
+	{
+		ft_putstr_fd(" `", 2);
+		ft_putstr_fd(s2, 2);
+		ft_putstr_fd("\'", 2);
 	}
 	ft_putstr_fd(RESET"\n", 2);
 }

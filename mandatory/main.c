@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/03 17:54:49 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/04 19:48:44 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,7 +176,7 @@ int	main(int argc, char **argv, char **env)
 		}
 
 		// render TOKENS
-		// render_tokens(&ms);
+		render_tokens(&ms);
 
 		// PARSE IT aka Build TREE
 		ft_parse(ms.tokens, &ms.nodes, &ms);
@@ -185,13 +185,13 @@ int	main(int argc, char **argv, char **env)
 		if (ms.parse_error && ms.parse_errtkn)
 		{
 			ms.exit_code = 258;
-			ft_error("syntax error near unexpected token", ms.parse_errtkn->str, NULL);
+			ft_syntax_error("syntax error near unexpected token", ms.parse_errtkn->str);
 			cleanup_ms(&ms);
 			continue ;
 		}
 
 		// render NODES
-		// render_nodes(0, ms.nodes, 'R');
+		render_nodes(0, ms.nodes, 'R');
 
 		// EXECUTE IT
 		exec_manager(&ms);

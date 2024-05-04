@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wordsplitting.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 09:42:58 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/04 17:49:40 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/04 18:44:05 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	word_splitting(t_token *prev, t_token *token, t_token *next, int *pi)
 	size_t	i;
 	size_t	len;
 	t_token	*curr;
-	
+
 	if (has_space(token->str) == 0)
 		return (0);
 	i = 0;
@@ -49,7 +49,5 @@ int	word_splitting(t_token *prev, t_token *token, t_token *next, int *pi)
 	}
 	(*pi)--;
 	curr->next = next;
-	free(token->str);
-	free(token);
-	return (0);
+	return (free(token->str), free(token), 0);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wildcards.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 18:32:04 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/04 17:05:03 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/04 18:51:20 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,17 +72,7 @@ static int	init_mat(char mat[2048][2048], const char *str, const char *pattern)
 	while (str[j])
 		mat[i++][0] = str[j++];
 	mat[1][1] = 1;
-	i = 0;
-	while (i < ft_strlen(pattern))
-	{
-		if (pattern[i] == '*')
-		{
-			mat[1][i + 2] = mat[1][i + 1];
-			i++;
-		}
-		else
-			mat[1][i++ + 2] = 0;
-	}
+	place_pattern(mat, pattern);
 	i = 0;
 	while (i < ft_strlen(str))
 		mat[i++ + 2][1] = 0;
@@ -117,7 +107,6 @@ static int	is_matching(size_t i, size_t j, char *str, char *pattern)
 	}
 	return (mat[--i][--j]);
 }
-
 
 //----------------------------------------
 
@@ -185,7 +174,6 @@ static int	expand_pattern(t_epv *epv, char *pattern, char *expstr)
 		return (ft_strlcat(expstr, pattern, FT_PATH_MAX), 1);
 	ft_strlcpy(epv->pattern, pattern, FT_PATH_MAX);
 	compress_wildcard_pattern(epv->pattern);
-// fprintf(stderr, "compressed pattern |%s|\n", epv->pattern);
 	epv->count = 0;
 	epv->entry = readdir(epv->dir);
 	while (epv->entry)
@@ -232,7 +220,7 @@ int	expand_wildcard(t_token *token)
 
 // This is a version that expands a string with spaces an multiple patterns:
 // for example "soo w*w go*"
-// 
+//
 // void	expand_wildcard(t_node *node, t_token *token)
 // {
 // 	int		i;

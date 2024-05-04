@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/04 18:17:40 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/04 19:45:44 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,6 @@ typedef enum e_builtin
 	BI_UNSET,
 	BI_ENV,
 	BI_EXIT,
-	BI_ECHO_NINJASHELL
 }	t_builtin;
 
 /* ************************************************************************** */
@@ -234,6 +233,7 @@ int				expand_wildcard(t_token *token);
 // wildcards_utils.c
 int				has_wildcards(char *pattern);
 int				ft_strlchr(char *dst, const char src, size_t dstsize);
+void			place_pattern(char mat[2048][2048], const char *pattern);
 
 // wordsplitting.c
 int				word_splitting(t_token *prev, t_token *token, t_token *next, int *i);
@@ -251,10 +251,22 @@ t_node			*make_operator(t_token **ct);
 t_node			*make_redirect(t_ms *ms, t_token **ct);
 
 // Parser
-void			parse_error(t_token *tkn, t_ms *ms);
+t_node			*insert_node_left(t_node *curr, t_node *next);
+t_node			*insert_tree_right(t_node *curr, t_node *next);
 t_node			*ft_parse(t_token *ct, t_node **root, t_ms *ms);
 
+// parser_insert1
+t_node			*insert_cmd(t_node *curr, t_node *next, t_ms *ms);
+t_node			*insert_cmd_to_redirect(t_node *curr, t_node *next, t_ms *ms);
+
+// parser_insert2
+t_node			*push_redirectout_into_place(t_node *curr, t_node *next);
+t_node			*insert_redirect(t_node *curr, t_node *next, t_ms *ms);
+t_node			*insert_pipe(t_node *curr, t_node *next, t_ms *ms);
+t_node			*insert_operator(t_node *curr, t_node *next, t_ms *ms);
+
 // parse_errors.c
+void			parse_error(t_token *tkn, t_ms *ms);
 int				check_for_parse_errors(t_node *node, t_ms *ms);
 
 // Tree_Utils1
@@ -328,6 +340,7 @@ int				ft_prepend_path(char **cmd, char *envpaths, int *exit_code);
 
 // error.c
 void			ft_error(char *s1, char *s2, char *s3);
+void			ft_syntax_error(char *s1, char *s2);
 void			ft_perror(char *str);
 void			ft_cmd_error(char *msg, char *cmd, int error_code);
 

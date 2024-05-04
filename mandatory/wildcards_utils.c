@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wildcards_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 20:24:14 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/01 20:25:20 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/04 18:51:31 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,4 +36,21 @@ int	ft_strlchr(char *dst, const char src, size_t dstsize)
 	dst[o++] = src;
 	dst[o] = 0;
 	return (d_len + 1);
+}
+
+void	place_pattern(char mat[2048][2048], const char *pattern)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < ft_strlen(pattern))
+	{
+		if (pattern[i] == '*')
+		{
+			mat[1][i + 2] = mat[1][i + 1];
+			i++;
+		}
+		else
+			mat[1][i++ + 2] = 0;
+	}
 }

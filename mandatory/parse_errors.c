@@ -6,11 +6,17 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/21 15:19:30 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/03 00:37:20 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/04 19:32:07 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+void	parse_error(t_token *tkn, t_ms *ms)
+{
+	ms->parse_error = 1;
+	ms->parse_errtkn = tkn;
+}
 
 static void	set_error(t_token *token, t_ms *ms)
 {
