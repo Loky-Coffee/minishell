@@ -3,25 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   token_list_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 00:14:48 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/12 19:35:57 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/04 10:05:37 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-t_token	*ft_token_new(void)
+t_token	*ft_token_new(t_tokentype type, char *str, t_token *next)
 {
 	t_token	*new_token;
 
 	new_token = ft_calloc(1, sizeof(t_token));
 	if (new_token == NULL)
 		return (NULL);
-	new_token->type = NO_TOKEN;
-	new_token->str = NULL;
-	new_token->next = NULL;
+	new_token->type = type;
+	new_token->str = str;
+	new_token->next = next;
 	return (new_token);
 }
 

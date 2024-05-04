@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 18:27:30 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/03 17:30:52 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/03 20:40:37 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,9 @@ static int	keylen(char *str)
 	return (i);
 }
 
-static char	*tkn_to_str(t_token *token, t_ms *ms)
+static char	*tkn_to_str(t_node *node, t_token *token, t_ms *ms)
 {
-	expand_tkn(token, token->type, ms);
+	expand_tkn(token, node, ms);
 	return (ft_strdup(token->str));
 }
 
@@ -59,7 +59,7 @@ static int	add_new_env_var(char *key, t_ms *ms, int i)
 		new_envp[j] = ms->envp[j];
 		j++;
 	}
-	new_envp[i] = tkn_to_str(ms->tokens->next, ms);
+	new_envp[i] = tkn_to_str(ms->nodes, ms->tokens->next, ms);
 	free(ms->envp);
 	ms->envp = new_envp;
 	ft_remove_unset_envvar(key, ms);
@@ -194,7 +194,7 @@ static int	update_existing_env_var(int operator, int i, char *key, t_ms *ms)
 	if (operator == 0)
 	{
 		free(ms->envp[i]);
-		ms->envp[i] = tkn_to_str(ms->tokens->next, ms);
+		ms->envp[i] = tkn_to_str(ms->nodes, ms->tokens->next, ms);
 	}
 	else if (operator > 0)
 	{

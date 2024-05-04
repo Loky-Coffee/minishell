@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:50:40 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/04/22 16:20:38 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/04 13:07:03 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static void	render_doubly_token(t_token **tokens)
 	i = 0;
 	while (tokens[i])
 	{
-		printf("%s ", tokens[i]->str);
+		printf("[%s] ", tokens[i]->str);
 		i++;
 	}
 	printf("\n");

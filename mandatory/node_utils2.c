@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 16:34:41 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/03 16:51:34 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/04 17:58:53 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,10 +117,7 @@ t_node	*make_redirect(t_ms *ms, t_token **ct)
 		return (parse_error((*ct), ms), NULL);
 	n->tokens = (t_token **)ft_calloc(i + 1, sizeof(t_token));
 	if (n->tokens == NULL)
-	{
-		free(n);
-		return (NULL);
-	}
+		return (free(n), NULL);
 	n->type = NODE_REDIRECT;
 	n->tokens[0] = *ct;
 	if (i == 2)

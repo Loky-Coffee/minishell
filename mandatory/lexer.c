@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 02:30:05 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/04/20 18:04:34 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/04 16:28:06 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,9 @@ static int	add_new_token(t_ms *ms, t_tokentype type, char *str)
 {
 	t_token	*new_token;
 
-	if (type == TOKEN_NEWLINE)
-		return (0);
-	new_token = ft_token_new();
+	new_token = ft_token_new(type, str, NULL);
 	if (new_token == NULL)
 		return (-1);
-	new_token->type = type;
-	new_token->str = str;
-	new_token->next = NULL;
 	ft_add_token_end(&(ms->tokens), new_token);
 	return (0);
 }

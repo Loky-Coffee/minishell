@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/03 17:30:11 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/04 17:58:29 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,21 +86,21 @@ typedef enum e_tokentype
 	NO_TOKEN,
 	TOKEN_WORD,
 	TOKEN_SUBSHELL,
-	TOKEN_SQUOTE,	// 		'
-	TOKEN_DQUOTE,	// 		"
-	TOKEN_DOLLAR,	//		$
+	// TOKEN_SQUOTE,	// 		'
+	// TOKEN_DQUOTE,	// 		"
+	// TOKEN_DOLLAR,	//		$
 	TOKEN_PIPE,		//		|
-	TOKEN_AND,		//		&
+	// TOKEN_AND,		//		&
 	TOKEN_DAND,		//		&&
 	TOKEN_OR,		//		||
 	// TOKEN_DOT,		//		.
-	TOKEN_TILDE,	//		~
+	// TOKEN_TILDE,	//		~
 	TOKEN_LESS,		//		<
 	TOKEN_GREATER,	//		>
 	TOKEN_DLESS,	//		<<
 	TOKEN_DGREATER,	//		>>
 	TOKEN_TLESS,	//		<<<
-	TOKEN_NEWLINE,	//		\n
+	// TOKEN_NEWLINE,	//		\n
 	// TOKEN_VARIABLE,
 	// TOKEN_DDOT		//		.
 }	t_tokentype;
@@ -234,15 +234,18 @@ void			set_signal_sigaction(int signal, void (handler)(int, siginfo_t *, void *)
 int				ft_lexer(t_ms *ms);
 
 // expender.c
-int				expand_tkn(t_token *token, t_tokentype node_type, t_ms *ms);
+int				expand_tkn(t_token *token, t_node *node, t_ms *ms);
 int				expand_node(t_node *node, t_ms *ms);
 
 // wildcards.c
-void			expand_wildcard(t_token *token);
+int				expand_wildcard(t_token *token);
 
 // wildcards_utils.c
 int				has_wildcards(char *pattern);
 int				ft_strlchr(char *dst, const char src, size_t dstsize);
+
+// wordsplitting.c
+int				word_splitting(t_token *prev, t_token *token, t_token *next, int *i);
 
 // Node_Utils1
 t_nodetype		node_is_pipe(t_node *node);
@@ -298,7 +301,7 @@ t_tokentype		tkn_is_redirect_out(t_token *token);
 t_tokentype		tkn_is_redirect_in(t_token *token);
 
 // token_list_utils
-t_token			*ft_token_new(void);
+t_token			*ft_token_new(t_tokentype type, char *str, t_token *next);
 t_token			*ft_token_last(t_token *token);
 void			ft_add_token_end(t_token **token, t_token *new_token);
 int				tokens_size(t_token *tokens);

@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 18:32:04 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/03 19:33:45 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/04 17:05:03 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,60 +176,89 @@ static int	is_matching(size_t i, size_t j, char *str, char *pattern)
 // 	return (mat[--i * 2048 + --j]);
 // }
 
-static int	expand_pattern(t_epv epv, char *pattern, char *expstr)
+static int	expand_pattern(t_epv *epv, char *pattern, char *expstr)
 {
 	if (has_wildcards(pattern))
 		return (1);
-	epv.dir = opendir(".");
-	if (epv.dir == NULL)
+	epv->dir = opendir(".");
+	if (epv->dir == NULL)
 		return (ft_strlcat(expstr, pattern, FT_PATH_MAX), 1);
-	ft_strlcpy(epv.pattern, pattern, FT_PATH_MAX);
-	compress_wildcard_pattern(epv.pattern);
-// fprintf(stderr, "compressed pattern |%s|\n", epv.pattern);
-	epv.count = 0;
-	epv.entry = readdir(epv.dir);
-	while (epv.entry)
+	ft_strlcpy(epv->pattern, pattern, FT_PATH_MAX);
+	compress_wildcard_pattern(epv->pattern);
+// fprintf(stderr, "compressed pattern |%s|\n", epv->pattern);
+	epv->count = 0;
+	epv->entry = readdir(epv->dir);
+	while (epv->entry)
 	{
-		if (epv.entry->d_name[0] != '.'
-			&& is_matching(2, 2, epv.entry->d_name, epv.pattern))
+		if (epv->entry->d_name[0] != '.'
+			&& is_matching(2, 2, epv->entry->d_name, epv->pattern))
 		{
-			if (epv.count)
+			if (epv->count)
 				ft_strlcat(expstr, " ", FT_PATH_MAX);
-			ft_strlcat(expstr, epv.entry->d_name, FT_PATH_MAX);
-			epv.count++;
+			ft_strlcat(expstr, epv->entry->d_name, FT_PATH_MAX);
+			epv->count++;
 		}
-		epv.entry = readdir(epv.dir);
+		epv->entry = readdir(epv->dir);
 	}
-	if (!epv.count)
-		return (closedir(epv.dir), 1);
-	return (closedir(epv.dir), 0);
+	if (!epv->count)
+		return (closedir(epv->dir), 1);
+	return (closedir(epv->dir), 0);
 }
 
-void	expand_wildcard(t_token *token)
+int	expand_wildcard(t_token *token)
 {
 	int		i;
-	int		j;
 	char	expstr[FT_PATH_MAX];
 	char	pattern[FT_PATH_MAX];
 	t_epv	epv;
 
 	epv = (t_epv){0};
 	if (token == NULL || token->str == NULL || token->str[0] == '\0')
-		return ;
-	i = 0;
+		return (0);
 	ft_memset(expstr, 0, FT_PATH_MAX);
-	while (token->str[i])
+	ft_memset(pattern, 0, FT_PATH_MAX);
+	i = 0;
+	while (token && token->str[i])
 	{
-		j = 0;
-		ft_memset(pattern, 0, FT_PATH_MAX);
-		while (token->str[i] && ft_isspace(token->str[i]))
-			ft_strlchr(expstr, token->str[i++], FT_PATH_MAX);
-		while (token->str[i] && !ft_isspace(token->str[i]))
-			pattern[j++] = token->str[i++];
-		if (expand_pattern(epv, pattern, expstr))
-			ft_strlcat(expstr, pattern, FT_PATH_MAX);
-		/// ft_split arguments…………
+		pattern[i] = token->str[i];
+		i++;
 	}
+	if (expand_pattern(&epv, pattern, expstr))
+		ft_strlcat(expstr, pattern, FT_PATH_MAX);
 	free(token->str);
 	token->str = ft_strdup(expstr);
+	return (epv.count);
 }
+
+// This is a version that expands a string with spaces an multiple patterns:
+// for example "soo w*w go*"
+// 
+// void	expand_wildcard(t_node *node, t_token *token)
+// {
+// 	int		i;
+// 	int		j;
+// 	char	expstr[FT_PATH_MAX];
+// 	char	pattern[FT_PATH_MAX];
+// 	t_epv	epv;
+
+// 	epv = (t_epv){0};
+// 	if (token == NULL || token->str == NULL || token->str[0] == '\0')
+// 		return ;
+// 	i = 0;
+// 	ft_memset(expstr, 0, FT_PATH_MAX);
+// 	while (token->str[i])
+// 	{
+// 		j = 0;
+// 		ft_memset(pattern, 0, FT_PATH_MAX);
+// 		while (token->str[i] && ft_isspace(token->str[i]))
+// 			ft_strlchr(expstr, token->str[i++], FT_PATH_MAX);
+// 		while (token->str[i] && !ft_isspace(token->str[i]))
+// 			pattern[j++] = token->str[i++];
+// 		if (expand_pattern(epv, pattern, expstr))
+// 			ft_strlcat(expstr, pattern, FT_PATH_MAX);
+// 		/// ft_split arguments…………
+// 	}
+// (void)node;
+// 	free(token->str);
+// 	token->str = ft_strdup(expstr);
+// }
