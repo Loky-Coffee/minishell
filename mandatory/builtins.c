@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 20:33:21 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/03 15:12:58 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/04 18:18:41 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ pid_t	fork_run_builtin(int *fds, t_builtin builtin, t_cmd *cmd, t_ms *ms)
 
 	pid = fork();
 	if (pid == 0)
-	{	
+	{
 		dup2(fds[0], STDIN_FILENO);
 		dup2(fds[1], STDOUT_FILENO);
 		exit_code = 1;
@@ -75,8 +75,6 @@ pid_t	fork_run_builtin(int *fds, t_builtin builtin, t_cmd *cmd, t_ms *ms)
 			exit_code = ft_env(ms);
 		else if (builtin == BI_EXIT)
 			exit_code = ft_exit(cmd, ms);
-		// else if (builtin == BI_ECHO_NINJASHELL) // sollen wir das lassen ???
-		// 	render_ninjashell();
 		if (exit_code != 0)
 			ms->exit_code = exit_code;
 		ft_close_fd(fds[0], fds[1]);

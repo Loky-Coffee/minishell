@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/04 17:58:29 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/04 18:17:40 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,23 +86,14 @@ typedef enum e_tokentype
 	NO_TOKEN,
 	TOKEN_WORD,
 	TOKEN_SUBSHELL,
-	// TOKEN_SQUOTE,	// 		'
-	// TOKEN_DQUOTE,	// 		"
-	// TOKEN_DOLLAR,	//		$
-	TOKEN_PIPE,		//		|
-	// TOKEN_AND,		//		&
-	TOKEN_DAND,		//		&&
-	TOKEN_OR,		//		||
-	// TOKEN_DOT,		//		.
-	// TOKEN_TILDE,	//		~
-	TOKEN_LESS,		//		<
-	TOKEN_GREATER,	//		>
-	TOKEN_DLESS,	//		<<
-	TOKEN_DGREATER,	//		>>
-	TOKEN_TLESS,	//		<<<
-	// TOKEN_NEWLINE,	//		\n
-	// TOKEN_VARIABLE,
-	// TOKEN_DDOT		//		.
+	TOKEN_PIPE,
+	TOKEN_DAND,
+	TOKEN_OR,
+	TOKEN_LESS,
+	TOKEN_GREATER,
+	TOKEN_DLESS,
+	TOKEN_DGREATER,
+	TOKEN_TLESS,
 }	t_tokentype;
 
 /* ************************************************************************** */
