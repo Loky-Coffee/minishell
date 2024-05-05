@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 05:50:33 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/05 20:30:29 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/05 21:04:27 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,6 +158,8 @@ int	expand_node(t_node *node, t_ms *ms, int flag)
 	{
 		i = 1;
 		oi = i;
+		if (node->tokens[i] == NULL)
+			return (0);
 		if (word_splitting(node->tokens[i - 1], node->tokens[i], node->tokens[i]->next, &i) == 1)
 			return (1);
 		if (reallocate_node_tokens(node, i - oi + 1))
