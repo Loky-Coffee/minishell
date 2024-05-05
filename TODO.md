@@ -9,14 +9,20 @@
 				✅	>> f11 << f1 << f2 << f3 cat
 - ✅		expander
 			❌	order of expansions: (3.5 Shell Expansions)
-					❌ 1.	parameter and variable expansion
-					❌ 2.	word splitting
-					❌ 3.	filename expansion
-					❌ 4.	quote characters present in the original word are removed unless they have been quoted themselves (quote removal)
+					/ 1.	parameter and variable expansion
+					/ 2.	word splitting
+					/ 3.	filename expansion
+					/ 4.	quote characters present in the original word are removed unless they have been quoted themselves (quote removal)
 - ✅		executer
 			✅ HERE_DOC
 				✅	here_doc Prompt txt-cursor movable with ARROW-KEYs
 				✅	cat << EOF  ctrl+c
+			❌	ambiguous redirect
+				> $foo
+				> $foo$kuh
+				> *
+			✅	echo A && export lala=42
+			✅	ls && ls && ls
 - ✅ 	Signals
 			✅ for minishell -c args
 			✅ for minishell testfile

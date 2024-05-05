@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/04 18:26:17 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/05 13:16:42 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,7 @@ static int	create_cmd(t_cmd *cmd, t_node *node)
 	int		j;
 	char	**args;
 
+	cmd->node = node;
 	cmd->tokens = node->tokens;
 		i = 0;
 	while (node->tokens[i])
@@ -389,6 +390,52 @@ void	execute_herestring(int *fd_in, int *fd_out, char *str, t_ms *ms)
 	ft_close_fd(fd_pipe[0], fd_pipe[1]);
 }
 
+static int	is_ambiguous_redirect(char *str)
+{
+	// char	value[FT_PATH_MAX];
+	
+	// if (str[0] == '$')
+	// {
+	// 	ft_memset(value, 0, FT_PATH_MAX);
+	// 	ft_get_env_value(ms, value, str);
+	// 	if (value[0] == '\0')
+	// 		return (1);
+	// }
+	//~~~~~~~~~~~~~~~~~~~~~
+	if (*str == '*')
+		return (1);	
+	return (0);
+}
+
+static int	is_ambiguous_redirect2(char *str, t_node *node, t_ms *ms)
+{
+	char	value[FT_PATH_MAX];
+	int		i;
+
+	i = 0;
+	while (node->tokens[i])
+		i++;
+	
+fprintf(stderr, "NODE [%i]~~~~~~~~~~~ |%s|%s|\n", i, node->tokens[0]->str, node->tokens[1]->str);
+	if (i > 2)
+	{
+fprintf(stderr, "~~~~~~~~~~~Count\n");
+		return (1);	
+	}
+	if (str[0] == '$')
+	{
+		ft_memset(value, 0, FT_PATH_MAX);
+		ft_get_env_value(ms, value, str);
+		if (value[0] == '\0')
+		{
+
+fprintf(stderr, "value~~~~~~~~~~~ |%s|\n", value);
+			return (1);
+		}
+	}
+	return (0);
+}
+
 static int	redirect_in(int *fd_in, t_node *node, t_ms *ms)
 {
 	if (expand_node(node, ms))
@@ -402,8 +449,13 @@ static int	redirect_in(int *fd_in, t_node *node, t_ms *ms)
 
 static int	redirect_out(int *fd_out, t_node *node, t_ms *ms)
 {
+	char	buf[FT_PATH_MAX];
+
+	ft_strlcpy(buf, node->tokens[1]->str, FT_PATH_MAX);
 	if (expand_node(node, ms))
 		return (EXIT_FAILURE);
+	if (is_ambiguous_redirect2(buf, node, ms))
+		return (ft_error(buf, "ambiguous redirect", NULL), EXIT_FAILURE);
 	close(*fd_out);
 	if (node->tokens[0]->type == TOKEN_DGREATER)
 		*fd_out = open(node->tokens[1]->str, O_WRONLY | O_CREAT | O_APPEND, 0644);
@@ -412,13 +464,6 @@ static int	redirect_out(int *fd_out, t_node *node, t_ms *ms)
 	if (*fd_out < 0)
 		return (ft_error(node->tokens[1]->str, strerror(errno), NULL), EXIT_FAILURE);
 	return (EXIT_SUCCESS);
-}
-
-static int	is_redirect_wildcards(char *str)
-{
-	if (*str == '*')
-		return (1);
-	return (0);
 }
 
 static pid_t	redirect_manager(int fd_in, int fd_out, t_node *node, t_ms *ms)
@@ -447,16 +492,16 @@ static pid_t	redirect_manager(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	}
 	else if (node->tokens[0]->type == TOKEN_LESS && node->tokens[1])
 	{
-		if (is_redirect_wildcards(node->tokens[1]->str))
-			return (ft_error("*", "ambiguous redirect", NULL), 1);
+		if (is_ambiguous_redirect(node->tokens[1]->str))
+			return (ft_error(node->tokens[1]->str, "ambiguous redirect", NULL), 1);
 		if (redirect_in(&fd_in, node, ms) > 0)
 			return (1);
 		pid = exec_intermediary(fd_in, fd_out, node->left, ms);
 	}
 	else if (node->tokens[0]->type == TOKEN_GREATER || node->tokens[0]->type == TOKEN_DGREATER)
 	{
-		if (is_redirect_wildcards(node->tokens[1]->str))
-			return (ft_error("*", "ambiguous redirect", NULL), 1);
+		// if (is_ambiguous_redirect(node->tokens[1]->str, ms))
+		// 	return (ft_error(node->tokens[1]->str, "ambiguous redirect", NULL), 1);
 		if (redirect_out(&fd_out, node, ms) > 0)
 			return (1);
 		pid = exec_intermediary(fd_in, fd_out, node->left, ms);
@@ -487,12 +532,22 @@ pid_t	exec_pipe(int fd_in, int fd_out, t_node *node, t_ms *ms)
 
 int	exec_interm_wait(int fd_in, int fd_out, t_node *node, t_ms *ms)
 {
-	pid_t	pid;
-	int		status;
+	pid_t		pid;
+	int			status;
+	t_builtin	builtin;
 
-	pid = exec_intermediary(fd_in, fd_out, node, ms);
-	waitpid(pid, &status, 0);
-	set_exit_code(status, ms);
+	builtin = is_builtin(node->tokens[0]);
+	if (node->parent && node->parent->type != NODE_PIPE && node->type == NODE_COMMAND && builtin)
+	{
+fprintf(stderr, "~~~~~~~~~~~~~~~~~~~~");
+		ms->exit_code = exec_builtin(fd_in, fd_out, builtin, node, ms);
+	}
+	else
+	{
+		pid = exec_intermediary(fd_in, fd_out, node, ms);
+		waitpid(pid, &status, 0);
+		set_exit_code(status, ms);		
+	}
 	return (ms->exit_code);
 }
 
@@ -545,8 +600,8 @@ pid_t	exec_intermediary(int fd_in, int fd_out, t_node *node, t_ms *ms)
 		pid = redirect_manager(fd_in, fd_out, node, ms);
 	else if (node->type == NODE_PIPE)
 		pid = exec_pipe(fd_in, fd_out, node, ms);
-	else if (ms->nodes->type == NODE_AND || ms->nodes->type == NODE_OR)
-		pid = logical_operator_manager(ms->nodes, ms);
+	else if (node->type == NODE_AND || node->type == NODE_OR)
+		pid = logical_operator_manager(node, ms);
 	return (pid);
 }
 
@@ -561,7 +616,7 @@ int	exec_manager(t_ms *ms)
 	if (ms->nodes == NULL)
 		return (-1);
 	builtin = is_builtin(ms->nodes->tokens[0]);
-	if (ms->nodes->type == NODE_COMMAND && builtin != NO_BUILTIN)
+	if (ms->nodes->type == NODE_COMMAND && builtin)
 		ms->exit_code = exec_builtin(STDIN_FILENO, STDOUT_FILENO, builtin, ms->nodes, ms);
 	else if (ms->nodes->type == NODE_COMMAND)
 	{
