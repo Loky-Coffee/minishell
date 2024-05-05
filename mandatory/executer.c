@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/05 13:16:42 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/05 16:52:30 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,19 +39,19 @@
 // 		fprintf(stderr, "open fds: %d\n", open_fd_count);
 // }
 
-static void save_stdfds(int *fds)
-{
-	fds[0] = dup(STDIN_FILENO);
-	fds[1] = dup(STDOUT_FILENO);
-}
+// static void save_stdfds(int *fds)
+// {
+// 	fds[0] = dup(STDIN_FILENO);
+// 	fds[1] = dup(STDOUT_FILENO);
+// }
 
-static void reset_stdfds(int *fds)
-{
-	dup2(fds[0], STDIN_FILENO);
-	dup2(fds[1], STDOUT_FILENO);
-	close(fds[0]);
-	close(fds[1]);
-}
+// static void reset_stdfds(int *fds)
+// {
+// 	dup2(fds[0], STDIN_FILENO);
+// 	dup2(fds[1], STDOUT_FILENO);
+// 	close(fds[0]);
+// 	close(fds[1]);
+// }
 
 void	set_exit_code(int status, t_ms *ms)
 {
@@ -538,10 +538,7 @@ int	exec_interm_wait(int fd_in, int fd_out, t_node *node, t_ms *ms)
 
 	builtin = is_builtin(node->tokens[0]);
 	if (node->parent && node->parent->type != NODE_PIPE && node->type == NODE_COMMAND && builtin)
-	{
-fprintf(stderr, "~~~~~~~~~~~~~~~~~~~~");
 		ms->exit_code = exec_builtin(fd_in, fd_out, builtin, node, ms);
-	}
 	else
 	{
 		pid = exec_intermediary(fd_in, fd_out, node, ms);

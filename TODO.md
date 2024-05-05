@@ -7,6 +7,8 @@
 		✅	FIX REDIRECT_IN / OUT PARSING:
 				✅	ls > f11 > f12
 				✅	>> f11 << f1 << f2 << f3 cat
+		❌ FIX HER_DOC POSITION IN TREE
+			cat < f1 < f2 < f3 << EOF
 - ✅		expander
 			❌	order of expansions: (3.5 Shell Expansions)
 					/ 1.	parameter and variable expansion
@@ -23,6 +25,7 @@
 				> *
 			✅	echo A && export lala=42
 			✅	ls && ls && ls
+			❌	SAVE STDIN_FILENO && STDOUT_FILENO in t_ms 
 - ✅ 	Signals
 			✅ for minishell -c args
 			✅ for minishell testfile
@@ -256,10 +259,11 @@ RESOURCES
 		https://www.youtube.com/watch?v=7SHV_QfVROE
 
 -		other Minishells
-		Timofei Rusanov / trusanov:	https://github.com/taaae/minishell/blob/main/include/lexer.h
-		Markus Kurz / makurz: 		https://github.com/kurz-m/minishell/blob/main/src/expander/expander_main.c
-		@twagger / @iamwen1023		https://github.com/twagger/minishell?tab=readme-ov-file
-									(uses / explains grammer [maybe explains it…])
+		Timofei Rusanov / trusanov:		https://github.com/taaae/minishell/blob/main/include/lexer.h
+		Markus Kurz / makurz: 			https://github.com/kurz-m/minishell/blob/main/src/expander/expander_main.c
+		Jamshidbek2000 / zstenger93		https://github.com/zstenger93/minishell/blob/master/mindmap.png
+		@twagger / @iamwen1023			https://github.com/twagger/minishell?tab=readme-ov-file
+										(uses / explains grammer [maybe explains it…])
 
 ### EXPANDER:
 

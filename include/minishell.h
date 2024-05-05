@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/04 20:16:43 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/05 16:47:48 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,6 +178,8 @@ typedef struct s_ms
 	int					exit_code;
 	unsigned char		shell_exit_code;
 	int					hd_interupt;
+	int					default_stdin;
+	int					default_stdout;
 }						t_ms;
 
 /* ************************************************************************** */

@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/04 21:47:49 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/05 16:48:20 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ void	init_ms(int argc, char **argv, t_ms *ms)
 	ms->parse_errtkn = NULL;
 	ms->hd_interupt = 0;
 	ms->run = 1;
+	ms->default_stdin = dup(STDIN_FILENO);
+	ms->default_stdout = dup(STDOUT_FILENO);
 	sigint_parent_handler(0, NULL, ms);
 	set_echoctl(0);
 	set_signal_sigaction(SIGINT, sigint_parent_handler);
@@ -176,7 +178,7 @@ int	main(int argc, char **argv, char **env)
 		}
 
 		// render TOKENS
-		// render_tokens(&ms);
+		render_tokens(&ms);
 
 		// PARSE IT aka Build TREE
 		ft_parse(ms.tokens, &ms.nodes, &ms);
@@ -191,7 +193,7 @@ int	main(int argc, char **argv, char **env)
 		}
 
 		// render NODES
-		// render_nodes(0, ms.nodes, 'R');
+		render_nodes(0, ms.nodes, 'R');
 
 		// EXECUTE IT
 		exec_manager(&ms);
