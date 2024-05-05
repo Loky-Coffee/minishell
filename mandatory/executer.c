@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/05 19:54:36 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/05 20:50:29 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,7 +248,7 @@ int	exec_builtin(int fd_in, int fd_out, t_builtin builtin, t_node *node, t_ms *m
 	t_cmd		cmd;
 
 	if (builtin != BI_EXPORT)
-		if (expand_node(node, ms))
+		if (expand_node(node, ms, 0))
 			return (-1);
 	create_cmd(&cmd, node);
 	exit_code = run_builtin((int [2]){fd_in, fd_out}, builtin, &cmd, ms);
@@ -261,7 +261,7 @@ pid_t	exec_fork_builtin(int fd_in, int fd_out, t_builtin builtin, t_node *node, 
 	t_cmd	cmd;
 
 	if (builtin != BI_EXPORT)
-		if (expand_node(node, ms))
+		if (expand_node(node, ms, 0))
 			return (-1);
 	create_cmd(&cmd, node);
 	pid = fork_run_builtin((int [2]){fd_in, fd_out}, builtin, &cmd, ms);
@@ -282,7 +282,7 @@ pid_t	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 		set_signal_handler(SIGINT, SIG_DFL);
 		set_signal_handler(SIGQUIT, SIG_DFL);
 		ft_close_fd(node->cfd0, node->cfd1);
-		if (expand_node(node, ms))
+		if (expand_node(node, ms, 0))
 			return (-1);
 		create_cmd(&cmd, node);
 		dup2(fd_in, STDIN_FILENO);
@@ -322,7 +322,7 @@ pid_t	exec_subshell(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	{
 		ft_close_fd(node->cfd0, node->cfd1);		// ?? do we need that ??
 		ft_close_fd(fd_in, fd_out);					// ?? do we need that ??
-		if (expand_node(node, ms))					/// brauchen wir das hier schon ?????
+		if (expand_node(node, ms, 0))					/// brauchen wir das hier schon ?????
 			return (-1);
 		create_subshell_cmd(&cmd, node, ms);
 		set_echoctl(1);
@@ -393,56 +393,15 @@ void	execute_herestring(int *fd_in, int *fd_out, char *str, t_ms *ms)
 	ft_close_fd(fd_pipe[0], fd_pipe[1]);
 }
 
-static int	is_ambiguous_redirect(char *str)
-{
-	// char	value[FT_PATH_MAX];
-	
-	// if (str[0] == '$')
-	// {
-	// 	ft_memset(value, 0, FT_PATH_MAX);
-	// 	ft_get_env_value(ms, value, str);
-	// 	if (value[0] == '\0')
-	// 		return (1);
-	// }
-	//~~~~~~~~~~~~~~~~~~~~~
-	if (*str == '*')
-		return (1);	
-	return (0);
-}
-
-static int	is_ambiguous_redirect2(char *str, t_node *node, t_ms *ms)
-{
-	char	value[FT_PATH_MAX];
-	int		i;
-
-	i = 0;
-	while (node->tokens[i])
-		i++;
-	
-fprintf(stderr, "NODE [%i]~~~~~~~~~~~ |%s|%s|\n", i, node->tokens[0]->str, node->tokens[1]->str);
-	if (i > 2)
-	{
-fprintf(stderr, "~~~~~~~~~~~Count\n");
-		return (1);	
-	}
-	if (str[0] == '$')
-	{
-		ft_memset(value, 0, FT_PATH_MAX);
-		ft_get_env_value(ms, value, str);
-		if (value[0] == '\0')
-		{
-
-fprintf(stderr, "value~~~~~~~~~~~ |%s|\n", value);
-			return (1);
-		}
-	}
-	return (0);
-}
-
 static int	redirect_in(int *fd_in, t_node *node, t_ms *ms)
 {
-	if (expand_node(node, ms))
+	char	var_buf[FT_PATH_MAX];
+	
+	ft_strlcpy(var_buf, node->tokens[1]->str, FT_PATH_MAX);
+	if (expand_node(node, ms, 0))
 		return (EXIT_FAILURE);
+	if ((node->tokens[1]->str[0] == '\0' || node->tokens[2] != NULL) && ft_strchr(var_buf, '"') == NULL)
+		return (ft_error(var_buf, "ambiguous redirect", NULL), 1);
 	close(*fd_in);
 	*fd_in = open(node->tokens[1]->str, O_RDONLY, 0644);
 	if (*fd_in < 0)
@@ -452,13 +411,13 @@ static int	redirect_in(int *fd_in, t_node *node, t_ms *ms)
 
 static int	redirect_out(int *fd_out, t_node *node, t_ms *ms)
 {
-	char	buf[FT_PATH_MAX];
+	char	var_buf[FT_PATH_MAX];
 
-	ft_strlcpy(buf, node->tokens[1]->str, FT_PATH_MAX);
-	if (expand_node(node, ms))
+	ft_strlcpy(var_buf, node->tokens[1]->str, FT_PATH_MAX);
+	if (expand_node(node, ms, 0))
 		return (EXIT_FAILURE);
-	if (is_ambiguous_redirect2(buf, node, ms))
-		return (ft_error(buf, "ambiguous redirect", NULL), EXIT_FAILURE);
+	if ((node->tokens[1]->str[0] == '\0' || node->tokens[2] != NULL) && ft_strchr(var_buf, '"') == NULL)
+		return (ft_error(var_buf, "ambiguous redirect", NULL), EXIT_FAILURE);
 	close(*fd_out);
 	if (node->tokens[0]->type == TOKEN_DGREATER)
 		*fd_out = open(node->tokens[1]->str, O_WRONLY | O_CREAT | O_APPEND, 0644);
@@ -478,7 +437,7 @@ static pid_t	redirect_manager(int fd_in, int fd_out, t_node *node, t_ms *ms)
 		return (EXIT_FAILURE);
 	if (node->tokens[0]->type == TOKEN_TLESS)
 	{
-		expand_node(node, ms);
+		expand_node(node, ms, 0);
 		execute_herestring(&fd_in, &fd_out, node->tokens[1]->str, ms);
 		if (node->left && (node->left->type == NODE_REDIRECT || node->left->type == NODE_COMMAND || node->left->type == NODE_SUBSHELL))
 			pid = exec_intermediary(fd_in, fd_out, node->left, ms);
@@ -495,16 +454,12 @@ static pid_t	redirect_manager(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	}
 	else if (node->tokens[0]->type == TOKEN_LESS && node->tokens[1])
 	{
-		if (is_ambiguous_redirect(node->tokens[1]->str))
-			return (ft_error(node->tokens[1]->str, "ambiguous redirect", NULL), 1);
 		if (redirect_in(&fd_in, node, ms) > 0)
 			return (1);
 		pid = exec_intermediary(fd_in, fd_out, node->left, ms);
 	}
 	else if (node->tokens[0]->type == TOKEN_GREATER || node->tokens[0]->type == TOKEN_DGREATER)
 	{
-		// if (is_ambiguous_redirect(node->tokens[1]->str, ms))
-		// 	return (ft_error(node->tokens[1]->str, "ambiguous redirect", NULL), 1);
 		if (redirect_out(&fd_out, node, ms) > 0)
 			return (1);
 		pid = exec_intermediary(fd_in, fd_out, node->left, ms);

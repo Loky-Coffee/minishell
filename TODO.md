@@ -8,11 +8,12 @@
 				✅	ls > f11 > f12
 				✅	>> f11 << f1 << f2 << f3 cat
 - ✅		expander
-			❌	order of expansions: (3.5 Shell Expansions)
-					/ 1.	parameter and variable expansion
-					/ 2.	word splitting
-					/ 3.	filename expansion
-					/ 4.	quote characters present in the original word are removed unless they have been quoted themselves (quote removal)
+			Happy Hacky FIX
+				/	order of expansions: (3.5 Shell Expansions)
+						/ 1.	parameter and variable expansion
+						/ 2.	word splitting
+						/ 3.	filename expansion
+						/ 4.	quote characters present in the original word are removed unless they have been quoted themselves (quote removal)
 - ✅		executer
 			❌	expander musst be called befoe we decide if built in or a command
 			✅ HERE_DOC
@@ -20,10 +21,10 @@
 				✅	cat << EOF  ctrl+c
 				✅	FIX HERE_DOC STDIN after prev redirect_ins
 						cat < f1 < f2 < f3 << EOF
-			❌	ambiguous redirect
-				> $foo
-				> $foo$kuh
-				> *
+			✅	ambiguous redirect
+					> $foo
+					> $foo$kuh
+					> *
 			✅	echo A && export lala=42
 			✅	ls && ls && ls
 			✅	SAVE STDIN_FILENO && STDOUT_FILENO in t_ms 

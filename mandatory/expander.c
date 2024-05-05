@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 05:50:33 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/05 12:54:23 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/05 20:30:29 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,10 @@ int	expand_tkn(t_token *token, t_node *node, t_ms *ms)
 	if (quote_mode != '\0')
 		return (ft_error("Syntax error", "Unclosed quote detected.", NULL), 1);
 	if (do_wildcards == 1 && node->tokens[0]->type != TOKEN_TLESS)
+	{
 		expand_wildcard(token);
+		expand_node(node, ms, 1);
+	}
 	return (0);
 }
 
@@ -146,11 +149,21 @@ static int	reallocate_node_tokens(t_node *node, int i)
 	return (0);
 }
 
-int	expand_node(t_node *node, t_ms *ms)
+int	expand_node(t_node *node, t_ms *ms, int flag)
 {
 	int		i;
 	int		oi;
 
+	if (flag)
+	{
+		i = 1;
+		oi = i;
+		if (word_splitting(node->tokens[i - 1], node->tokens[i], node->tokens[i]->next, &i) == 1)
+			return (1);
+		if (reallocate_node_tokens(node, i - oi + 1))
+			return (1);
+		return (0);
+	}
 	i = 0;
 	if (node == NULL || node->tokens == NULL)
 		return (1);

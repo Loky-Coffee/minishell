@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/05 17:10:26 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/05 20:26:45 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,7 +229,7 @@ int				ft_lexer(t_ms *ms);
 
 // expender.c
 int				expand_tkn(t_token *token, t_node *node, t_ms *ms);
-int				expand_node(t_node *node, t_ms *ms);
+int				expand_node(t_node *node, t_ms *ms, int flag);
 
 // wildcards.c
 int				expand_wildcard(t_token *token);
