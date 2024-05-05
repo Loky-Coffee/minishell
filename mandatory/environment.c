@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   environment.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 13:57:42 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/03 01:23:04 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/05 21:25:39 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ int	ft_get_env_value(t_ms *ms, char *str, char *key)
 	ft_strlcat(real_key, key, FT_PATH_MAX);
 	ft_strlcat(real_key, "=", FT_PATH_MAX);
 	while (ms->envp[i] != NULL \
-	&& strncmp(ms->envp[i], real_key, ft_strlen(real_key)) != 0)
+	&& ft_strncmp(ms->envp[i], real_key, ft_strlen(real_key)) != 0)
 		i++;
 	if (ms->envp[i] == NULL)
 	{
@@ -109,7 +109,7 @@ int	ft_setenv(char *key, char *value, t_ms *ms)
 		return (1);
 	i = 0;
 	while (ms->envp[i] != NULL \
-	&& strncmp(ms->envp[i], key, ft_strlen(key)) != 0)
+	&& ft_strncmp(ms->envp[i], key, ft_strlen(key)) != 0)
 		i++;
 	if (ms->envp[i] == NULL && add_new_index_to_envp(ms, i) == -1)
 		return (1);

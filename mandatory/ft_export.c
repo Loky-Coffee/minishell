@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 18:27:30 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/05 17:10:54 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/05 21:45:12 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,11 +217,13 @@ static int	update_existing_env_var(int operator, int i, char *key, t_ms *ms, t_n
 	char	*newstr;
 	size_t	len1;
 	size_t	len2;
+	char	*buf;
 
 	if (operator == 0)
 	{
+		buf = tkn_to_str(node, node->tokens[0]->next, ms);
 		free(ms->envp[i]);
-		ms->envp[i] = tkn_to_str(node, node->tokens[0]->next, ms);
+		ms->envp[i] = buf;
 	}
 	else if (operator > 0)
 	{
