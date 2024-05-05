@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/05 22:27:50 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/05 23:42:14 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,6 +193,7 @@ int	main(int argc, char **argv, char **env)
 		}
 
 		// render NODES
+		// render_nodes(0, ms.nodes, 'R');
 		// render_nodes(0, ms.nodes, 'R');
 
 		// EXECUTE IT
