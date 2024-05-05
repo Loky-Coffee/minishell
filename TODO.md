@@ -69,6 +69,40 @@
 - ❌ 	norminetten
 
 
+--------------------------------------------------------------------------------
+
+export abc+="        dsf df dsfds "
+	==> doube quotes should not be added
+
+expor var= "ls a
+	==> unclosed quotes in export should have syntax error
+	==> Space nach = is doof
+
+export dfgdf
+export dfgdf+=abcdefg
+=>	env && export displays => "dfgdf+=abcdefg" ===> which is wrong
+
+export cmd = 'bin ls -l'	==> bash schreibt error // es geht um die spaces
+
+export cmd="ls -l"
+$cmd					=> hat kein word_splitting daher koennen wir das nciht executen
+
+export cmd="ls                               -l"
+
+cat
+ps
+kill PID_CAT
+==> prompt echo $? 143 
+FIXE SIGINT TERMINATE 2
+
+cat | cat
+kill den 1.
+dann ctrl-c => gives wrong prompt
+
+
+--------------------------------------------------------------------------------
+
+
 was machen die funktionen???? wir haben die nicht benutzt....
 lstat
 fstat

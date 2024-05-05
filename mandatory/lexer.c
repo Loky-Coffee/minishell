@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 02:30:05 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/04 16:28:06 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/05 23:36:58 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,10 @@ static int	handle_word(int i, t_ms *ms)
 			len++;
 	}
 	str = ft_calloc(len + 1, sizeof(char));
+/////////////////
+if (str == NULL)
+	return (ft_perror("lexer"), -1);
+////////////////
 	ft_strlcpy(str, &ms->line[i], len + 1);
 	add_new_token(ms, TOKEN_WORD, str);
 	i += len;
