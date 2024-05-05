@@ -7,8 +7,6 @@
 		✅	FIX REDIRECT_IN / OUT PARSING:
 				✅	ls > f11 > f12
 				✅	>> f11 << f1 << f2 << f3 cat
-		❌ FIX HER_DOC POSITION IN TREE
-			cat < f1 < f2 < f3 << EOF
 - ✅		expander
 			❌	order of expansions: (3.5 Shell Expansions)
 					/ 1.	parameter and variable expansion
@@ -19,13 +17,15 @@
 			✅ HERE_DOC
 				✅	here_doc Prompt txt-cursor movable with ARROW-KEYs
 				✅	cat << EOF  ctrl+c
+				✅	FIX HERE_DOC STDIN after prev redirect_ins
+						cat < f1 < f2 < f3 << EOF
 			❌	ambiguous redirect
 				> $foo
 				> $foo$kuh
 				> *
 			✅	echo A && export lala=42
 			✅	ls && ls && ls
-			❌	SAVE STDIN_FILENO && STDOUT_FILENO in t_ms 
+			✅	SAVE STDIN_FILENO && STDOUT_FILENO in t_ms 
 - ✅ 	Signals
 			✅ for minishell -c args
 			✅ for minishell testfile
@@ -34,7 +34,7 @@
 			✅ RESET or SET SIGNALS accordingly for SUBSHELLS
 			✅ "wc" //=> returns 130 for ctrl-c
 			✅ Sigansl for HERE_DOC		(WIFEXITED(status) / WIFSIGNALED(status))
-			?❌✅? correct EXIT_CODE (child_exit_status // …) was habe ich damit wohl gemeint?? vielelicht den Fehler bei Subshells???: (wc) || echo A
+			✅ correct EXIT_CODE (child_exit_status // …)
 			✅ wc | sleep 30 | sleep 30
 - ✅		Wildcards
 			(for a recursive version look below to: A RECURSIVE WILDCARDS PATTERN MATCHING FUNCTION)
@@ -44,6 +44,8 @@
 				echo "> >> < * ? [ ] | ; [ ] || && ( ) & # $  <<" 
 			-	** 	=>	matches only directories  //=> not aplicable for Minisshell_bonus we only have to implemnt *
 - ❌		single argument errorcode for "./minishell ls" should behave like "bash ls"
+			./minishell -c lsll		=> exit_code
+			./minishell lsss		=> exit_code
 - ✅		export
 		✅	basic sorting
 		✅	displays original ms->envp

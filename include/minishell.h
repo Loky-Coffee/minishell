@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/05 16:47:48 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/05 17:10:26 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,7 +195,8 @@ typedef struct s_cmd
 // s_expand_pattern_var
 typedef struct s_epv
 {
-	uint64_t		count;
+	// uint64_t		count;
+	unsigned long long		count;
 	DIR				*dir;
 	struct dirent	*entry;
 	char			pattern[FT_PATH_MAX];

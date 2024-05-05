@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 18:27:30 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/04 22:02:23 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/05 17:10:54 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,8 +101,7 @@ static int	has_valid_key(int i, t_token *token, char *key)
 // 	ft_memset(key, 0, FT_PATH_MAX);
 // 	while (ms->tokens->next->str != 0 && ms->tokens->next->str[i] && i < 4096)
 // 	{
-// 		if (ms->tokens->next->str[i] == '=' || \
-// 	(ms->tokens->next->str[i] == '+' && ms->tokens->next->str[i + 1] == '='))
+// 		if (ms->tokens->next->str[i] == '=' || (ms->tokens->next->str[i] == '+' && ms->tokens->next->str[i + 1] == '='))
 // 			break ;
 // 		ft_strlcat(key, &ms->tokens->next->str[i], ft_strlen(key) + 2);
 // 		i++;

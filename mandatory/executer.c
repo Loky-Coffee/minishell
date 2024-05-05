@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/05 16:52:30 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/05 17:06:28 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -348,7 +348,11 @@ void	execute_heredoc(int *fd_in, int *fd_out, char *lim, t_ms *ms)
 	if (pipe(fd_pipe))
 		perror(NINJASHELL);
 	ft_close_fd(*fd_in, 0);
+
 	*fd_in = dup(fd_pipe[0]);
+
+	dup2(ms->default_stdin, STDIN_FILENO);
+
 	pid = fork();
 	if (pid == -1)
 		perror(NINJASHELL);
@@ -550,17 +554,19 @@ int	exec_interm_wait(int fd_in, int fd_out, t_node *node, t_ms *ms)
 
 int	logical_operator_manager(t_node *node, t_ms *ms)
 {
-	int	std_fds[2];
+	// int	std_fds[2];
 	int	ec;
 
 	ec = 0;
-	save_stdfds(std_fds);
+	// save_stdfds(std_fds);
 	if (node->type == NODE_AND)
 	{
 		if (node->left)
 		{
 			ec = exec_interm_wait(STDIN_FILENO, STDOUT_FILENO, node->left, ms);
-			reset_stdfds(std_fds);
+			// reset_stdfds(std_fds);
+			dup2(ms->default_stdin, STDIN_FILENO);
+			dup2(ms->default_stdout, STDOUT_FILENO);
 		}
 		if (node->right && ms->exit_code == 0)
 			ec = exec_interm_wait(STDIN_FILENO, STDOUT_FILENO, node->right, ms);
@@ -570,7 +576,9 @@ int	logical_operator_manager(t_node *node, t_ms *ms)
 		if (node->left)
 		{
 			ec = exec_interm_wait(STDIN_FILENO, STDOUT_FILENO, node->left, ms);
-			reset_stdfds(std_fds);
+			// reset_stdfds(std_fds);
+			dup2(ms->default_stdin, STDIN_FILENO);
+			dup2(ms->default_stdout, STDOUT_FILENO);
 		}
 		if (node->right && ms->exit_code != 0)
 			ec = exec_interm_wait(STDIN_FILENO, STDOUT_FILENO, node->right, ms);
@@ -607,7 +615,7 @@ int	exec_manager(t_ms *ms)
 	pid_t		pid;
 	int			status;
 	t_builtin	builtin;
-	int			std_fds[2];
+	// int			std_fds[2];
 
 	status= 0;
 	if (ms->nodes == NULL)
@@ -629,7 +637,7 @@ int	exec_manager(t_ms *ms)
 	}
 	else if (ms->nodes->type == NODE_REDIRECT)
 	{
-		save_stdfds(std_fds);
+		// save_stdfds(std_fds);
 		pid = redirect_manager(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);
 		if (pid > 255)
 		{
@@ -638,11 +646,13 @@ int	exec_manager(t_ms *ms)
 		}
 		else
 			ms->exit_code = 1;
-		reset_stdfds(std_fds);
+		// reset_stdfds(std_fds);
+		dup2(ms->default_stdin, STDIN_FILENO);
+		dup2(ms->default_stdout, STDOUT_FILENO);
 	}
 	else if (ms->nodes->type == NODE_PIPE)
 	{
-		save_stdfds(std_fds);
+		// save_stdfds(std_fds);
 		pid = exec_pipe(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);
 		if (pid > 255)
 		{
@@ -653,13 +663,17 @@ int	exec_manager(t_ms *ms)
 		}
 		else
 			ms->exit_code = 1;
-		reset_stdfds(std_fds);
+		// reset_stdfds(std_fds);
+		dup2(ms->default_stdin, STDIN_FILENO);
+		dup2(ms->default_stdout, STDOUT_FILENO);
 	}
 	else if (ms->nodes->type == NODE_AND || ms->nodes->type == NODE_OR)
 	{
-		save_stdfds(std_fds);
+		// save_stdfds(std_fds);
 		logical_operator_manager(ms->nodes, ms);
-		reset_stdfds(std_fds);
+		// reset_stdfds(std_fds);
+		dup2(ms->default_stdin, STDIN_FILENO);
+		dup2(ms->default_stdout, STDOUT_FILENO);
 	}
 	set_echoctl(0);				// fixes wc ctrl-c: if you just have wc and you use ctrl-c it returns the shell to hide ctrl-c output again
 	return (ms->exit_code);
