@@ -14,6 +14,7 @@
 					/ 3.	filename expansion
 					/ 4.	quote characters present in the original word are removed unless they have been quoted themselves (quote removal)
 - ✅		executer
+			❌	expander musst be called befoe we decide if built in or a command
 			✅ HERE_DOC
 				✅	here_doc Prompt txt-cursor movable with ARROW-KEYs
 				✅	cat << EOF  ctrl+c

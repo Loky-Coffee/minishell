@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/05 17:06:28 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/05 19:54:36 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -281,7 +281,6 @@ pid_t	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 		set_echoctl(1);
 		set_signal_handler(SIGINT, SIG_DFL);
 		set_signal_handler(SIGQUIT, SIG_DFL);
-		// set_signal_handler(SIGQUIT, sigquit_child_handler);
 		ft_close_fd(node->cfd0, node->cfd1);
 		if (expand_node(node, ms))
 			return (-1);
@@ -554,17 +553,14 @@ int	exec_interm_wait(int fd_in, int fd_out, t_node *node, t_ms *ms)
 
 int	logical_operator_manager(t_node *node, t_ms *ms)
 {
-	// int	std_fds[2];
 	int	ec;
 
 	ec = 0;
-	// save_stdfds(std_fds);
 	if (node->type == NODE_AND)
 	{
 		if (node->left)
 		{
 			ec = exec_interm_wait(STDIN_FILENO, STDOUT_FILENO, node->left, ms);
-			// reset_stdfds(std_fds);
 			dup2(ms->default_stdin, STDIN_FILENO);
 			dup2(ms->default_stdout, STDOUT_FILENO);
 		}
@@ -576,7 +572,6 @@ int	logical_operator_manager(t_node *node, t_ms *ms)
 		if (node->left)
 		{
 			ec = exec_interm_wait(STDIN_FILENO, STDOUT_FILENO, node->left, ms);
-			// reset_stdfds(std_fds);
 			dup2(ms->default_stdin, STDIN_FILENO);
 			dup2(ms->default_stdout, STDOUT_FILENO);
 		}
@@ -615,7 +610,6 @@ int	exec_manager(t_ms *ms)
 	pid_t		pid;
 	int			status;
 	t_builtin	builtin;
-	// int			std_fds[2];
 
 	status= 0;
 	if (ms->nodes == NULL)
@@ -637,7 +631,6 @@ int	exec_manager(t_ms *ms)
 	}
 	else if (ms->nodes->type == NODE_REDIRECT)
 	{
-		// save_stdfds(std_fds);
 		pid = redirect_manager(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);
 		if (pid > 255)
 		{
@@ -646,13 +639,11 @@ int	exec_manager(t_ms *ms)
 		}
 		else
 			ms->exit_code = 1;
-		// reset_stdfds(std_fds);
 		dup2(ms->default_stdin, STDIN_FILENO);
 		dup2(ms->default_stdout, STDOUT_FILENO);
 	}
 	else if (ms->nodes->type == NODE_PIPE)
 	{
-		// save_stdfds(std_fds);
 		pid = exec_pipe(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);
 		if (pid > 255)
 		{
@@ -663,15 +654,12 @@ int	exec_manager(t_ms *ms)
 		}
 		else
 			ms->exit_code = 1;
-		// reset_stdfds(std_fds);
 		dup2(ms->default_stdin, STDIN_FILENO);
 		dup2(ms->default_stdout, STDOUT_FILENO);
 	}
 	else if (ms->nodes->type == NODE_AND || ms->nodes->type == NODE_OR)
 	{
-		// save_stdfds(std_fds);
 		logical_operator_manager(ms->nodes, ms);
-		// reset_stdfds(std_fds);
 		dup2(ms->default_stdin, STDIN_FILENO);
 		dup2(ms->default_stdout, STDOUT_FILENO);
 	}
