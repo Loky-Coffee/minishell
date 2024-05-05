@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/05 21:01:03 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/05 23:39:30 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,11 @@
 void	set_exit_code(int status, t_ms *ms)
 {
 	if (WIFSIGNALED(status))
+	{
+		if(WTERMSIG(status) ==  15)
+			write(2, "Terminated: 15\n", 15);
 		ms->exit_code = 128 + WTERMSIG(status);
+	}
 	else if (WIFEXITED(status))
 		ms->exit_code = WEXITSTATUS(status);
 }
@@ -396,7 +400,7 @@ void	execute_herestring(int *fd_in, int *fd_out, char *str, t_ms *ms)
 static int	redirect_in(int *fd_in, t_node *node, t_ms *ms)
 {
 	char	var_buf[FT_PATH_MAX];
-	
+
 	ft_strlcpy(var_buf, node->tokens[1]->str, FT_PATH_MAX);
 	if (expand_node(node, ms, 0))
 		return (EXIT_FAILURE);
@@ -501,7 +505,7 @@ int	exec_interm_wait(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	{
 		pid = exec_intermediary(fd_in, fd_out, node, ms);
 		waitpid(pid, &status, 0);
-		set_exit_code(status, ms);		
+		set_exit_code(status, ms);
 	}
 	return (ms->exit_code);
 }
