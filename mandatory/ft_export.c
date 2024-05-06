@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 18:27:30 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/06 19:27:17 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/06 19:41:20 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,47 +190,20 @@ static void	invalid_identifier(char *str)
 	char	errstr[FT_PATH_MAX];
 
 	ft_memset(errstr, 0 ,FT_PATH_MAX);
-	ft_strlcat(errstr, "`", FT_PATH_MAX);
-	ft_strlcat(errstr, str, FT_PATH_MAX);
-	ft_strlcat(errstr, "'", FT_PATH_MAX);
-	ft_error("export", errstr, "not a valid identifier");
-}
-
-static int	export_multi_args(t_ms *ms, t_node *node, t_token *token)
-{
-	char	key[FT_PATH_MAX];
-	int		operator;
-	int		i;
-
-	if (token && token->type == TOKEN_WORD)
+	if (str && str[0] == '-')
 	{
-		// expand_tkn(token, node, ms);
-		if (has_valid_key(0, token, key) == 0)
-		{
-			i = 0;
-			while (ms->envp[i] != NULL && ft_strncmp(ms->envp[i], token->str, keylen(token->str)) != 0)
-				i++;
-			operator = has_valid_operator(token->str);
-			if (operator == -1)
-			{
-				// expand_tkn(token, node, ms);
-				ft_add_unset_envvar(token->str, ms);
-				export_multi_args(ms, node, token->next);
-				return (0);
-			}
-			if (ms->envp[i] == NULL)
-				return (add_new_env_var(key, node, ms, i, token));
-			else
-				return (update_existing_env_var(operator, i, key, ms, node, token));
-		}
-		else
-		{
-			invalid_identifier(token->str);
-			export_multi_args(ms, node, token->next);
-			return (1);
-		}
+		str[2] = '\0';
+		ft_strlcat(errstr, str, FT_PATH_MAX);
+		ft_error("export", errstr, "invalid option");
 	}
-	return (0);
+	else
+	{
+		ft_strlcat(errstr, "`", FT_PATH_MAX);
+		ft_strlcat(errstr, str, FT_PATH_MAX);
+		ft_strlcat(errstr, "'", FT_PATH_MAX);
+		ft_error("export", errstr, "not a valid identifier");
+	}
+
 }
 
 static int	update_existing_env_var(int operator, int i, char *key, t_ms *ms, t_node *node, t_token *token)
@@ -267,12 +240,45 @@ static int	update_existing_env_var(int operator, int i, char *key, t_ms *ms, t_n
 	return (export_multi_args(ms, node, token->next));
 }
 
+static int	export_multi_args(t_ms *ms, t_node *node, t_token *token)
+{
+	char	key[FT_PATH_MAX];
+	int		operator;
+	int		i;
+
+	if (token && token->type == TOKEN_WORD)
+	{
+		if (has_valid_key(0, token, key) == 0)
+		{
+			i = 0;
+			while (ms->envp[i] != NULL && ft_strncmp(ms->envp[i], token->str, keylen(token->str)) != 0)
+				i++;
+			operator = has_valid_operator(token->str);
+			if (operator == -1)
+			{
+				ft_add_unset_envvar(token->str, ms);
+				export_multi_args(ms, node, token->next);
+				return (0);
+			}
+			if (ms->envp[i] == NULL)
+				return (add_new_env_var(key, node, ms, i, token));
+			else
+				return (update_existing_env_var(operator, i, key, ms, node, token));
+		}
+		else
+		{
+			invalid_identifier(token->str);
+			export_multi_args(ms, node, token->next);
+			return (1);
+		}
+	}
+	return (0);
+}
+
 int	ft_export(t_node *node, t_ms *ms)
 {
 	if (node->tokens && node->tokens[0] && node->tokens[1] == NULL)
 		return (ft_export_print(ms));
-
 	expand_node(node, ms, 0);
-
 	return (export_multi_args(ms, node, node->tokens[1]));
 }
