@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 18:27:30 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/06 18:16:30 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/06 18:30:17 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,7 +206,7 @@ static int	export_multi_args(char *key, t_ms *ms, t_node *node, t_token *token)
 {
 	int		operator;
 	int		i;
-	
+
 	if (token && token->type == TOKEN_WORD)
 	{
 		if (has_valid_key(0, token, key) == 0)
@@ -225,13 +225,13 @@ static int	export_multi_args(char *key, t_ms *ms, t_node *node, t_token *token)
 			if (ms->envp[i] == NULL)
 				return (add_new_env_var(key, node, ms, i, token));
 			else
-				return (update_existing_env_var(operator, i, key, ms, node, token));	
+				return (update_existing_env_var(operator, i, key, ms, node, token));
 		}
 		else
 		{
 			invalid_identifier(token->str);
 			export_multi_args(key, ms, node, token->next);
-			return (0);
+			return (1);
 		}
 	}
 	return (0);
@@ -303,7 +303,7 @@ int	ft_export(int i, t_node *node, t_ms *ms)
 	i++;
 	operator = 0;
 
-	export_multi_args(key, ms, node, node->tokens[1]);
+	// export_multi_args(key, ms, node, node->tokens[1]);
 
-	return (0);
+	return (export_multi_args(key, ms, node, node->tokens[1]));
 }
