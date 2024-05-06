@@ -75,19 +75,24 @@
 
 --------------------------------------------------------------------------------
 
+✅
 export abc+="        dsf df dsfds "
 	==> doube quotes should not be added
 
+✅
 expor var= "ls a
 	==> unclosed quotes in export should have syntax error
 	==> Space nach = is doof
 
+✅
 export dfgdf
 export dfgdf+=abcdefg
 =>	env && export displays => "dfgdf+=abcdefg" ===> which is wrong
 
+🍌 ❌ => durch recursion haben wir die errors in der falschen reihenfolge
 export cmd = 'bin ls -l'	==> bash schreibt error // es geht um die spaces
 
+❌
 export cmd="ls -l"
 $cmd					=> hat kein word_splitting daher koennen wir das nciht executen
 

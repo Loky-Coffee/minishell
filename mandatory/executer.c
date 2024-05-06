@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/06 11:04:33 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/06 22:08:08 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,9 @@ void	set_exit_code(int status, t_ms *ms)
 {
 	if (WIFSIGNALED(status))
 	{
-		if(WTERMSIG(status) ==  9)
+		if (WTERMSIG(status) == 9)
 			write(2, "Terminated: 9\n", 14);
-		if(WTERMSIG(status) ==  15)
+		if (WTERMSIG(status) == 15)
 			write(2, "Terminated: 15\n", 15);
 		ms->exit_code = 128 + WTERMSIG(status);
 	}
@@ -107,7 +107,7 @@ static int	create_cmd(t_cmd *cmd, t_node *node)
 
 	cmd->node = node;
 	cmd->tokens = node->tokens;
-		i = 0;
+	i = 0;
 	while (node->tokens[i])
 		i++;
 	args = (char **)ft_calloc((i + 1), sizeof(char *));
@@ -180,10 +180,10 @@ static void	ft_cmd_is_dot(t_cmd *cmd, t_ms *ms)
 	if (ft_strncmp(cmd->cmdpth, ".", 2) == 0)
 	{
 		ft_error(cmd->cmdpth, "filename argument required", NULL);
-		ft_putstr_fd(LIGHTCYAN "\n", 2);
+		ft_putstr_fd(LIGHTCYAN "", 2);
 		ft_putstr_fd(cmd->cmdpth, 2);
 		ft_putstr_fd(": usage: ", 2);
-		ft_putstr_fd(". filename [arguments]"RESET, 2);
+		ft_putstr_fd(". filename [arguments]\n"RESET, 2);
 		terminate(ms, cmd, 2);
 	}
 	if (ft_strncmp(cmd->cmdpth, "./", 2) == 0)
@@ -226,7 +226,7 @@ static int	ft_cmd_is_dir(char *cmd, int *exit_code)
 {
 	struct stat	file_stat;
 
-	if (ft_strchr(cmd, '/') == NULL ) // || ft_strchr(cmd, '.') == NULL
+	if (ft_strchr(cmd, '/') == NULL )
 		return (0);
 	if (stat(cmd, &file_stat) != 0)
 		return (0);
@@ -248,7 +248,7 @@ static int	ft_exec_permissions(char *cmd, int *exit_code)
 	return (1);
 }
 
-int	exec_builtin(int fd_in, int fd_out, t_builtin builtin, t_node *node, t_ms *ms)
+int	exec_builtin(int fds[2], t_builtin builtin, t_node *node, t_ms *ms)
 {
 	int			exit_code;
 	t_cmd		cmd;
@@ -257,11 +257,11 @@ int	exec_builtin(int fd_in, int fd_out, t_builtin builtin, t_node *node, t_ms *m
 		if (expand_node(node, ms, 0))
 			return (-1);
 	create_cmd(&cmd, node);
-	exit_code = run_builtin((int [2]){fd_in, fd_out}, builtin, &cmd, ms);
+	exit_code = run_builtin((int [2]){fds[0], fds[1]}, builtin, &cmd, ms);
 	return (exit_code);
 }
 
-pid_t	exec_fork_builtin(int fd_in, int fd_out, t_builtin builtin, t_node *node, t_ms *ms)
+pid_t	exec_fork_builtin(int fds[2], t_builtin builtin, t_node *node, t_ms *ms)
 {
 	pid_t	pid;
 	t_cmd	cmd;
@@ -270,49 +270,52 @@ pid_t	exec_fork_builtin(int fd_in, int fd_out, t_builtin builtin, t_node *node, 
 		if (expand_node(node, ms, 0))
 			return (-1);
 	create_cmd(&cmd, node);
-	pid = fork_run_builtin((int [2]){fd_in, fd_out}, builtin, &cmd, ms);
+	pid = fork_run_builtin((int [2]){fds[0], fds[1]}, builtin, &cmd, ms);
 	return (pid);
+}
+
+void	check_and_launch_cmd(int fd_in, int fd_out, t_cmd *cmd, t_ms *ms)
+{
+	int		exit_code;
+
+	exit_code = 0;
+	ft_cmd_is_empty(fd_in, fd_out, cmd, ms);
+	ft_cmd_is_dot(cmd, ms);
+	ft_get_env_value(ms, cmd->path, "PATH");
+	if (ft_cmd_is_dir(cmd->cmdpth, &exit_code)
+		|| ft_cmd_has_slash(cmd, &exit_code)
+		|| ft_cmd_is_dotdot(cmd, &exit_code)
+		|| ft_prepend_path(&cmd->cmdpth, cmd->path, &exit_code)
+		|| ft_exec_permissions(cmd->cmdpth, &exit_code))
+	{
+		if (exit_code == 0)
+			exit_code = 1;
+		ms->exit_code = exit_code;
+		ft_close_fd(fd_in, fd_out);
+		terminate(ms, cmd, exit_code);
+	}
+	execve(cmd->cmdpth, cmd->args, ms->envp);
+	ft_perror(cmd->args[0]);
+	ft_close_fd(fd_in, fd_out);
+	terminate(ms, cmd, 1);
 }
 
 pid_t	exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms)
 {
 	pid_t	pid;
 	t_cmd	cmd;
-	int		exit_code;
 
-	exit_code = 0;
 	pid = fork();
 	if (pid == 0)
 	{
-		set_echoctl(1);
-		set_signal_handler(SIGINT, SIG_DFL);
-		set_signal_handler(SIGQUIT, SIG_DFL);
+		reset_signals();
 		ft_close_fd(node->cfd0, node->cfd1);
 		if (expand_node(node, ms, 0))
 			return (-1);
 		create_cmd(&cmd, node);
 		dup2(fd_in, STDIN_FILENO);
 		dup2(fd_out, STDOUT_FILENO);
-		ft_cmd_is_empty(fd_in, fd_out, &cmd, ms);
-		ft_cmd_is_dot(&cmd, ms);
-		ft_get_env_value(ms, cmd.path, "PATH");
-		if (ft_cmd_is_dir(cmd.cmdpth, &exit_code)
-			|| ft_cmd_has_slash(&cmd, &exit_code)
-			|| ft_cmd_is_dotdot(&cmd, &exit_code)
-			|| ft_prepend_path(&cmd.cmdpth, cmd.path, &exit_code)
-			|| ft_exec_permissions(cmd.cmdpth, &exit_code))
-		{
-			if (exit_code == 0)
-				exit_code = 1;
-			ms->exit_code = exit_code;
-			ft_close_fd(fd_in, fd_out);
-			terminate(ms, &cmd, exit_code);
-		}
-		// ft_setenv("_", cmd.cmdpth, ms);
-		execve(cmd.cmdpth, cmd.args, ms->envp);
-		ft_perror(cmd.args[0]);
-		ft_close_fd(fd_in, fd_out);
-		terminate(ms, &cmd, 0); /// HAEEE wieso 0?????
+		check_and_launch_cmd(fd_in, fd_out, &cmd, ms);
 	}
 	ft_close_fd(fd_in, fd_out);
 	return (pid);
@@ -326,18 +329,16 @@ pid_t	exec_subshell(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	pid = fork();
 	if (pid == 0)
 	{
-		ft_close_fd(node->cfd0, node->cfd1);		// ?? do we need that ??
-		ft_close_fd(fd_in, fd_out);					// ?? do we need that ??
-		if (expand_node(node, ms, 0))					/// brauchen wir das hier schon ?????
+		ft_close_fd(node->cfd0, node->cfd1);
+		ft_close_fd(fd_in, fd_out);
+		if (expand_node(node, ms, 0))
 			return (-1);
 		create_subshell_cmd(&cmd, node, ms);
-		set_echoctl(1);
-		set_signal_handler(SIGINT, SIG_DFL);
-		set_signal_handler(SIGQUIT, SIG_DFL);
+		reset_signals();
 		execve(cmd.cmdpth, cmd.args, ms->envp);
 		ft_perror(cmd.args[0]);
 		ft_close_fd(fd_in, fd_out);
-		terminate(ms, &cmd, 0);						// muss hier nicht terminate 1 hin
+		terminate(ms, &cmd, 1);
 	}
 	ft_close_fd(fd_in, fd_out);
 	return (pid);
@@ -345,34 +346,30 @@ pid_t	exec_subshell(int fd_in, int fd_out, t_node *node, t_ms *ms)
 
 void	execute_heredoc(int *fd_in, int *fd_out, char *lim, t_ms *ms)
 {
-	int	pid;
-	int	status;
+	int	pid_status[2];
 	int	fd_pipe[2];
 
-	status = 0;
+	pid_status[1] = 0;
 	if (pipe(fd_pipe))
 		perror(NINJASHELL);
 	ft_close_fd(*fd_in, 0);
-
 	*fd_in = dup(fd_pipe[0]);
-
 	dup2(ms->default_stdin, STDIN_FILENO);
-
-	pid = fork();
-	if (pid == -1)
+	pid_status[0] = fork();
+	if (pid_status[0] == -1)
 		perror(NINJASHELL);
-	if (pid == 0)
+	if (pid_status[0] == 0)
 	{
 		set_signal_handler(SIGINT, SIG_DFL);
-		status = ft_heredoc(fd_pipe[1], lim);
+		pid_status[1] = ft_heredoc(fd_pipe[1], lim);
 		ft_close_fd(fd_pipe[0], fd_pipe[1]);
 		ft_close_fd(*fd_in, *fd_out);
-		terminate(ms, NULL, status);
+		terminate(ms, NULL, pid_status[1]);
 	}
 	ft_close_fd(fd_pipe[0], fd_pipe[1]);
-	waitpid(pid, &status, 0);
-	set_exit_code(status, ms);
-	if (WIFSIGNALED(status))
+	waitpid(pid_status[0], &pid_status[1], 0);
+	set_exit_code(pid_status[1], ms);
+	if (WIFSIGNALED(pid_status[1]))
 		ms->hd_interupt = 1;
 }
 
@@ -453,7 +450,7 @@ static pid_t	redirect_manager(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	else if (node->tokens[0]->type == TOKEN_DLESS)
 	{
 		execute_heredoc(&fd_in, &fd_out, node->tokens[1]->str, ms);
-		if (ms->hd_interupt == 0 && node->left && (node->left->type == NODE_REDIRECT || node->left->type == NODE_COMMAND || node->left->type == NODE_SUBSHELL))	// node->left->type == NODE_SUBSHELL
+		if (ms->hd_interupt == 0 && node->left && (node->left->type == NODE_REDIRECT || node->left->type == NODE_COMMAND || node->left->type == NODE_SUBSHELL))
 			pid = exec_intermediary(fd_in, fd_out, node->left, ms);
 		else
 			close(fd_in);
@@ -482,7 +479,7 @@ pid_t	exec_pipe(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	if (pipe(fd_pipe))
 		perror(NINJASHELL);
 	buff = node->left;
-	while (buff->left && buff->type != NODE_COMMAND && buff->type != NODE_SUBSHELL)	// buff->type != NODE_SUBSHELL
+	while (buff->left && buff->type != NODE_COMMAND && buff->type != NODE_SUBSHELL)
 		buff = buff->left;
 	buff->cfd0 = fd_pipe[0];
 	if (ms->hd_interupt == 0 && node->left)
@@ -502,7 +499,7 @@ int	exec_interm_wait(int fd_in, int fd_out, t_node *node, t_ms *ms)
 
 	builtin = is_builtin(node->tokens[0]);
 	if (node->parent && node->parent->type != NODE_PIPE && node->type == NODE_COMMAND && builtin)
-		ms->exit_code = exec_builtin(fd_in, fd_out, builtin, node, ms);
+		ms->exit_code = exec_builtin((int [2]){fd_in, fd_out}, builtin, node, ms);
 	else
 	{
 		pid = exec_intermediary(fd_in, fd_out, node, ms);
@@ -554,7 +551,7 @@ pid_t	exec_intermediary(int fd_in, int fd_out, t_node *node, t_ms *ms)
 		expand_node(node, ms, 0);
 	builtin = is_builtin(node->tokens[0]);
 	if (node->type == NODE_COMMAND && builtin)
-		pid = exec_fork_builtin(fd_in, fd_out, builtin, node, ms);
+		pid = exec_fork_builtin((int [2]){fd_in, fd_out}, builtin, node, ms);
 	else if (node->type == NODE_COMMAND)
 		pid = exec_cmd(fd_in, fd_out, node, ms);
 	else if (node->type == NODE_SUBSHELL)
@@ -581,7 +578,7 @@ int	exec_manager(t_ms *ms)
 		expand_node(ms->nodes, ms, 0);
 	builtin = is_builtin(ms->nodes->tokens[0]);
 	if (ms->nodes->type == NODE_COMMAND && builtin)
-		ms->exit_code = exec_builtin(STDIN_FILENO, STDOUT_FILENO, builtin, ms->nodes, ms);
+		ms->exit_code = exec_builtin((int [2]){STDIN_FILENO, STDOUT_FILENO}, builtin, ms->nodes, ms);
 	else if (ms->nodes->type == NODE_COMMAND)
 	{
 		pid = exec_cmd(STDIN_FILENO, STDOUT_FILENO, ms->nodes, ms);

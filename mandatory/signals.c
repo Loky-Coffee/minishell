@@ -3,14 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 15:27:28 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/04 18:55:32 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/06 20:54:17 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+void	reset_signals(void)
+{
+	set_echoctl(1);
+	set_signal_handler(SIGINT, SIG_DFL);
+	set_signal_handler(SIGQUIT, SIG_DFL);
+}
 
 void	set_echoctl(int enable)
 {
