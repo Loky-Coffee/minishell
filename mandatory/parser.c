@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/12 15:56:24 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/04 19:44:10 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/06 11:17:05 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,6 @@ static t_node	*parse_leaf(t_ms *ms, t_token **ct)
 		n = make_operator(ct);
 	return (n);
 }
-
-
 
 t_node	*insert_node_left(t_node *curr, t_node *next)
 {

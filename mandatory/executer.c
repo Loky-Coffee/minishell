@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/05 23:39:30 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/06 11:04:33 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ void	set_exit_code(int status, t_ms *ms)
 {
 	if (WIFSIGNALED(status))
 	{
+		if(WTERMSIG(status) ==  9)
+			write(2, "Terminated: 9\n", 14);
 		if(WTERMSIG(status) ==  15)
 			write(2, "Terminated: 15\n", 15);
 		ms->exit_code = 128 + WTERMSIG(status);
