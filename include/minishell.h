@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/06 18:57:26 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/06 20:37:59 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,6 +202,13 @@ typedef struct s_epv
 	char			pattern[FT_PATH_MAX];
 }					t_epv;
 
+typedef struct s_export
+{
+	int		operator;
+	int		i;
+	char	key[FT_PATH_MAX];
+}			t_export;
+
 /* ************************************************************************** */
 
 // main
@@ -332,10 +339,23 @@ pid_t			fork_run_builtin(int *fds, t_builtin builtin, t_cmd *cmd, t_ms *ms);
 int				ft_echo(t_cmd *cmd);
 int				ft_cd(t_cmd *cmd, t_ms *ms);
 int				ft_pwd(void);
+int				export_arguments(t_ms *ms, t_node *node, t_token *token);
 int				ft_export(t_node *node, t_ms *ms);
 int				ft_unset(t_ms *ms);
 int				ft_env(t_ms *ms);
 unsigned char	ft_exit(t_cmd *cmd, t_ms *ms);
+
+// ft_export_utils1.c
+int				invalid_identifier(char *str);
+int				update_existing_env_var(t_export export, t_ms *ms, t_node *node, t_token *token);
+
+// ft_export_utils2.c
+int				has_valid_operator(char *str);
+int				keylen(char *str);
+int				add_new_env_var(t_export export, t_node *node,
+				t_ms *ms, t_token *token);
+int				has_valid_key(int i, t_token *token, char *key);
+size_t			get_envp_size(char **envp);
 
 // unset_vars.c
 int				ft_add_unset_envvar(char *key, t_ms *ms);
