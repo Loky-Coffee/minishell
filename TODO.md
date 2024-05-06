@@ -51,6 +51,7 @@
 			./minishell lsss		=> exit_code
 - ✅		export
 		✅	basic sorting
+		✅	export with multiple aruments
 		✅	displays original ms->envp
 		✅ export key without value in ms->unset_envvar
 			✅ free ms->unset_envvars
@@ -60,6 +61,9 @@
 		✅	add ignore_case for export und unset of ms->unset_envvars	
 				(export helo=123 && export HaLo=abc)
 		✅	+=
+		✅	space after operator
+				export abc= "sowas hier"
+				export abc+= "sowas hier"
 		✅	export PATH=$PATH:/Users/aalatzas/Desktop/mein_git/minishell  check with which minishell or minishell from other directory
 - ✅		historyfile will now be stored in $HOME first // than in "_" // than in argv[0]
 			retrieve History Path from environent variable "_"
