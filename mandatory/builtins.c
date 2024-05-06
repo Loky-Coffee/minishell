@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 20:33:21 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/04 20:17:20 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/06 18:58:03 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	run_builtin(int *fds, t_builtin builtin, t_cmd *cmd, t_ms *ms)
 	else if (builtin == BI_PWD)
 		exit_code = ft_pwd();
 	else if (builtin == BI_EXPORT)
-		exit_code = ft_export(0, cmd->node, ms);
+		exit_code = ft_export(cmd->node, ms);
 	else if (builtin == BI_UNSET)
 		exit_code = ft_unset(ms);
 	else if (builtin == BI_ENV)

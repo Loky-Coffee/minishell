@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 18:27:30 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/06 18:30:17 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/06 19:27:17 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
 static int	update_existing_env_var(int operator, int i, char *key, t_ms *ms, t_node *node, t_token *token);
-static int	export_multi_args(char *key, t_ms *ms, t_node *node, t_token *token);
+static int	export_multi_args(t_ms *ms, t_node *node, t_token *token);
 
 static int	has_valid_operator(char *str)
 {
@@ -41,12 +41,6 @@ static int	keylen(char *str)
 	return (i);
 }
 
-static char	*tkn_to_str(t_node *node, t_token *token, t_ms *ms)
-{
-	expand_tkn(token, node, ms);
-	return (ft_strdup(token->str));
-}
-
 static int	add_new_env_var(char *key, t_node *node, t_ms *ms, int i, t_token *token)
 {
 	char	**new_envp;
@@ -65,11 +59,11 @@ static int	add_new_env_var(char *key, t_node *node, t_ms *ms, int i, t_token *to
 		new_envp[j] = ms->envp[j];
 		j++;
 	}
-	new_envp[i] = tkn_to_str(node, token, ms);
+	new_envp[i] = ft_strdup(token->str);
 	free(ms->envp);
 	ms->envp = new_envp;
 	ft_remove_unset_envvar(key, ms);
-	return (export_multi_args(key, ms, node, token->next));
+	return (export_multi_args(ms, node, token->next));
 }
 
 static int	has_valid_key(int i, t_token *token, char *key)
@@ -202,13 +196,15 @@ static void	invalid_identifier(char *str)
 	ft_error("export", errstr, "not a valid identifier");
 }
 
-static int	export_multi_args(char *key, t_ms *ms, t_node *node, t_token *token)
+static int	export_multi_args(t_ms *ms, t_node *node, t_token *token)
 {
+	char	key[FT_PATH_MAX];
 	int		operator;
 	int		i;
 
 	if (token && token->type == TOKEN_WORD)
 	{
+		// expand_tkn(token, node, ms);
 		if (has_valid_key(0, token, key) == 0)
 		{
 			i = 0;
@@ -217,9 +213,9 @@ static int	export_multi_args(char *key, t_ms *ms, t_node *node, t_token *token)
 			operator = has_valid_operator(token->str);
 			if (operator == -1)
 			{
-				expand_tkn(token, node, ms);
+				// expand_tkn(token, node, ms);
 				ft_add_unset_envvar(token->str, ms);
-				export_multi_args(key, ms, node, token->next);
+				export_multi_args(ms, node, token->next);
 				return (0);
 			}
 			if (ms->envp[i] == NULL)
@@ -230,7 +226,7 @@ static int	export_multi_args(char *key, t_ms *ms, t_node *node, t_token *token)
 		else
 		{
 			invalid_identifier(token->str);
-			export_multi_args(key, ms, node, token->next);
+			export_multi_args(ms, node, token->next);
 			return (1);
 		}
 	}
@@ -246,13 +242,13 @@ static int	update_existing_env_var(int operator, int i, char *key, t_ms *ms, t_n
 
 	if (operator == 0)
 	{
-		buf = tkn_to_str(node, token, ms);
+		buf = ft_strdup(token->str);
 		free(ms->envp[i]);
 		ms->envp[i] = buf;
 	}
 	else if (operator > 0)
 	{
-		buf = tkn_to_str(node, token, ms);
+		buf = ft_strdup(token->str);
 		if (!(buf == NULL || buf[0] == '\0'))
 		{
 			len1 = ft_strlen(ms->envp[i]);
@@ -268,42 +264,15 @@ static int	update_existing_env_var(int operator, int i, char *key, t_ms *ms, t_n
 		}
 	}
 	ft_remove_unset_envvar(key, ms);
-	return (export_multi_args(key, ms, node, token->next));
+	return (export_multi_args(ms, node, token->next));
 }
 
-int	ft_export(int i, t_node *node, t_ms *ms)
+int	ft_export(t_node *node, t_ms *ms)
 {
-	char	key[FT_PATH_MAX];
-	int		operator;
-
 	if (node->tokens && node->tokens[0] && node->tokens[1] == NULL)
 		return (ft_export_print(ms));
-	// if (has_valid_key(0, node->tokens[1], key) == 1)
-	// {
-	// 	if (node->tokens[0]->next && node->tokens[0]->next->str[0] == '-')
-	// 		return (ft_error("export", node->tokens[0]->next->str, \
-	// 		"invalid option"), 2);
-	// 	else if (node->tokens[0]->next)
-	// 		return (ft_error("export", node->tokens[0]->next->str, \
-	// 		"not a valid identifier"), 1);
-	// 	else
-	// 		return (printf(LIGHTCYAN"export: Provide a valid key"RESET), 1);
-	// }
-	// operator = has_valid_operator(node->tokens[1]->str);
-	// if (operator == -1)
-	// 	return (ft_add_unset_envvar(node->tokens[0]->next->str, ms), 0);
-	// while (ms->envp[i] != NULL && ft_strncmp(ms->envp[i], \
-	// node->tokens[1]->str, keylen(node->tokens[1]->str)) != 0)
-	// 	i++;
-	// if (ms->envp[i] == NULL)
-	// 	add_new_env_var(key, node, ms, i, node->tokens[1]);
-	// else
-	// 	update_existing_env_var(operator, i, key, ms, node, node->tokens[1]);
 
-	i++;
-	operator = 0;
+	expand_node(node, ms, 0);
 
-	// export_multi_args(key, ms, node, node->tokens[1]);
-
-	return (export_multi_args(key, ms, node, node->tokens[1]));
+	return (export_multi_args(ms, node, node->tokens[1]));
 }
