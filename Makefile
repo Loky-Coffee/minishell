@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+         #
+#    By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/20 16:47:30 by aalatzas          #+#    #+#              #
-#    Updated: 2024/05/05 22:32:24 by aalatzas         ###   ########.fr        #
+#    Updated: 2024/05/06 12:29:09 by nmihaile         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,12 +18,13 @@ NC		= \033[0m
 NAME	= minishell
 CC		= cc
 CFLAGS	= -Wall -Wextra -Werror  			 -g # -fsanitize=address
-#NCOLORS =  -DDISABLE_NINJA_COLORS
+NCOLORS =  -DDISABLE_NINJA_COLORS
 
 SRC_DIR	= mandatory/
 OBJ_DIR = mandatory/obj/
 
-SRCS = main.c prompt.c history.c terminate.c lexer.c parser.c parser_insert1.c parser_insert2.c parse_errors.c renderer.c \
+SRCS = main.c prompt.c history.c terminate.c lexer.c parser.c parser_insert1.c \
+parser_insert2.c parser_insert3.c parse_errors.c renderer.c \
 utoken.c utoken2.c token_list_utils.c expander.c wildcards.c wildcards_utils.c wordsplitting.c \
 executer.c path.c error.c signals.c environment.c environment_utils.c unset_vars.c \
 here_doc.c node_utils1.c node_utils2.c tree_utils1.c \

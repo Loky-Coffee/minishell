@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/05 20:26:45 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/06 12:29:32 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,6 +266,8 @@ t_node			*insert_cmd_to_redirect(t_node *curr, t_node *next, t_ms *ms);
 // parser_insert2
 t_node			*push_redirectout_into_place(t_node *curr, t_node *next);
 t_node			*insert_redirect(t_node *curr, t_node *next, t_ms *ms);
+
+// parser_insert3
 t_node			*insert_pipe(t_node *curr, t_node *next, t_ms *ms);
 t_node			*insert_operator(t_node *curr, t_node *next, t_ms *ms);
 
