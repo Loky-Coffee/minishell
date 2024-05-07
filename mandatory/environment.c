@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 13:57:42 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/05 21:25:39 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/07 21:25:54 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ void	load_env(t_ms *ms, char **env)
 	while (env[count_pointer])
 		count_pointer++;
 	ms->envp = ft_calloc(count_pointer + 1, sizeof(char *));
+	if (ms->envp == NULL)
+		terminate(ms, NULL, 1);
 	while (env[i])
 	{
 		if (ft_strncmp(env[i], "OLDPWD", 6) == 0)

@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 02:30:05 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/05 23:36:58 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/07 21:34:58 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,26 +28,25 @@ static int	check_for_operators(t_ms *ms, int *i, int start)
 	char	*str;
 
 	str = ft_calloc(4, sizeof(char));
+	if (str == NULL)
+		return (ft_perror("lexer"), -1);
 	if (is_tripple_token(&ms->line[*i]))
 	{
 		ft_strlcpy(str, &ms->line[start], 3 + 1);
 		add_new_token(ms, TOKEN_TLESS, str);
-		*i += 3;
-		return (1);
+		return (*i += 3, 1);
 	}
 	else if (is_double_token(&ms->line[*i]))
 	{
 		ft_strlcpy(str, &ms->line[start], 2 + 1);
 		add_new_token(ms, is_double_token(&ms->line[*i]), str);
-		*i += 2;
-		return (1);
+		return (*i += 2, 1);
 	}
 	else if (is_single_token(ms->line[*i]))
 	{
 		ft_strlcpy(str, &ms->line[start], 1 + 1);
 		add_new_token(ms, is_single_token(ms->line[*i]), str);
-		*i += 1;
-		return (1);
+		return (*i += 1, 1);
 	}
 	return (free(str), 0);
 }
@@ -71,6 +70,8 @@ static int	handle_subshell(int i, t_ms *ms)
 			break ;
 	}
 	str = ft_calloc(len + 1, sizeof(char));
+	if (str == NULL)
+		return (ft_perror("lexer"), -1);
 	ft_strlcpy(str, &ms->line[i], len + 1);
 	add_new_token(ms, TOKEN_SUBSHELL, str);
 	i += len;
@@ -100,18 +101,15 @@ static int	handle_word(int i, t_ms *ms)
 			len++;
 	}
 	str = ft_calloc(len + 1, sizeof(char));
-/////////////////
-if (str == NULL)
-	return (ft_perror("lexer"), -1);
-////////////////
+	if (str == NULL)
+		return (ft_perror("lexer"), -1);
 	ft_strlcpy(str, &ms->line[i], len + 1);
-	add_new_token(ms, TOKEN_WORD, str);
-	i += len;
-	return (i);
+	return (add_new_token(ms, TOKEN_WORD, str), i += len, i);
 }
 
 int	ft_lexer(t_ms *ms)
 {
+	int		oi;
 	int		i;
 
 	if (ms->line && ms->line[0] == '#')
@@ -119,7 +117,10 @@ int	ft_lexer(t_ms *ms)
 	i = 0;
 	while (ms->line && ms->line[i])
 	{
-		if (check_for_operators(ms, &i, i))
+		oi = check_for_operators(ms, &i, i);
+		if (oi == -1)
+			return (1);
+		if (oi > 1)
 			continue ;
 		else if (ms->line[i] && ms->line[i] == '(')
 			i = handle_subshell(i, ms);
@@ -127,6 +128,8 @@ int	ft_lexer(t_ms *ms)
 			i = handle_word(i, ms);
 		else
 			i++;
+		if (i == -1)
+			return (1);
 	}
 	return (0);
 }

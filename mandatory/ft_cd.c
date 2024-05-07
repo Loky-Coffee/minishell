@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 00:41:52 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/03 01:05:28 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/07 21:24:10 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static int	ft_chdir(t_ms *ms, char *dir)
 		i++;
 	if (ms->envp[i] == NULL)
 		return (1);
-	new_pwd = malloc(4 + ft_strlen(str) + 1);
+	new_pwd = ft_calloc(4 + ft_strlen(str) + 1, sizeof(char));
 	if (new_pwd == NULL)
 		return (1);
 	strcpy(new_pwd, "PWD=");
