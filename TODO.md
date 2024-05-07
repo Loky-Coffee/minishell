@@ -90,7 +90,13 @@ echo $var*
 ❌ echo $ba*
 
 ❌
-echo $var *	=> SEGV
+export var=*
+echo $var *
+=> SEGV
+
+❌
+export var="echo ABC" var1="DEF GHI"
+$var $var1
 
 🍌
 echo "."*

@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/07 20:11:35 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/07 22:22:15 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,12 +195,11 @@ typedef struct s_cmd
 // s_expand_pattern_var
 typedef struct s_epv
 {
-	// uint64_t		count;
 	unsigned long long		count;
-	DIR				*dir;
-	struct dirent	*entry;
-	char			pattern[FT_PATH_MAX];
-}					t_epv;
+	DIR						*dir;
+	struct dirent			*entry;
+	char					pattern[FT_PATH_MAX];
+}							t_epv;
 
 typedef struct s_export
 {
@@ -226,9 +225,11 @@ int				restore_history(t_ms *ms);
 // signals.c
 void			reset_signals(void);
 void			set_echoctl(int enable);
-void			sigint_parent_handler(int signal, siginfo_t *siginfo, void *param);
+void			sigint_parent_handler(int signal,
+					siginfo_t *siginfo, void *param);
 void			set_signal_handler(int signal, void (handler)(int));
-void			set_signal_sigaction(int signal, void (handler)(int, siginfo_t *, void *));
+void			set_signal_sigaction(int signal,
+					void (handler)(int, siginfo_t *, void *));
 
 // Lexer
 int				ft_lexer(t_ms *ms);
@@ -246,8 +247,15 @@ int				ft_strlchr(char *dst, const char src, size_t dstsize);
 void			place_pattern(char mat[2048][2048], const char *pattern);
 
 // wordsplitting.c
-int				word_splitting(t_token *prev, t_token *token, t_token *next, int *i);
-int				word_split_token(t_token **token, t_ms *ms, int *count, t_token *buff);
+int				word_splitting(t_token *prev, t_token *token,
+					t_token *next, int *i);
+int				word_split_token(t_token **token, t_ms *ms,
+					int *count, t_token *buff);
+
+// wordsplitting_utils.c
+int				has_space(char *str);
+char			*ft_skipspace(char *str, size_t *i);
+int				ft_get_word_len(char *str);
 
 // Node_Utils1
 t_nodetype		node_is_pipe(t_node *node);
@@ -284,7 +292,8 @@ int				check_for_parse_errors(t_node *node, t_ms *ms);
 
 // Tree_Utils1
 void			add_right_right(t_node **node, t_node *curr, t_node *next);
-void			swap_up_righttoleft_right(t_node **node, t_node *curr, t_node *next);
+void			swap_up_righttoleft_right(t_node **node,
+					t_node *curr, t_node *next);
 void			swap_up_left(t_node **node, t_node *curr, t_node *next);
 void			swap_dup_right(t_node **node, t_node *curr, t_node *next);
 
@@ -328,7 +337,8 @@ int				handle_arg_file(t_ms *ms);
 
 // executer
 int				ft_strncmp_ignorecase(const char *s1, const char *s2, size_t n);
-int				exec_intermediary(int fd_in, int fd_out, t_node *node, t_ms *ms);
+int				exec_intermediary(int fd_in, int fd_out,
+					t_node *node, t_ms *ms);
 int				exec_manager(t_ms *ms);
 
 // executer_utils1.c
@@ -351,16 +361,21 @@ int				ft_cmd_is_dir(char *cmd, int *exit_code);
 
 // executer_builtins.c
 int				run_builtin(int *fds, t_builtin builtin, t_cmd *cmd, t_ms *ms);
-pid_t			fork_run_builtin(int *fds, t_builtin builtin, t_cmd *cmd, t_ms *ms);
-int				exec_builtin(int fds[2], t_builtin builtin, t_node *node, t_ms *ms);
-pid_t			exec_fork_builtin(int fds[2], t_builtin builtin, t_node *node, t_ms *ms);
+pid_t			fork_run_builtin(int *fds, t_builtin builtin,
+					t_cmd *cmd, t_ms *ms);
+int				exec_builtin(int fds[2], t_builtin builtin,
+					t_node *node, t_ms *ms);
+pid_t			exec_fork_builtin(int fds[2], t_builtin builtin,
+					t_node *node, t_ms *ms);
 
 // executer_exec_cmd.c
-void			check_and_launch_cmd(int fd_in, int fd_out, t_cmd *cmd, t_ms *ms);
+void			check_and_launch_cmd(int fd_in, int fd_out,
+					t_cmd *cmd, t_ms *ms);
 pid_t			exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms);
 pid_t			exec_subshell(int fd_in, int fd_out, t_node *node, t_ms *ms);
 void			execute_heredoc(int *fd_in, int *fd_out, char *lim, t_ms *ms);
-void			execute_herestring(int *fd_in, int *fd_out, char *str, t_ms *ms);
+void			execute_herestring(int *fd_in, int *fd_out,
+					char *str, t_ms *ms);
 
 // executer_redirects.c
 pid_t			redirect_manager(int fd_in, int fd_out, t_node *node, t_ms *ms);
@@ -386,13 +401,14 @@ unsigned char	ft_exit(t_cmd *cmd, t_ms *ms);
 
 // ft_export_utils1.c
 int				invalid_identifier(char *str);
-int				update_existing_env_var(t_export export, t_ms *ms, t_node *node, t_token *token);
+int				update_existing_env_var(t_export export,
+					t_ms *ms, t_node *node, t_token *token);
 
 // ft_export_utils2.c
 int				has_valid_operator(char *str);
 int				keylen(char *str);
 int				add_new_env_var(t_export export, t_node *node,
-				t_ms *ms, t_token *token);
+					t_ms *ms, t_token *token);
 int				has_valid_key(int i, t_token *token, char *key);
 size_t			get_envp_size(char **envp);
 
@@ -408,7 +424,6 @@ void			ft_error(char *s1, char *s2, char *s3);
 void			ft_syntax_error(char *s1, char *s2, char *s3);
 void			ft_perror(char *str);
 void			ft_cmd_error(char *msg, char *cmd, int error_code);
-
 
 // environment.c
 void			load_env(t_ms *ms, char **env);
