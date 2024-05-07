@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/06 20:54:37 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/07 12:26:16 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,6 +248,7 @@ void			place_pattern(char mat[2048][2048], const char *pattern);
 
 // wordsplitting.c
 int				word_splitting(t_token *prev, t_token *token, t_token *next, int *i);
+int				word_split_token(t_token **token, t_ms *ms, int *count, t_token *buff);
 
 // Node_Utils1
 t_nodetype		node_is_pipe(t_node *node);

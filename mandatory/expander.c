@@ -6,11 +6,13 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 05:50:33 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/06 22:12:55 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/07 14:25:34 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+static int	reallocate_node_tokens(t_node *node, t_token *curr, int i);
 
 static int	set_key(char *str, char *dst, int *pos)
 {
@@ -120,26 +122,30 @@ int	expand_tkn(t_token *token, t_node *node, t_ms *ms)
 		return (ft_error("Syntax error", "Unclosed quote detected.", NULL), 1);
 	if (do_wildcards == 1 && node->tokens[0]->type != TOKEN_TLESS)
 	{
-		expand_node(node, ms, 1);
+		if (token == node->tokens[0])
+		{
+			int	count = 0;
+			word_split_token(&token, ms, &count, NULL);
+			if (reallocate_node_tokens(node, token, count + 1))
+				return (1);
+		}
 		if (expand_wildcard(token))
 			expand_node(node, ms, 1);
 	}
 	return (0);
 }
 
-static int	reallocate_node_tokens(t_node *node, int i)
+static int	reallocate_node_tokens(t_node *node, t_token *curr, int i)
 {
 	int		count;
 	t_token	**tokens;
-	t_token	*curr;
 
 	count = i + 1;
 	tokens = (t_token **)ft_calloc(count + 1, sizeof(t_token *));
 	if (tokens == NULL)
 		return (1);
 	i = 0;
-	curr = node->tokens[0];
-	while (i < count)
+	while (i < count && curr)
 	{
 		tokens[i] = curr;
 		curr = curr->next;
@@ -163,7 +169,7 @@ int	expand_node(t_node *node, t_ms *ms, int flag)
 			return (0);
 		if (word_splitting(node->tokens[i - 1], node->tokens[i], node->tokens[i]->next, &i) == 1)
 			return (1);
-		if (reallocate_node_tokens(node, i - oi + 1))
+		if (reallocate_node_tokens(node, node->tokens[0], i - oi + 1))
 			return (1);
 		return (0);
 	}
@@ -177,7 +183,7 @@ int	expand_node(t_node *node, t_ms *ms, int flag)
 			oi = i;
 			if (word_splitting(node->tokens[i - 1], node->tokens[i], node->tokens[i]->next, &i) == 1)
 				return (1);
-			if (reallocate_node_tokens(node, i - oi + 1))
+			if (reallocate_node_tokens(node, node->tokens[0], i - oi + 1))
 				return (1);
 		}
 		if (node->tokens[i] && expand_tkn(node->tokens[i], node, ms) == 1)
