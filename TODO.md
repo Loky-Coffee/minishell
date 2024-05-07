@@ -75,6 +75,30 @@
 
 --------------------------------------------------------------------------------
 
+test unset
+
+expand here_doc with $var
+
+cat << "q"	=> no env_var expansion
+cat << 'q'	=> no env_var expansion
+
+export var=hi var1=hiiiii
+echo $var*
+=> returns Hi Hi3 => but this is wrong
+
+❌
+echo $var *	=> SEGV
+
+❌ ✅ => we dont have to handle this as stated in the subject
+ls tmp/*
+
+cd ~
+(ls | grep Makefile)
+==> correct err_msg ???
+
+
+--------------------------------------------------------------------------------
+
 ✅
 export abc+="        dsf df dsfds "
 	==> doube quotes should not be added
