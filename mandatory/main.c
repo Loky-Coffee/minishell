@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/07 19:56:21 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/07 20:11:12 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ int	main(int argc, char **argv, char **env)
 		{
 			ms.exit_code = 258;
 			ft_syntax_error("syntax error near unexpected token", \
-			ms.parse_errtkn->str);
+			ms.parse_errtkn->str, NULL);
 			cleanup_ms(&ms);
 			continue ;
 		}

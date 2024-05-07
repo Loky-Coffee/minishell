@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 02:35:00 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/03 01:04:41 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/07 21:00:53 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

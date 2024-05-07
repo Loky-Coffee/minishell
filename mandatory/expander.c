@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 05:50:33 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/07 14:25:34 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/07 20:59:29 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ int	expand_tkn(t_token *token, t_node *node, t_ms *ms)
 	do_wildcards = -1;
 	quote_mode = '\0';
 	ft_memset(expstr, 0, sizeof(expstr));
-	while (token->str[i] != '\0')
+	while (token && token->str[i] != '\0')
 	{
 		if (token->str[i] == '\\')
 			expand_single_char(expstr, &j, token->str, &i);

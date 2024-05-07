@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 02:33:21 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/03 00:49:06 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/07 20:12:40 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	ft_unset(t_ms *ms)
 		return (0);
 	str = ms->tokens->next->str;
 	if (is_valid_identifier(str) > 0)
-		return (ft_error(str, "not a valid identifier", NULL), 1);
+		return (ft_syntax_error("unset: ", str, "not a valid identifier"), 1);
 	ft_memset(key, 0, FT_PATH_MAX);
 	ft_strlcat(key, str, FT_PATH_MAX);
 	ft_remove_unset_envvar(key, ms);
