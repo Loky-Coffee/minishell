@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 20:33:21 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/06 18:58:03 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/07 15:34:05 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,5 +51,31 @@ pid_t	fork_run_builtin(int *fds, t_builtin builtin, t_cmd *cmd, t_ms *ms)
 		terminate(ms, cmd, exit_code);
 	}
 	ft_close_fd(fds[0], fds[1]);
+	return (pid);
+}
+
+int	exec_builtin(int fds[2], t_builtin builtin, t_node *node, t_ms *ms)
+{
+	int			exit_code;
+	t_cmd		cmd;
+
+	if (builtin != BI_EXPORT)
+		if (expand_node(node, ms, 0))
+			return (-1);
+	create_cmd(&cmd, node);
+	exit_code = run_builtin((int [2]){fds[0], fds[1]}, builtin, &cmd, ms);
+	return (exit_code);
+}
+
+pid_t	exec_fork_builtin(int fds[2], t_builtin builtin, t_node *node, t_ms *ms)
+{
+	pid_t	pid;
+	t_cmd	cmd;
+
+	if (builtin != BI_EXPORT)
+		if (expand_node(node, ms, 0))
+			return (-1);
+	create_cmd(&cmd, node);
+	pid = fork_run_builtin((int [2]){fds[0], fds[1]}, builtin, &cmd, ms);
 	return (pid);
 }

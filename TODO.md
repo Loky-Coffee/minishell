@@ -445,3 +445,31 @@ parse_expression(ct, min_prec)
 	return left
 
 and than the caller attaches it to the graeter than ( > )
+
+
+// void	check_fds(void)
+// {
+// 	int		fd;
+// 	int		open_fd_count = 0;
+
+// 	int prev_errno = errno;
+// 	fd = 3;
+// 	while (fd < OPEN_MAX)
+// 	{
+// 		if (fcntl(fd, F_GETFD) != -1) // TODO: DEBUG: unallowed function for debugging and finding leaks (fcntl)
+// 		{
+// 			// close(fd);
+// 			fprintf(stderr, "%d is open(fd):\n", fd);
+// 			open_fd_count++;
+// 		}
+// 		fd++;
+// 	}
+// 	errno = prev_errno;
+// 	//if (LEAK_CHECK)// if some how dosnt work
+// 	if (open_fd_count)
+// 	{
+// 		fprintf(stderr, "open fds: %d\n", open_fd_count);
+// 	}
+// 	else
+// 		fprintf(stderr, "open fds: %d\n", open_fd_count);
+// }

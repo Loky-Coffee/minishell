@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/07 12:26:16 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/07 18:07:45 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,9 +211,8 @@ typedef struct s_export
 
 /* ************************************************************************** */
 
-// main
+// utils.c
 void			free_line(t_ms *ms);
-void			free_tkn_av(t_token **tokens);
 void			free_cmd(t_cmd *cmd);
 void			cleanup_ms(t_ms *ms);
 
@@ -324,19 +323,58 @@ void			ft_add_token_end(t_token **token, t_token *new_token);
 int				tokens_size(t_token *tokens);
 void			ft_token_clear(t_token **token, void (*del)(void*));
 
+// exec_arguments.c
+int				handle_arg_file(t_ms *ms);
+
 // executer
 int				ft_strncmp_ignorecase(const char *s1, const char *s2, size_t n);
 int				exec_intermediary(int fd_in, int fd_out, t_node *node, t_ms *ms);
 int				exec_manager(t_ms *ms);
 
-// here_doc
-int				ft_heredoc(int fd_write, char *lim);
-int				ft_herestring(int fd_write, char *str);
+// executer_utils1.c
+void			set_exit_code(int status, t_ms *ms);
+int				ft_strncmp_ignorecase(const char *s1, const char *s2, size_t n);
+t_builtin		is_builtin(t_token *token);
+void			ft_collaps_args(int i, t_cmd *cmd);
+int				ft_exec_permissions(char *cmd, int *exit_code);
 
-// builtins
-int				cmd_is_echo_ninjashell(t_token *token);
+// executer_create_cmds.c
+int				create_cmd(t_cmd *cmd, t_node *node);
+int				create_subshell_cmd(t_cmd *cmd, t_node *node, t_ms *ms);
+
+// executer_check_cmd.c
+void			ft_cmd_is_empty(int fd_in, int fd_out, t_cmd *cmd, t_ms *ms);
+void			ft_cmd_is_dot(t_cmd *cmd, t_ms *ms);
+int				ft_cmd_is_dotdot(t_cmd *cmd, int *exit_code);
+int				ft_cmd_has_slash(t_cmd *cmd, int *exit_code);
+int				ft_cmd_is_dir(char *cmd, int *exit_code);
+
+// executer_builtins.c
 int				run_builtin(int *fds, t_builtin builtin, t_cmd *cmd, t_ms *ms);
 pid_t			fork_run_builtin(int *fds, t_builtin builtin, t_cmd *cmd, t_ms *ms);
+int				exec_builtin(int fds[2], t_builtin builtin, t_node *node, t_ms *ms);
+pid_t			exec_fork_builtin(int fds[2], t_builtin builtin, t_node *node, t_ms *ms);
+
+// executer_exec_cmd.c
+void			check_and_launch_cmd(int fd_in, int fd_out, t_cmd *cmd, t_ms *ms);
+pid_t			exec_cmd(int fd_in, int fd_out, t_node *node, t_ms *ms);
+pid_t			exec_subshell(int fd_in, int fd_out, t_node *node, t_ms *ms);
+void			execute_heredoc(int *fd_in, int *fd_out, char *lim, t_ms *ms);
+void			execute_herestring(int *fd_in, int *fd_out, char *str, t_ms *ms);
+
+// executer_redirects.c
+pid_t			redirect_manager(int fd_in, int fd_out, t_node *node, t_ms *ms);
+
+// executer_operators.c
+pid_t			exec_pipe(int fd_in, int fd_out, t_node *node, t_ms *ms);
+int				logical_operator_manager(t_node *node, t_ms *ms, int ec);
+
+// here_doc.c
+int				ft_heredoc(int fd_write, char *lim);
+// int				ft_herestring(int fd_write, char *str);
+
+// builtins
+// int				cmd_is_echo_ninjashell(t_token *token);
 int				ft_echo(t_cmd *cmd);
 int				ft_cd(t_cmd *cmd, t_ms *ms);
 int				ft_pwd(void);

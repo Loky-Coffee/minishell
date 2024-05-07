@@ -6,7 +6,7 @@
 #    By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/20 16:47:30 by aalatzas          #+#    #+#              #
-#    Updated: 2024/05/07 14:11:52 by nmihaile         ###   ########.fr        #
+#    Updated: 2024/05/07 17:50:34 by nmihaile         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,12 +23,14 @@ NCOLORS =  -DDISABLE_NINJA_COLORS
 SRC_DIR	= mandatory/
 OBJ_DIR = mandatory/obj/
 
-SRCS = main.c prompt.c history.c terminate.c lexer.c parser.c parser_insert1.c \
+SRCS = main.c utils.c exec_arguments.c prompt.c history.c terminate.c lexer.c parser.c parser_insert1.c \
 parser_insert2.c parser_insert3.c parse_errors.c renderer.c \
 utoken.c utoken2.c token_list_utils.c expander.c wildcards.c wildcards_utils.c wordsplitting.c \
-executer.c path.c error.c signals.c environment.c environment_utils.c unset_vars.c \
+executer.c executer_utils1.c executer_create_cmds.c executer_check_cmd.c executer_builtins.c \
+executer_exec_cmd.c executer_redirects.c executer_operators.c \
+path.c error.c signals.c environment.c environment_utils.c unset_vars.c \
 here_doc.c node_utils1.c node_utils2.c tree_utils1.c \
-builtins.c ft_echo.c ft_cd.c ft_pwd.c ft_export.c ft_export_utils1.c ft_export_utils2.c ft_unset.c ft_env.c ft_exit.c
+ft_echo.c ft_cd.c ft_pwd.c ft_export.c ft_export_utils1.c ft_export_utils2.c ft_unset.c ft_env.c ft_exit.c
 OBJS = $(addprefix $(OBJ_DIR), $(notdir $(SRCS:.c=.o)))
 
 .SILENT:
