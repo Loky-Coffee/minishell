@@ -84,12 +84,22 @@ cat << 'q'	=> no env_var expansion
 
 export var=hi var1=hiiiii
 echo $var*
+❌ echo $va*
 => returns Hi Hi3 => but this is wrong
+
+❌ echo $ba*
 
 ❌
 echo $var *	=> SEGV
 
-❌ ✅ => we dont have to handle this as stated in the subject
+🍌
+echo "."*
+
+🍌
+echo $bar*
+=> returns only the first file
+
+🍌 ✅ => we dont have to handle this as stated in the subject
 ls tmp/*
 
 cd ~
@@ -116,7 +126,7 @@ export dfgdf+=abcdefg
 🍌 ❌ => durch recursion haben wir die errors in der falschen reihenfolge
 export cmd = 'bin ls -l'	==> bash schreibt error // es geht um die spaces
 
-❌
+✅
 export cmd="ls -l"
 $cmd					=> hat kein word_splitting daher koennen wir das nciht executen
 

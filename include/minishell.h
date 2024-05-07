@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/07 18:07:45 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/07 20:11:35 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -405,7 +405,7 @@ int				ft_prepend_path(char **cmd, char *envpaths, int *exit_code);
 
 // error.c
 void			ft_error(char *s1, char *s2, char *s3);
-void			ft_syntax_error(char *s1, char *s2);
+void			ft_syntax_error(char *s1, char *s2, char *s3);
 void			ft_perror(char *str);
 void			ft_cmd_error(char *msg, char *cmd, int error_code);
 
