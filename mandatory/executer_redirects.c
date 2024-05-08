@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 15:46:43 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/07 16:37:49 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/08 15:47:47 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static int	redirect_in(int *fd_in, t_node *node, t_ms *ms)
 	char	var_buf[FT_PATH_MAX];
 
 	ft_strlcpy(var_buf, node->tokens[1]->str, FT_PATH_MAX);
-	if (expand_node(node, ms, 0))
+	if (expand_node(node, ms))
 		return (EXIT_FAILURE);
 	if ((node->tokens[1]->str[0] == '\0' || node->tokens[2] != NULL) \
 	&& ft_strchr(var_buf, '"') == NULL)
@@ -35,7 +35,7 @@ static int	redirect_out(int *fd_out, t_node *node, t_ms *ms)
 	char	var_buf[FT_PATH_MAX];
 
 	ft_strlcpy(var_buf, node->tokens[1]->str, FT_PATH_MAX);
-	if (expand_node(node, ms, 0))
+	if (expand_node(node, ms))
 		return (EXIT_FAILURE);
 	if ((node->tokens[1]->str[0] == '\0' || node->tokens[2] != NULL) \
 	&& ft_strchr(var_buf, '"') == NULL)
@@ -58,7 +58,7 @@ pid_t	redirect_herestring(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	pid_t	pid;
 
 	pid = EXIT_SUCCESS;
-	expand_node(node, ms, 0);
+	expand_node(node, ms);
 	execute_herestring(&fd_in, &fd_out, node->tokens[1]->str, ms);
 	if (node->left && (node->left->type == NODE_REDIRECT \
 	|| node->left->type == NODE_COMMAND || node->left->type == NODE_SUBSHELL))

@@ -8,7 +8,9 @@
 				✅	ls > f11 > f12
 				✅	>> f11 << f1 << f2 << f3 cat
 - ✅		expander
-			Happy Hacky FIX
+			✅	export var="ls -l mandatory/"
+				$var
+			🍌	Happy Hacky FIX
 				🍌	order of expansions: (3.5 Shell Expansions)
 						🍌 1.	parameter and variable expansion
 						🍌 2.	word splitting
@@ -74,6 +76,28 @@
 
 
 --------------------------------------------------------------------------------
+
+✅ - we have to do
+/bin/ls
+
+
+❌
+OLDPWD
+
+🍌 ❌
+echo -nnnnnnnn -n Hallo
+
+🍌 ❌
+echo ${USER}
+echo ${USER}afdsfgds
+
+--------------------------------------------------------------------------------
+
+❌ expand $var in export
+export kuh=muh
+export foo="|Ka $kuh aK|"
+echo $foo
+=> |Ka muh aK|
 
 test unset
 

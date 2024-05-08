@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 15:27:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/07 16:28:20 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/08 19:35:11 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ int	ft_cmd_is_dotdot(t_cmd *cmd, int *exit_code)
 
 int	ft_cmd_has_slash(t_cmd *cmd, int *exit_code)
 {
+	
 	if (cmd->cmdpth[0] == '/')
 	{
 		*exit_code = 127;

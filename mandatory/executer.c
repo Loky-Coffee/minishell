@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/07 16:58:30 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/08 15:47:57 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ pid_t	exec_intermediary(int fd_in, int fd_out, t_node *node, t_ms *ms)
 	if (node == NULL)
 		return (0);
 	if (node->tokens[1] == NULL)
-		expand_node(node, ms, 0);
+		expand_node(node, ms);
 	builtin = is_builtin(node->tokens[0]);
 	if (node->type == NODE_COMMAND && builtin)
 		pid = exec_fork_builtin((int [2]){fd_in, fd_out}, builtin, node, ms);
@@ -99,7 +99,7 @@ int	exec_manager(t_ms *ms)
 	if (ms->nodes == NULL)
 		return (-1);
 	if (ms->nodes->tokens[1] == NULL)
-		expand_node(ms->nodes, ms, 0);
+		expand_node(ms->nodes, ms);
 	builtin = is_builtin(ms->nodes->tokens[0]);
 	if (ms->nodes->type == NODE_COMMAND && builtin)
 		ms->exit_code = exec_builtin((int [2]) \

@@ -6,13 +6,14 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 05:50:33 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/07 22:56:07 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/09 00:05:35 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
 static int	reallocate_node_tokens(t_node *node, t_token *curr, int i);
+
 
 static int	set_key(char *str, char *dst, int *pos)
 {
@@ -32,7 +33,7 @@ static int	set_key(char *str, char *dst, int *pos)
 	return (i);
 }
 
-static int	expand_variable(int *pos, t_token *token, char *str, t_ms *ms)
+static int	expand_parameter_and_variable(int *pos, t_token *token, char *str, t_ms *ms)
 {
 	char	key[FT_PATH_MAX];
 	char	value[FT_PATH_MAX];
@@ -50,6 +51,15 @@ static int	expand_variable(int *pos, t_token *token, char *str, t_ms *ms)
 		exit_str = ft_strdup(NINJASHELL);
 		ft_strlcat(str, exit_str, FT_PATH_MAX);
 		return (free(exit_str), 0);
+	}
+	else if (token->str[*pos] == '{')
+	{
+		(*pos)++;
+		set_key(&token->str[*pos], key, pos);
+		ft_get_env_value(ms, value, key);
+		ft_strlcat(str, value, FT_PATH_MAX);
+		while (token->str[*pos] != '}')
+			(*pos)++;
 	}
 	set_key(&token->str[*pos], key, pos);
 	ft_get_env_value(ms, value, key);
@@ -73,6 +83,27 @@ static void	expand_quote(char *qm, char *dst, int *j, char *src)
 	else
 		dst[(*j)++] = *src;
 }
+
+int split_and_reallocate_node(t_node *node)
+{
+	int		i;
+	int		oi;
+
+	i = 1;
+	oi = i;
+	if (node->tokens[i] == NULL)
+		return (0);
+	if (word_splitting(node->tokens[i - 1], node->tokens[i], node->tokens[i]->next, &i) == 1)
+		return (1);
+	if (reallocate_node_tokens(node, node->tokens[0], i - oi + 1))
+		return (1);
+	return (0);	
+}
+
+// int	expand_str(char *str)
+// {
+	
+// }
 
 int	expand_tkn(t_token *token, t_node *node, t_ms *ms)
 {
@@ -100,7 +131,7 @@ int	expand_tkn(t_token *token, t_node *node, t_ms *ms)
 		&& token->str[i + 1] != '\"' && token->str[i + 1] != ' ') \
 		&& quote_mode != '\'')
 		{
-			expand_variable(&i, token, expstr, ms);
+			expand_parameter_and_variable(&i, token, expstr, ms);
 			do_wildcards = 1;
 			j = ft_strlen(expstr);
 			if (quote_mode == '\0' && token->str[i] == '\0')
@@ -124,15 +155,38 @@ int	expand_tkn(t_token *token, t_node *node, t_ms *ms)
 	{
 		if (token == node->tokens[0])
 		{
+			// fprintf(stderr, "~~~~~~~~~~~~~~~~~~~~~~~~~~ |%s| \n", token->str);
+
 			int	count = 0;
 			word_split_token(&token, ms, &count, NULL);
+			fprintf(stderr, "count~~~~~~~~~~~~~~~~~~~~~~~~~~ |%i| \n", count);
+
 			if (reallocate_node_tokens(node, token, count + 1))
 				return (1);
 		}
 		if (expand_wildcard(token))
-			expand_node(node, ms, 1);
+			split_and_reallocate_node(node);
 	}
 	return (0);
+}
+
+void	delete_empty_pre_tokens(t_node *node)
+{
+	int	i;
+	int	len;
+
+	if (node->tokens[1] == NULL)
+		return ;
+	len = 0;
+	while (node->tokens[len] && node->tokens[len]->str[0] == '\0')
+		len++;
+	i = 0;
+	while (node->tokens[i + len])
+	{
+		node->tokens[i] = node->tokens[i + len];
+		i++;
+	}
+	node->tokens[i + len] = NULL;
 }
 
 static int	reallocate_node_tokens(t_node *node, t_token *curr, int i)
@@ -147,32 +201,50 @@ static int	reallocate_node_tokens(t_node *node, t_token *curr, int i)
 	i = 0;
 	while (i < count && curr)
 	{
+		fprintf(stderr, "~~~~~~ |%s|\n", curr->str);
 		tokens[i] = curr;
 		curr = curr->next;
 		i++;
 	}
 	free(node->tokens);
 	node->tokens = tokens;
+
+	delete_empty_pre_tokens(node);
+
 	return (0);
 }
 
-int	expand_node(t_node *node, t_ms *ms, int flag)
+// int	expand_node(t_node *node, t_ms *ms)
+// {
+// 	int		i;
+// 	int		oi;
+
+// 	i = 0;
+// 	if (node == NULL || node->tokens == NULL)
+// 		return (1);
+// 	while (node->tokens[i])
+// 	{
+// 		if (expand_wildcard(node->tokens[i]))
+// 		{
+// 			oi = i;
+// 			if (word_splitting(node->tokens[i - 1], node->tokens[i], node->tokens[i]->next, &i) == 1)
+// 				return (1);
+// 			if (reallocate_node_tokens(node, node->tokens[0], i - oi + 1))
+// 				return (1);
+// 		}
+// 		if (node->tokens[i] && expand_tkn(node->tokens[i], node, ms) == 1)
+// 			return (1);
+// 		i++;
+// 	}
+// 	delete_empty_pre_nodes(node);
+// 	return (0);
+// }
+
+int	expand_node(t_node *node, t_ms *ms)
 {
 	int		i;
 	int		oi;
 
-	if (flag)
-	{
-		i = 1;
-		oi = i;
-		if (node->tokens[i] == NULL)
-			return (0);
-		if (word_splitting(node->tokens[i - 1], node->tokens[i], node->tokens[i]->next, &i) == 1)
-			return (1);
-		if (reallocate_node_tokens(node, node->tokens[0], i - oi + 1))
-			return (1);
-		return (0);
-	}
 	i = 0;
 	if (node == NULL || node->tokens == NULL)
 		return (1);
@@ -190,5 +262,6 @@ int	expand_node(t_node *node, t_ms *ms, int flag)
 			return (1);
 		i++;
 	}
+	delete_empty_pre_tokens(node);
 	return (0);
 }

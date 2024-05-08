@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 02:35:00 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/07 21:00:53 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/08 22:42:06 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,23 +36,41 @@ static int	set_flag(char *str)
 	return (flag);
 }
 
+static int	loop_flag_args(t_cmd *cmd, int *i)
+{
+	int		flag;
+	int		j;
+
+	j = 1;
+	*i = 1;
+	flag = 0;
+	while (cmd->tokens[j] && cmd->tokens[j]->str[0] == '-')
+	{
+		flag = set_flag(cmd->tokens[j]->str);
+		if (flag)
+			*i = j + 1;
+		else
+		{
+			*i = j;
+			break ;
+		}
+		j++;
+	}
+	return (flag);
+}
+
 int	ft_echo(t_cmd *cmd)
 {
 	int		flag;
 	int		i;
 
-	i = 1;
-	if (cmd->tokens[i])
-		flag = set_flag(cmd->tokens[i]->str);
-	else
-		flag = 0;
-	if (flag == 1)
-		i++;
+	i = 0;
+	flag = loop_flag_args(cmd, &i);
 	while (cmd->tokens[i] != NULL)
 	{
-		if (!is_operator(cmd->tokens[i]->str) \
-		&& !is_single_token(*cmd->tokens[i]->str))
-			printf("%s", cmd->tokens[i]->str);
+		// if (!is_operator(cmd->tokens[i]->str) \
+		// && !is_single_token(*cmd->tokens[i]->str))
+		printf("%s", cmd->tokens[i]->str);
 		if (cmd->tokens[i + 1])
 			printf(" ");
 		i++;

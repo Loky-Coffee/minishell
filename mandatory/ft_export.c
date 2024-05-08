@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 18:27:30 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/06 20:36:41 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/08 15:48:01 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,6 @@ int	ft_export(t_node *node, t_ms *ms)
 {
 	if (node->tokens && node->tokens[0] && node->tokens[1] == NULL)
 		return (ft_export_print(ms));
-	expand_node(node, ms, 0);
+	expand_node(node, ms);
 	return (export_arguments(ms, node, node->tokens[1]));
 }

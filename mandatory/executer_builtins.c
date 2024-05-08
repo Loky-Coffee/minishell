@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 20:33:21 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/07 21:01:42 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/08 15:47:20 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int	exec_builtin(int fds[2], t_builtin builtin, t_node *node, t_ms *ms)
 	t_cmd		cmd;
 
 	if (builtin != BI_EXPORT)
-		if (expand_node(node, ms, 0))
+		if (expand_node(node, ms))
 			return (-1);
 	create_cmd(&cmd, node);
 	exit_code = run_builtin((int [2]){fds[0], fds[1]}, builtin, &cmd, ms);
@@ -73,7 +73,7 @@ pid_t	exec_fork_builtin(int fds[2], t_builtin builtin, t_node *node, t_ms *ms)
 	t_cmd	cmd;
 
 	if (builtin != BI_EXPORT)
-		if (expand_node(node, ms, 0))
+		if (expand_node(node, ms))
 			return (-1);
 	create_cmd(&cmd, node);
 	pid = fork_run_builtin((int [2]){fds[0], fds[1]}, builtin, &cmd, ms);
