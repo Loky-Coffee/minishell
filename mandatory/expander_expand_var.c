@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 07:19:12 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/09 18:12:15 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/09 21:19:02 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ int	set_key(char *str, char *dst, t_ms *ms)
 
 void	process_braces_token(t_token *token, t_ms *ms, char *str)
 {
+	char	*a;
+
 	if (ft_strchr(token->str, '}'))
 	{
 		ms->i++;
@@ -43,9 +45,15 @@ void	process_braces_token(t_token *token, t_ms *ms, char *str)
 	}
 	else
 	{
-		ft_error("{USER:", "command not found \n[1]+  Done", NULL);
-		terminate(ms, NULL, 127);
-		/// her sollten wir nur returenen oder so
+		while (1)
+		{
+			a = readline("> ");
+			if (ft_strchr(a, '}') != 0)
+				break ;
+		}
+		if (ft_strchr(a, '}') != 0)
+			ft_error_braces(&token->str[ms->i - 1], a);
+		free(a);
 	}
 }
 

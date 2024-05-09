@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 18:56:31 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/09 11:40:27 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/09 21:19:14 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,4 +74,14 @@ void	ft_cmd_error(char *msg, char *cmd, int error_code)
 	else
 		ft_putstr_fd("command not found", 2);
 	ft_putstr_fd(RESET"\n", 2);
+}
+
+void	ft_error_braces(char *s1, char *s2)
+{
+	ft_putstr_fd(NINJASHELL, 2);
+	ft_putstr_fd(": ", 2);
+	ft_putstr_fd(s1, 2);
+	ft_putstr_fd("\n", 2);
+	ft_putstr_fd(s2, 2);
+	ft_putstr_fd(": bad substitution\n", 2);
 }

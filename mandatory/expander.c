@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 05:50:33 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/09 18:15:06 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/09 19:15:51 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ int	expand_tkn(t_token *token, t_node *node, t_ms *ms, int *node_nbr)
 	if (expstr[0] != '\0')
 		ft_strlcpy(token->str, expstr, ms->j + 1);
 	if (token && token->str[0] == '\0' && token->next)
-	if (token && token->str[0] == '\0' && token->next)
 	{
 		delete_empty_pre_tokens(token, node, ms, node_nbr);
 		ms->do_wildcards = 0;
@@ -69,7 +68,7 @@ int	expand_node(t_node *node, t_ms *ms)
 		return (1);
 	while (node->tokens[i])
 	{
-			if (expand_wildcard(node->tokens[i]))
+		if (expand_wildcard(node->tokens[i]))
 		{
 			oi = i;
 			if (word_splitting(node->tokens[i - 1], \
