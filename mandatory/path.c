@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   path.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 17:32:46 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/09 11:39:34 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/09 21:13:07 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ int	ft_prepend_path(char **cmd, char *envpaths, int *exit_code)
 	char	**paths;
 	char	*pthcmd;
 
+	if ((*cmd)[0] == '/' && access((*cmd), F_OK | X_OK) == 0)
+		return (0);
 	paths = ft_get_paths(envpaths);
 	if (paths == NULL)
 		return (ft_perror(*cmd), 1);
@@ -71,11 +73,7 @@ int	ft_prepend_path(char **cmd, char *envpaths, int *exit_code)
 	{
 		pthcmd = ft_prepend(paths[i], *cmd);
 		if (access(pthcmd, F_OK) == 0)
-		{
-			free(*cmd);
-			*cmd = pthcmd;
-			return (free_av(paths), 0);
-		}
+			return (free(*cmd), *cmd = pthcmd, free_av(paths), 0);
 		free(pthcmd);
 		i++;
 	}
