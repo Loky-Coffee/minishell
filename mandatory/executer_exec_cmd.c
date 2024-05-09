@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 15:42:46 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/09 14:44:13 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/09 18:11:15 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ void	execute_heredoc(int *fd_in, int *fd_out, char *lim, t_ms *ms)
 	if (pid_status[0] == 0)
 	{
 		set_signal_handler(SIGINT, SIG_DFL);
-		pid_status[1] = ft_heredoc(fd_pipe[1], lim);
+		pid_status[1] = ft_heredoc(fd_pipe[1], lim, ms);
 		ft_close_fd(fd_pipe[0], fd_pipe[1]);
 		ft_close_fd(*fd_in, *fd_out);
 		terminate(ms, NULL, pid_status[1]);
