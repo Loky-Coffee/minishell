@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_utils1.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 15:15:47 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/09 21:15:08 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/09 21:22:46 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_check_cmd.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 15:27:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/09 20:54:13 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/09 21:21:59 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

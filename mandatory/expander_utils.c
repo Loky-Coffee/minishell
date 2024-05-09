@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 07:16:35 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/09 18:13:44 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/09 19:28:56 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,29 +54,28 @@ int	split_and_reallocate_node(t_node *node)
 void	delete_empty_pre_tokens(t_token *token, \
 t_node *node, t_ms *ms, int *node_nbr)
 {
-	int		a;
-	int		flag;
+	int	a_flag[2];
 
-	a = 0;
-	flag = 0;
-	while (node && node->tokens && node->tokens[a] && node->tokens[a]->str != 0)
+	a_flag[0] = 0;
+	a_flag[1] = 0;
+	while (node && node->tokens && node->tokens[a_flag[0]]->str != 0)
 	{
-		if (node->tokens[a] == token)
+		if (node->tokens[a_flag[0]] == token)
 		{
-			while (node && node->tokens[a])
+			while (node && node->tokens[a_flag[0]])
 			{
-				node->tokens[a] = node->tokens[a + 1];
-				a++;
-				flag = 1;
+				node->tokens[a_flag[0]] = node->tokens[a_flag[0] + 1];
+				a_flag[0]++;
+				a_flag[1] = 1;
 			}
-			node->tokens[a] = NULL;
+			node->tokens[a_flag[0]] = NULL;
 			break ;
 		}
-		a++;
+		a_flag[0]++;
 	}
 	if (token->next && tkn_is_operator(token->next) == NO_TOKEN)
 	{
-		if(flag == 0)
+		if (a_flag[1] == 0)
 			(*node_nbr)++;
 		expand_tkn(token->next, node, ms, node_nbr);
 	}

@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 17:45:36 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/09 17:54:54 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/09 19:13:14 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static int	hd_process_braced_envvar(char **line, int *i, t_ms *ms, char *expstr)
+static int	hd_process_braced_env(char **line, int *i, t_ms *ms, char *expstr)
 {
 	if (ft_strchr(&(*line)[*i], '}'))
 	{
@@ -47,7 +47,7 @@ int *i, t_ms *ms)
 		return (free(exit_str), 0);
 	}
 	else if ((*line)[*i] == '{')
-		return (hd_process_braced_envvar(line, i, ms, expstr));
+		return (hd_process_braced_env(line, i, ms, expstr));
 	set_key(&(*line)[*i], ms->key, ms);
 	ft_get_env_value(ms, ms->value, ms->key);
 	ft_strlcat(expstr, ms->value, FT_PATH_MAX);
@@ -58,7 +58,7 @@ int *i, t_ms *ms)
 static int	realloc_line(char **line, char *expstr)
 {
 	int	i;
-	
+
 	free(*line);
 	*line = ft_calloc(ft_strlen(expstr) + 1, sizeof(char));
 	if (*line == NULL)

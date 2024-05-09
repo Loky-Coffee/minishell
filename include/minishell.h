@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/09 21:50:00 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/09 22:02:32 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -452,6 +452,7 @@ void			ft_error(char *s1, char *s2, char *s3);
 void			ft_syntax_error(char *s1, char *s2, char *s3);
 void			ft_perror(char *str);
 void			ft_cmd_error(char *msg, char *cmd, int error_code);
+void			ft_error_braces(char *s1, char *s2);
 
 // environment.c
 void			load_env(t_ms *ms, char **env);
