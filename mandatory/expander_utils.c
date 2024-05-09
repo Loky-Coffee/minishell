@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 07:16:35 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/09 10:36:56 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/09 14:05:39 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,8 @@ t_node *node, t_ms *ms, int *node_nbr)
 	int		a;
 
 	a = 0;
+	// if (token && token->str[0] == '\0' && token->next <= 1)
+	// 	return ;
 	while (node && node->tokens && node->tokens[a] && node->tokens[a]->str != 0)
 	{
 		if (node->tokens[a] == token)

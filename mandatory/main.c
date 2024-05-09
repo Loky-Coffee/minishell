@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/09 04:38:42 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/09 12:21:51 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	init(int argc, char **argv, char **env, t_ms *ms)
 	restore_history(ms);
 }
 
-int	check_for_parse_err(t_ms *ms)
+int	parse_it(t_ms *ms)
 {
 	ft_parse(ms->tokens, &ms->nodes, ms);
 	if (ms->parse_error == 0)
@@ -82,7 +82,7 @@ void	main_loop(t_ms *ms)
 			cleanup_ms(ms);
 			continue ;
 		}
-		if (check_for_parse_err(ms) == -1)
+		if (parse_it(ms) == -1)
 			continue ;
 		exec_manager(ms);
 		cleanup_ms(ms);

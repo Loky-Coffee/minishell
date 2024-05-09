@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 05:50:33 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/09 07:22:42 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/09 17:12:17 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int	expand_tkn(t_token *token, t_node *node, t_ms *ms, int *node_nbr)
 	}
 	if (expstr[0] != '\0')
 		ft_strlcpy(token->str, expstr, ms->j + 1);
-	if (token && token->str[0] == '\0')
+	if (token && token->str[0] == '\0' && token->next)
 	{
 		delete_empty_pre_tokens(token, node, ms, node_nbr);
 		ms->do_wildcards = 0;

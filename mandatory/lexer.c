@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 02:30:05 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/07 21:34:58 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/09 12:10:02 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ int	ft_lexer(t_ms *ms)
 		oi = check_for_operators(ms, &i, i);
 		if (oi == -1)
 			return (1);
-		if (oi > 1)
+		if (oi >= 1)
 			continue ;
 		else if (ms->line[i] && ms->line[i] == '(')
 			i = handle_subshell(i, ms);

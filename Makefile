@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+         #
+#    By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/20 16:47:30 by aalatzas          #+#    #+#              #
-#    Updated: 2024/05/09 09:33:11 by aalatzas         ###   ########.fr        #
+#    Updated: 2024/05/09 17:55:46 by nmihaile         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ NC		= \033[0m
 
 NAME	= minishell
 CC		= cc
-CFLAGS	= #-Wall -Wextra -Werror  			-g  -fsanitize=address
+CFLAGS	= -Wall -Wextra -Werror  			-g # -fsanitize=address
 NCOLORS =  -DDISABLE_NINJA_COLORS
 
 SRC_DIR	= mandatory/
@@ -29,7 +29,7 @@ utoken.c utoken2.c token_list_utils.c expander.c expander_expand_var.c expander_
 executer.c executer_utils1.c executer_create_cmds.c executer_check_cmd.c executer_builtins.c \
 executer_exec_cmd.c executer_redirects.c executer_operators.c \
 path.c error.c signals.c environment.c environment_utils.c unset_vars.c \
-here_doc.c node_utils1.c node_utils2.c tree_utils1.c \
+here_doc.c here_doc2.c node_utils1.c node_utils2.c tree_utils1.c \
 ft_echo.c ft_cd.c ft_pwd.c ft_export.c ft_export_utils1.c ft_export_utils2.c ft_unset.c ft_env.c ft_exit.c
 OBJS = $(addprefix $(OBJ_DIR), $(notdir $(SRCS:.c=.o)))
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/09 08:38:56 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/09 17:55:59 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -256,6 +256,7 @@ int				expand_wildcard_after_var(t_ms *ms, t_token *token,
 					t_node *node);
 
 //expender_expand_var.c
+int				set_key(char *str, char *dst, t_ms *ms);
 void			process_braces_token(t_token *token, t_ms *ms, char *str);
 
 // wildcards.c
@@ -408,11 +409,12 @@ pid_t			exec_pipe(int fd_in, int fd_out, t_node *node, t_ms *ms);
 int				logical_operator_manager(t_node *node, t_ms *ms, int ec);
 
 // here_doc.c
-int				ft_heredoc(int fd_write, char *lim);
-// int				ft_herestring(int fd_write, char *str);
+int				ft_heredoc(int fd_write, char *lim, t_ms *ms);
+
+// here_doc2.c
+int				expand_hd_line(char **line, t_ms *ms, int i, int j);
 
 // builtins
-// int				cmd_is_echo_ninjashell(t_token *token);
 int				ft_echo(t_cmd *cmd);
 int				ft_cd(t_cmd *cmd, t_ms *ms);
 int				ft_pwd(void);

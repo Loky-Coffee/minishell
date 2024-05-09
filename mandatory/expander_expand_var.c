@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   expander_expand_var.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 07:19:12 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/09 11:40:35 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/09 12:56:38 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static int	set_key(char *str, char *dst, t_ms *ms)
+int	set_key(char *str, char *dst, t_ms *ms)
 {
 	int	i;
 
@@ -45,6 +45,7 @@ void	process_braces_token(t_token *token, t_ms *ms, char *str)
 	{
 		ft_error("{USER:", "command not found \n[1]+  Done", NULL);
 		terminate(ms, NULL, 127);
+		/// her sollten wir nur returenen oder so
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 00:14:48 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/04 10:05:37 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/09 12:01:23 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ void	ft_add_token_end(t_token **token, t_token *new_token)
 		last_token = ft_token_last(*token);
 		last_token->next = new_token;
 	}
+	new_token->next = NULL;
 }
 
 int	tokens_size(t_token *tokens)

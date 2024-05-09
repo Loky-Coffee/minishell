@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_exec_cmd.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 15:42:46 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/09 05:30:38 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/09 12:28:36 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ void	execute_heredoc(int *fd_in, int *fd_out, char *lim, t_ms *ms)
 	if (pid_status[0] == 0)
 	{
 		set_signal_handler(SIGINT, SIG_DFL);
-		pid_status[1] = ft_heredoc(fd_pipe[1], lim);
+		pid_status[1] = ft_heredoc(fd_pipe[1], lim, ms);
 		ft_close_fd(fd_pipe[0], fd_pipe[1]);
 		ft_close_fd(*fd_in, *fd_out);
 		terminate(ms, NULL, pid_status[1]);
