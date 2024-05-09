@@ -3,21 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   executer_exec_cmd.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 15:42:46 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/09 18:11:15 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/09 21:14:17 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
-
-// int	not_absolute_path(char *cmd)
-// {
-// 	if (access(cmd, F_OK | X_OK) != 0)
-// 		return (0);
-// 	return (1);
-// }
 
 void	check_and_launch_cmd(int fd_in, int fd_out, t_cmd *cmd, t_ms *ms)
 {
@@ -27,12 +20,11 @@ void	check_and_launch_cmd(int fd_in, int fd_out, t_cmd *cmd, t_ms *ms)
 	ft_cmd_is_empty(fd_in, fd_out, cmd, ms);
 	ft_cmd_is_dot(cmd, ms);
 	ft_get_env_value(ms, cmd->path, "PATH");
-	if ((access(cmd->cmdpth, F_OK | X_OK) != 0) \
-		&& (ft_cmd_is_dir(cmd->cmdpth, &exit_code) \
+	if (ft_cmd_is_dir(cmd->cmdpth, &exit_code) \
 		|| ft_cmd_has_slash(cmd, &exit_code) \
 		|| ft_cmd_is_dotdot(cmd, &exit_code) \
 		|| ft_prepend_path(&cmd->cmdpth, cmd->path, &exit_code) \
-		|| ft_exec_permissions(cmd->cmdpth, &exit_code)))
+		|| ft_exec_permissions(cmd->cmdpth, &exit_code))
 	{
 		if (exit_code == 0)
 			exit_code = 1;

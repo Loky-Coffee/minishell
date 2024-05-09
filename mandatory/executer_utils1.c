@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_utils1.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 15:15:47 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/09 14:42:17 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/09 21:15:08 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	ft_collaps_args(int i, t_cmd *cmd)
 
 int	ft_exec_permissions(char *cmd, int *exit_code)
 {
-	if (access(cmd, X_OK) == 0)
+	if (access(cmd, F_OK | X_OK) == 0)
 		return (0);
 	*exit_code = 126;
 	ft_perror(cmd);

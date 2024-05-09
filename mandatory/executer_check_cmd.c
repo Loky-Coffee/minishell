@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_check_cmd.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 15:27:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/09 14:33:22 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/09 20:54:13 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ int	ft_cmd_has_slash(t_cmd *cmd, int *exit_code)
 {
 	if (cmd && cmd->cmdpth && cmd->cmdpth[0] == '/')
 	{
+		if (access(cmd->cmdpth, F_OK | X_OK) == 0)
+			return (0);
 		*exit_code = 127;
 		return (ft_error(cmd->cmdpth, "No such file or directory", NULL), 1);
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/09 18:15:18 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/09 20:44:24 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,14 +76,15 @@ void	main_loop(t_ms *ms)
 			continue ;
 		}
 		if (ft_strncmp(ms->line, "\0", 1) == 0)
-			continue ;
-		if (ft_lexer(ms))
 		{
 			cleanup_ms(ms);
 			continue ;
 		}
-		if (parse_it(ms) == -1)
+		if (ft_lexer(ms) || parse_it(ms) == -1)
+		{
+			cleanup_ms(ms);
 			continue ;
+		}
 		exec_manager(ms);
 		cleanup_ms(ms);
 	}
