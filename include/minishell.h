@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/08 15:46:13 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/09 08:38:56 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,6 +180,12 @@ typedef struct s_ms
 	int					hd_interupt;
 	int					default_stdin;
 	int					default_stdout;
+	int					j;
+	int					i;
+	char				quote_mode;
+	int					do_wildcards;
+	char				key[FT_PATH_MAX];
+	char				value[FT_PATH_MAX];
 }						t_ms;
 
 /* ************************************************************************** */
@@ -235,11 +241,28 @@ void			set_signal_sigaction(int signal,
 int				ft_lexer(t_ms *ms);
 
 // expender.c
-int				expand_tkn(t_token *token, t_node *node, t_ms *ms);
+void			expand_single_char(char *dst, int *j, char *src, int *i);
+void			expand_quote(char *qm, char *dst, int *j, char *src);
+int				expand_tkn(t_token *token, t_node *node,
+					t_ms *ms, int *node_nbr);
 int				expand_node(t_node *node, t_ms *ms);
+
+//expender_utils.c
+int				reallocate_node_tokens(t_node *node, t_token *curr, int i);
+int				split_and_reallocate_node(t_node *node);
+void			delete_empty_pre_tokens(t_token *token, t_node *node,
+					t_ms *ms, int *node_nbr);
+int				expand_wildcard_after_var(t_ms *ms, t_token *token,
+					t_node *node);
+
+//expender_expand_var.c
+void			process_braces_token(t_token *token, t_ms *ms, char *str);
 
 // wildcards.c
 int				expand_wildcard(t_token *token);
+int				expand_parameter_and_variable(t_token *token,
+					char *str, t_ms *ms);
+int				expant_parameter(t_token *token, t_ms *ms, char *expstr);
 
 // wildcards_utils.c
 int				has_wildcards(char *pattern);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/07 20:11:12 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/09 04:38:42 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,48 +36,65 @@ void	init_ms(int argc, char **argv, t_ms *ms)
 	set_signal_handler(SIGQUIT, SIG_IGN);
 }
 
+void	init(int argc, char **argv, char **env, t_ms *ms)
+{
+	init_ms(argc, argv, ms);
+	load_env(ms, env);
+	handle_arg_file(ms);
+	render_ninjashell();
+	restore_history(ms);
+}
+
+int	check_for_parse_err(t_ms *ms)
+{
+	ft_parse(ms->tokens, &ms->nodes, ms);
+	if (ms->parse_error == 0)
+		check_for_parse_errors(ms->nodes, ms);
+	if (ms->parse_error && ms->parse_errtkn)
+	{
+		ms->exit_code = 258;
+		ft_syntax_error("syntax error near unexpected token", \
+		ms->parse_errtkn->str, NULL);
+		cleanup_ms(ms);
+		return (-1);
+	}
+	return (0);
+}
+
+void	main_loop(t_ms *ms)
+{
+	while (ms->run)
+	{
+		create_prompt(ms);
+		ms->line = readline(ms->prompt);
+		if (ms->line)
+			dump_history(ms);
+		else
+		{
+			ms->run = 0;
+			printf("exit\n");
+			continue ;
+		}
+		if (ft_strncmp(ms->line, "\0", 1) == 0)
+			continue ;
+		if (ft_lexer(ms))
+		{
+			cleanup_ms(ms);
+			continue ;
+		}
+		if (check_for_parse_err(ms) == -1)
+			continue ;
+		exec_manager(ms);
+		cleanup_ms(ms);
+	}
+}
+
 int	main(int argc, char **argv, char **env)
 {
 	static t_ms	ms;
 
-	init_ms(argc, argv, &ms);
-	load_env(&ms, env);
-	handle_arg_file(&ms);
-	render_ninjashell();
-	restore_history(&ms);
-	while (ms.run)
-	{
-		create_prompt(&ms);
-		ms.line = readline(ms.prompt);
-		if (ms.line)
-			dump_history(&ms);
-		else
-		{
-			ms.run = 0;
-			printf("exit\n");
-			continue ;
-		}
-		if (ft_strncmp(ms.line, "\0", 1) == 0)
-			continue ;
-		if (ft_lexer(&ms))
-		{
-			cleanup_ms(&ms);
-			continue ;
-		}
-		ft_parse(ms.tokens, &ms.nodes, &ms);
-		if (ms.parse_error == 0)
-			check_for_parse_errors(ms.nodes, &ms);
-		if (ms.parse_error && ms.parse_errtkn)
-		{
-			ms.exit_code = 258;
-			ft_syntax_error("syntax error near unexpected token", \
-			ms.parse_errtkn->str, NULL);
-			cleanup_ms(&ms);
-			continue ;
-		}
-		exec_manager(&ms);
-		cleanup_ms(&ms);
-	}
+	init(argc, argv, env, &ms);
+	main_loop(&ms);
 	terminate(&ms, NULL, ms.shell_exit_code);
 	return (0);
 }

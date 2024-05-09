@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 18:56:31 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/07 20:09:30 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/09 11:40:27 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

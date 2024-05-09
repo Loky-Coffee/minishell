@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 02:35:00 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/08 22:42:06 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/09 05:24:00 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,6 @@ int	ft_echo(t_cmd *cmd)
 	flag = loop_flag_args(cmd, &i);
 	while (cmd->tokens[i] != NULL)
 	{
-		// if (!is_operator(cmd->tokens[i]->str) \
-		// && !is_single_token(*cmd->tokens[i]->str))
 		printf("%s", cmd->tokens[i]->str);
 		if (cmd->tokens[i + 1])
 			printf(" ");

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 02:33:21 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/08 23:36:27 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/09 11:40:38 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,38 +32,47 @@ static int	is_valid_identifier(char *key)
 	return (0);
 }
 
-static int	free_empty_line(t_ms *ms, int *flag, int i)
+static int	free_empty_line(t_ms *ms, int i)
 {
 	free(ms->envp[i]);
 	while (ms->envp[i + 1] != NULL)
 	{
 		ms->envp[i] = ms->envp[i + 1];
 		i++;
-		*flag = 1;
 	}
 	ms->envp[i] = NULL;
 	return (0);
 }
 
+int	check_valid_identifier(char *str)
+{
+	if (is_valid_identifier(str) > 0)
+	{
+		if (str[0] == '-')
+			return (ft_syntax_error("unset: ", &str[0], "invalid option"), 2);
+		else if (ft_strchr(str, ';') != NULL)
+			return (ft_syntax_error("unset: ", str, "command not found"), 127);
+		return (ft_syntax_error("unset: ", str, "not a valid identifier"), 1);
+	}
+	return (0);
+}
+
 int	ft_unset(t_ms *ms)
 {
-	char	*str;
 	char	key[FT_PATH_MAX];
 	int		i;
-	int		flag;
 	t_token	*token;
 
-	flag = 0;
 	token = ms->tokens->next;
 	if (ms->tokens->next == NULL || ms->tokens->next->str == NULL)
 		return (0);
 	while (token)
 	{
-		str = token->str;
-		if (is_valid_identifier(str) > 0)
-			return (ft_syntax_error("unset: ", str, "not a valid identifier"), 1);
+		i = check_valid_identifier(token->str);
+		if (i != 0)
+			return (i);
 		ft_memset(key, 0, FT_PATH_MAX);
-		ft_strlcat(key, str, FT_PATH_MAX);
+		ft_strlcat(key, token->str, FT_PATH_MAX);
 		ft_remove_unset_envvar(key, ms);
 		ft_strlcat(key, "=", FT_PATH_MAX);
 		i = 0;
@@ -71,9 +80,7 @@ int	ft_unset(t_ms *ms)
 		ft_strncmp(ms->envp[i], key, ft_strlen(key)) != 0)
 			i++;
 		if (ms->envp && ms->envp[i] != NULL)
-			free_empty_line(ms, &flag, i);
-		// if (flag == 1)
-		// 	return (1);
+			free_empty_line(ms, i);
 		token = token->next;
 	}
 	return (0);

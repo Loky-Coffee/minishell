@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/21 15:19:30 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/04 19:32:07 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/09 11:36:01 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static int	check_node(t_node *node, t_ms *ms)
 	}
 	else if (node->type == NODE_AND || node->type == NODE_OR)
 	{
-		if (node->left == NULL)
+		if (node->left == NULL || node->right == NULL)
 			return (set_error(node->tokens[0], ms), 1);
 	}
 	return (0);

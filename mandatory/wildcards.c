@@ -6,36 +6,11 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 18:32:04 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/04 18:51:20 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/09 07:15:41 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
-
-// void	print_mat(char mat[2048][2048], const char *str, const char *pattern)
-// {
-// 	size_t	i;
-// 	size_t	j;
-
-// 	fprintf(stderr, "\n");
-// 	i = 0;
-// 	while (i < ft_strlen(str) + 2)
-// 	{
-// 		j = 0;
-// 		while  (j < ft_strlen(pattern) + 2)
-// 		{
-// 			if (mat[i][j] == '\0')
-// 				fprintf(stderr, "0");
-// 			else if (mat[i][j] == 1)
-// 				fprintf(stderr, "1");
-// 			else
-// 				fprintf(stderr, "%c", mat[i][j]);
-// 			j++;
-// 		}
-// 		fprintf(stderr, "\n");
-// 		i++;
-// 	}
-// }
 
 static void	compress_wildcard_pattern(char *pattern)
 {
@@ -108,63 +83,6 @@ static int	is_matching(size_t i, size_t j, char *str, char *pattern)
 	return (mat[--i][--j]);
 }
 
-//----------------------------------------
-
-// static int	init_mat(char *mat, const char *str, const char *pattern)
-// {
-// 	size_t	i;
-// 	size_t	j;
-
-// 	if ((str == NULL && pattern == NULL) || ft_strncmp(pattern, "*", 2) == 0)
-// 		return (1);
-// 	mat[0] = 0;
-// 	mat[1] = 0;
-// 	mat[1 * 2048 + 0] = 0;
-// 	ft_strlcpy(&mat[2], pattern, 2048 - 2);
-// 	i = 2;
-// 	j = 0;
-// 	while (str[j])
-// 		mat[(i++) * 2048 + 0] = str[j++];
-// 	mat[1 * 2048 + 1] = 1;
-// 	i = 0;
-// 	while (i < ft_strlen(pattern))
-// 		mat[1 * 2048 + i++ + 2] = 0;
-// 	i = 0;
-// 	while (i < ft_strlen(str))
-// 		mat[(i++ + 2) * 2048 + 1] = 0;
-// 	return (0);
-// }
-
-// static int	is_matching(size_t i, size_t j, char *str, char *pattern)
-// {
-// 	char	mat[2048 * 2048];
-
-// 	if (init_mat(mat, str, pattern))
-// 		return (1);
-// 	while (i < ft_strlen(str) + 2)
-// 	{
-// 		j = 2;
-// 		while (j < ft_strlen(pattern) + 2)
-// 		{
-// 			if (mat[i * 2048] == mat[j] || mat[j] == '?')
-// 				mat[i * 2048 + j] = mat[(i - 1) * 2048 + (j - 1)];
-// 			else if (mat[j] == '*')
-// 			{
-// 				if (mat[i * 2048 + (j - 1)] == 1)
-// 					mat[i * 2048 + j] = 1;
-// 				else
-// 					mat[i * 2048 + j] = mat[(i - 1) * 2048 + j];
-// 			}
-// 			else
-// 				mat[i * 2048 + j] = 0;
-// 			j++;
-// 		}
-// 		i++;
-// 	}
-// print_mat(mat, str, pattern);
-// 	return (mat[--i * 2048 + --j]);
-// }
-
 static int	expand_pattern(t_epv *epv, char *pattern, char *expstr)
 {
 	if (has_wildcards(pattern))
@@ -217,36 +135,3 @@ int	expand_wildcard(t_token *token)
 	token->str = ft_strdup(expstr);
 	return (epv.count);
 }
-
-// This is a version that expands a string with spaces an multiple patterns:
-// for example "soo w*w go*"
-//
-// void	expand_wildcard(t_node *node, t_token *token)
-// {
-// 	int		i;
-// 	int		j;
-// 	char	expstr[FT_PATH_MAX];
-// 	char	pattern[FT_PATH_MAX];
-// 	t_epv	epv;
-
-// 	epv = (t_epv){0};
-// 	if (token == NULL || token->str == NULL || token->str[0] == '\0')
-// 		return ;
-// 	i = 0;
-// 	ft_memset(expstr, 0, FT_PATH_MAX);
-// 	while (token->str[i])
-// 	{
-// 		j = 0;
-// 		ft_memset(pattern, 0, FT_PATH_MAX);
-// 		while (token->str[i] && ft_isspace(token->str[i]))
-// 			ft_strlchr(expstr, token->str[i++], FT_PATH_MAX);
-// 		while (token->str[i] && !ft_isspace(token->str[i]))
-// 			pattern[j++] = token->str[i++];
-// 		if (expand_pattern(epv, pattern, expstr))
-// 			ft_strlcat(expstr, pattern, FT_PATH_MAX);
-// 		/// ft_split arguments…………
-// 	}
-// (void)node;
-// 	free(token->str);
-// 	token->str = ft_strdup(expstr);
-// }
