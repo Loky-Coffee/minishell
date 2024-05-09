@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/09 20:44:24 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/09 21:49:21 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void	main_loop(t_ms *ms)
 	while (ms->run)
 	{
 		create_prompt(ms);
-		ms->line = readline(ms->prompt);
+		read_user_input(ms);
 		if (ms->line)
 			dump_history(ms);
 		else

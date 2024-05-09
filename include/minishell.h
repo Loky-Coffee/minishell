@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/09 17:55:59 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/09 21:50:00 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,6 +223,9 @@ void			cleanup_ms(t_ms *ms);
 
 // Prompt
 int				create_prompt(t_ms *ms);
+
+// user_input.c
+void			read_user_input(t_ms *ms);
 
 // History
 int				dump_history(t_ms *ms);

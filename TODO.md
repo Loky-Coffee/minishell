@@ -77,17 +77,33 @@
 
 --------------------------------------------------------------------------------
 
+❌
+OLDPWD
+OLDPWD setzen
+OLDPWD lese		bei cd ..  und bei cd -
+
+✅
+wc   // VS //   /bin/ls
+=> Permission denied
+
+✅
+PROCESS_BRACES
+
+✅
+Sinal
+	ENTER
+	Ctrl-C	=> error
+
+
+--------------------------------------------------------------------------------
+
 ✅ - we have to do
 /bin/ls
 
-
-❌
-OLDPWD
-
-🍌 ❌
+✅
 echo -nnnnnnnn -n Hallo
 
-🍌 ❌
+✅
 echo ${USER}
 echo ${USER}afdsfgds
 
