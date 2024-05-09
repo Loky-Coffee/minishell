@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_builtins.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 20:33:21 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/08 15:47:20 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/09 14:26:21 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,8 @@ int	exec_builtin(int fds[2], t_builtin builtin, t_node *node, t_ms *ms)
 	if (builtin != BI_EXPORT)
 		if (expand_node(node, ms))
 			return (-1);
-	create_cmd(&cmd, node);
+	if(node)
+		create_cmd(&cmd, node);
 	exit_code = run_builtin((int [2]){fds[0], fds[1]}, builtin, &cmd, ms);
 	return (exit_code);
 }
@@ -75,7 +76,8 @@ pid_t	exec_fork_builtin(int fds[2], t_builtin builtin, t_node *node, t_ms *ms)
 	if (builtin != BI_EXPORT)
 		if (expand_node(node, ms))
 			return (-1);
-	create_cmd(&cmd, node);
+	if(node)
+		create_cmd(&cmd, node);
 	pid = fork_run_builtin((int [2]){fds[0], fds[1]}, builtin, &cmd, ms);
 	return (pid);
 }

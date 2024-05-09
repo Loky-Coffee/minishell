@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 01:18:14 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/03 01:30:32 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/09 17:02:12 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,8 @@ int	add_new_index_to_envp(t_ms *ms, int len)
 		new_envp[j] = ms->envp[j];
 		j++;
 	}
-	free(ms->envp);
+	if(ms->envp)
+		free(ms->envp);
 	ms->envp = new_envp;
 	return (0);
 }

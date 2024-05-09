@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_create_cmds.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 15:25:01 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/07 15:26:43 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/09 14:28:01 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	create_cmd(t_cmd *cmd, t_node *node)
 	cmd->args = args;
 	if (cmd->args == NULL)
 		cmd->cmdpth = ft_strdup("");
-	else
+	else if (node && node->tokens[0])
 		cmd->cmdpth = ft_strdup(node->tokens[0]->str);
 	return (0);
 }

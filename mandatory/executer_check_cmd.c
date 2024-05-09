@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 15:27:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/09 11:40:31 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/09 14:33:22 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	ft_cmd_is_empty(int fd_in, int fd_out, t_cmd *cmd, t_ms *ms)
 	int	i;
 
 	i = 0;
-	if (cmd->cmdpth[0] == '\0')
+	if (cmd && cmd->cmdpth && cmd->cmdpth[0] == '\0')
 	{
 		while (cmd->args[i])
 		{
@@ -38,7 +38,7 @@ void	ft_cmd_is_empty(int fd_in, int fd_out, t_cmd *cmd, t_ms *ms)
 
 void	ft_cmd_is_dot(t_cmd *cmd, t_ms *ms)
 {
-	if (ft_strncmp(cmd->cmdpth, ".", 2) == 0)
+	if (cmd && cmd->cmdpth && ft_strncmp(cmd->cmdpth, ".", 2) == 0)
 	{
 		ft_error(cmd->cmdpth, "filename argument required", NULL);
 		ft_putstr_fd(LIGHTCYAN "", 2);
@@ -47,14 +47,14 @@ void	ft_cmd_is_dot(t_cmd *cmd, t_ms *ms)
 		ft_putstr_fd(". filename [arguments]\n"RESET, 2);
 		terminate(ms, cmd, 2);
 	}
-	if (ft_strncmp(cmd->cmdpth, "./", 2) == 0)
+	if (cmd && cmd->cmdpth && ft_strncmp(cmd->cmdpth, "./", 2) == 0)
 	{
-		if (access(cmd->cmdpth, F_OK) != 0)
+		if (cmd && cmd->cmdpth && access(cmd->cmdpth, F_OK) != 0)
 		{
 			ft_perror(cmd->cmdpth);
 			terminate(ms, cmd, 127);
 		}
-		if (access(cmd->cmdpth, X_OK) != 0)
+		if (cmd && cmd->cmdpth && access(cmd->cmdpth, X_OK) != 0)
 		{
 			ft_perror(cmd->cmdpth);
 			terminate(ms, cmd, 126);
@@ -64,7 +64,7 @@ void	ft_cmd_is_dot(t_cmd *cmd, t_ms *ms)
 
 int	ft_cmd_is_dotdot(t_cmd *cmd, int *exit_code)
 {
-	if (ft_strncmp(cmd->cmdpth, "..", 3) == 0)
+	if (cmd && cmd->cmdpth && ft_strncmp(cmd->cmdpth, "..", 3) == 0)
 	{
 		ft_error(cmd->cmdpth, "command not found", NULL);
 		*exit_code = 127;
@@ -75,7 +75,7 @@ int	ft_cmd_is_dotdot(t_cmd *cmd, int *exit_code)
 
 int	ft_cmd_has_slash(t_cmd *cmd, int *exit_code)
 {
-	if (cmd->cmdpth[0] == '/')
+	if (cmd && cmd->cmdpth && cmd->cmdpth[0] == '/')
 	{
 		*exit_code = 127;
 		return (ft_error(cmd->cmdpth, "No such file or directory", NULL), 1);
@@ -87,7 +87,7 @@ int	ft_cmd_is_dir(char *cmd, int *exit_code)
 {
 	struct stat	file_stat;
 
-	if (ft_strchr(cmd, '/') == NULL )
+	if (cmd && ft_strchr(cmd, '/') == NULL )
 		return (0);
 	if (stat(cmd, &file_stat) != 0)
 		return (0);

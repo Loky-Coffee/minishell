@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 07:16:35 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/09 10:36:56 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/09 18:00:12 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ int	reallocate_node_tokens(t_node *node, t_token *curr, int i)
 		curr = curr->next;
 		i++;
 	}
-	free(node->tokens);
+	if (node->tokens)
+		free(node->tokens);
 	node->tokens = tokens;
 	return (0);
 }
@@ -54,8 +55,10 @@ void	delete_empty_pre_tokens(t_token *token, \
 t_node *node, t_ms *ms, int *node_nbr)
 {
 	int		a;
+	int		flag;
 
 	a = 0;
+	flag = 0;
 	while (node && node->tokens && node->tokens[a] && node->tokens[a]->str != 0)
 	{
 		if (node->tokens[a] == token)
@@ -64,15 +67,19 @@ t_node *node, t_ms *ms, int *node_nbr)
 			{
 				node->tokens[a] = node->tokens[a + 1];
 				a++;
+				flag = 1;
 			}
 			node->tokens[a] = NULL;
 			break ;
 		}
 		a++;
 	}
-	(*node_nbr)++;
-	if (token->next)
+	if (token->next && tkn_is_operator(token->next) == NO_TOKEN)
+	{
+		if(flag == 0)
+			(*node_nbr)++;
 		expand_tkn(token->next, node, ms, node_nbr);
+	}
 }
 
 int	expand_wildcard_after_var(t_ms *ms, t_token *token, t_node *node)

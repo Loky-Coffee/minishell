@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_utils1.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 15:15:47 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/07 15:30:08 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/09 14:42:17 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,19 +41,19 @@ int	ft_strncmp_ignorecase(const char *s1, const char *s2, size_t n)
 
 t_builtin	is_builtin(t_token *token)
 {
-	if (ft_strncmp_ignorecase(token->str, "echo", 5) == 0)
+	if (token && ft_strncmp_ignorecase(token->str, "echo", 5) == 0)
 		return (BI_ECHO);
-	if (ft_strncmp_ignorecase(token->str, "cd", 3) == 0)
+	if (token && ft_strncmp_ignorecase(token->str, "cd", 3) == 0)
 		return (BI_CD);
-	if (ft_strncmp_ignorecase(token->str, "pwd", 4) == 0)
+	if (token && ft_strncmp_ignorecase(token->str, "pwd", 4) == 0)
 		return (BI_PWD);
-	if (ft_strncmp_ignorecase(token->str, "export", 7) == 0)
+	if (token && ft_strncmp_ignorecase(token->str, "export", 7) == 0)
 		return (BI_EXPORT);
-	if (ft_strncmp_ignorecase(token->str, "unset", 6) == 0)
+	if (token && ft_strncmp_ignorecase(token->str, "unset", 6) == 0)
 		return (BI_UNSET);
-	if (ft_strncmp_ignorecase(token->str, "env", 4) == 0)
+	if (token && ft_strncmp_ignorecase(token->str, "env", 4) == 0)
 		return (BI_ENV);
-	if (ft_strncmp_ignorecase(token->str, "exit", 5) == 0)
+	if (token && ft_strncmp_ignorecase(token->str, "exit", 5) == 0)
 		return (BI_EXIT);
 	return (NO_BUILTIN);
 }
