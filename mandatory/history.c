@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   history.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 20:44:33 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/04 19:17:46 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/10 12:04:43 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,8 @@ int	dump_history(t_ms *ms)
 {
 	int	fd;
 
+	if (ms->line == NULL || ms->line[0] == '\0')
+		return (0);
 	add_history(ms->line);
 	fd = open(ft_historyfile(ms), O_WRONLY | O_CREAT | O_APPEND, 0600);
 	if (fd == -1)

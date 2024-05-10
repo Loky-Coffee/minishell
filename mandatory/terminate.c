@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:48:38 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/05 16:49:20 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/10 11:49:08 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	terminate(t_ms *ms, t_cmd *cmd, int exit_code)
 	ft_token_clear(&ms->tokens, del_token_content);
 	if (ms->unset_envvars)
 		free_av(ms->unset_envvars);
-	set_echoctl(1);
+	reset_signals();
 	close(ms->default_stdin);
 	close(ms->default_stdout);
 	exit(exit_code);

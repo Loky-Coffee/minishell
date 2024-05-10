@@ -6,7 +6,7 @@
 /*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 18:44:50 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/09 21:49:21 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/10 15:39:24 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ int	parse_it(t_ms *ms)
 		ms->exit_code = 258;
 		ft_syntax_error("syntax error near unexpected token", \
 		ms->parse_errtkn->str, NULL);
-		cleanup_ms(ms);
 		return (-1);
 	}
 	return (0);
@@ -75,7 +74,7 @@ void	main_loop(t_ms *ms)
 			printf("exit\n");
 			continue ;
 		}
-		if (ft_strncmp(ms->line, "\0", 1) == 0)
+		if (ms->line && ms->line[0] == '\0')
 		{
 			cleanup_ms(ms);
 			continue ;
