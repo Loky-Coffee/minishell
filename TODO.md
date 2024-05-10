@@ -82,6 +82,11 @@ OLDPWD
 OLDPWD setzen
 OLDPWD lese		bei cd ..  und bei cd -
 
+❌
+Signal for USER_INPUT
+ctrl-c
+
+
 ✅
 wc   // VS //   /bin/ls
 => Permission denied
@@ -93,7 +98,6 @@ PROCESS_BRACES
 Sinal
 	ENTER
 	Ctrl-C	=> error
-
 
 --------------------------------------------------------------------------------
 
