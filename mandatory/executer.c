@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:47:45 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/09 18:11:56 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/10 18:01:34 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,8 @@ int	exec_manager(t_ms *ms)
 	if (ms->nodes == NULL)
 		return (-1);
 	if (ms->nodes->tokens[1] == NULL)
-		expand_node(ms->nodes, ms);
+		if (expand_node(ms->nodes, ms))
+			return (ms->exit_code = 1, 1);
 	builtin = is_builtin(ms->nodes->tokens[0]);
 	if (ms->nodes->type == NODE_COMMAND && builtin)
 		ms->exit_code = exec_builtin((int [2]) \

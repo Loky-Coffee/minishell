@@ -74,6 +74,58 @@
 			✅ >> f11 << f1 << f2 << f3 cat ----> mandatory/here_doc.c:35:9
 - ❌ 	norminetten
 
+--------------------------------------------------------------------------------
+
+❌
+minishell: /minishell $ echo **
+zsh: segmentation fault  ./minishell
+
+❌
+""|test
+=>	should print command not found
+
+✅
+"
+=> shows error twice
+
+
+❌
+"'"
+=> should NOT print error should run '
+=> should print: command not found
+
+❌
+export test1="ls"
+"$test1"
+=> should not work
+
+❌
+$$
+print PID
+
+❌
+ctrl-D multiple times unknown testcase
+
+❌
+cd with nothing with no HOME it should print
+bash: cd: HOME not set
+
+❌
+NO ENV
+minishell: /include $ unset OLDPWD
+minishell: /include $ export
+zsh: segmentation fault  env -i ./minishell
+
+
+echo -n -n-n test
+=> bash is different!!!!!
+
+
+WE DONT HAVE FD LEAKS BUT THIS IS HOW TO TEST THEM
+FD Leaks
+ps aux | grep minishell 
+lsof -p <PID>
+
 
 --------------------------------------------------------------------------------
 

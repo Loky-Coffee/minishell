@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wordsplitting.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 09:42:58 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/09 01:52:40 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/10 16:10:55 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,12 +80,10 @@ int	word_split_token(t_token **token, t_ms *ms, int *count, t_token *buff)
 	size_t	i;
 	size_t	len;
 	t_token	*curr;
-	t_token	*next;
 	t_token	*prev;
 
 	if ((*token) == NULL || (*token)->str == NULL || (*token)->str[0] == '\0')
 		return (0);
-	next = (*token)->next;
 	prev = prev_token((*token), ms);
 	i = 0;
 	while ((*token)->str && (*token)->str[i])

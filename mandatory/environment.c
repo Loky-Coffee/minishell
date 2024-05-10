@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   environment.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 13:57:42 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/10 15:46:26 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/10 16:08:12 by nmihaile         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,8 +107,6 @@ int	ft_setenv(char *key, char *value, t_ms *ms)
 	size_t	len;
 	char	*nkv;
 
-	fprintf(stderr, "key[%s]\n", key);
-	fprintf(stderr, "value[%s]\n", value);
 	if (!is_valid_envkey(key))
 		return (1);
 	i = 0;
