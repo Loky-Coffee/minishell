@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 00:41:52 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/09 07:44:58 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/10 15:57:39 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ static int	is_tilde(char *old_cwd, t_cmd *cmd, t_ms *ms)
 
 	result = 0;
 	getcwd(old_cwd, FT_PATH_MAX);
+	ft_setenv("OLDPWD", old_cwd, ms);
 	home_dir = getenv("HOME");
 	if (!home_dir)
 		return (ft_perror("cd"), 1);
@@ -77,6 +78,7 @@ int	ft_cd(t_cmd *cmd, t_ms *ms)
 		if (ft_chdir(ms, home) != 0)
 			return (ft_perror("cd"), 1);
 		ft_get_env_value(ms, current_cwd, "PWD");
+		ft_setenv("OLDPWD", old_cwd, ms);
 		return (0);
 	}
 	else
@@ -96,6 +98,7 @@ static int	ft_cd2(t_cmd *cmd, t_ms *ms, char *old_cwd, char *current_cwd)
 			return (ft_error("cd", old_cwd, NULL), 1);
 		printf("%s\n", old_cwd);
 		ft_strlcpy(old_cwd, current_cwd, ft_strlen(current_cwd) + 1);
+		ft_setenv("OLDPWD", old_cwd, ms);
 		return (0);
 	}
 	else if ((cmd->tokens[0]->next \
@@ -104,6 +107,7 @@ static int	ft_cd2(t_cmd *cmd, t_ms *ms, char *old_cwd, char *current_cwd)
 	else
 	{
 		ft_get_env_value(ms, old_cwd, "PWD");
+		ft_setenv("OLDPWD", old_cwd, ms);
 		if (ft_chdir(ms, cmd->tokens[0]->next->str) != 0)
 		{
 			ft_error("cd", cmd->tokens[0]->next->str, strerror(errno));

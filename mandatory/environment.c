@@ -6,7 +6,7 @@
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 13:57:42 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/09 12:44:22 by aalatzas         ###   ########.fr       */
+/*   Updated: 2024/05/10 15:46:26 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	load_env(t_ms *ms, char **env)
 	while (env[i])
 	{
 		if (ft_strncmp(env[i], "OLDPWD", 6) == 0)
-			ms->envp[i] = ft_strdup("OLDPWD");
+			ms->envp[i] = ft_strdup("OLDPWD=");
 		else
 			ms->envp[i] = ft_strdup(env[i]);
 		i++;
@@ -107,6 +107,8 @@ int	ft_setenv(char *key, char *value, t_ms *ms)
 	size_t	len;
 	char	*nkv;
 
+	fprintf(stderr, "key[%s]\n", key);
+	fprintf(stderr, "value[%s]\n", value);
 	if (!is_valid_envkey(key))
 		return (1);
 	i = 0;
