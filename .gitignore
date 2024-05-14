@@ -1,5 +1,6 @@
 # Ignoriere alles
 *
+
 # Erlaube C-Quellcodedateien und Header-Dateien
 !mandatory
 !bonus

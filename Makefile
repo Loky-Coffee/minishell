@@ -6,7 +6,7 @@
 #    By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/20 16:47:30 by aalatzas          #+#    #+#              #
-#    Updated: 2024/05/14 20:40:12 by aalatzas         ###   ########.fr        #
+#    Updated: 2024/05/14 22:23:26 by aalatzas         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,11 +20,13 @@ NAME_BONUS = minishell_bonus
 CC		= cc
 CFLAGS	= -Wall -Wextra -Werror  			-g # -fsanitize=address
 NCOLORS =  -DDISABLE_NINJA_COLORS
-
 SRC_DIR	= mandatory/
 SRC_DIR_BONUS	= bonus/
 OBJ_DIR = mandatory/obj/
 OBJ_DIR_BONUS = bonus/obj/
+LIBFT			= libft/libft.a
+LIBFT_SRC_DIR	= libft/
+LIBFT_OBJ_DIR	= libft/obj/
 
 SRCS = main.c utils.c user_input.c exec_arguments.c prompt.c history.c terminate.c lexer.c parser.c parser_insert1.c \
 parser_insert2.c parser_insert3.c parse_errors.c renderer.c \
@@ -47,32 +49,25 @@ ft_echo_bonus.c ft_cd_bonus.c ft_pwd_bonus.c ft_export_bonus.c ft_export_utils1_
 OBJS = $(addprefix $(OBJ_DIR), $(notdir $(SRCS:.c=.o)))
 OBJS_BONUS = $(addprefix $(OBJ_DIR_BONUS), $(notdir $(SRCS_BONUS:.c=.o)))
 
-.SILENT:
-
 all: $(NAME)
 
 bonus: $(NAME_BONUS)
 
-start:
-	echo "$(YELLOW)Compiling from source, please wait a moment…$(NC)"
-
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
-	mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) $(NCOLORS) -c $< -o $@ || \
-	echo "$(RED)Compilation failed ❌$(NC)"
+	@mkdir -p $(OBJ_DIR)
+	@$(CC) $(CFLAGS) $(NCOLORS) -c $< -o $@
 
 $(OBJ_DIR_BONUS)%.o: $(SRC_DIR_BONUS)%.c
-	mkdir -p $(OBJ_DIR_BONUS)
-	$(CC) $(CFLAGS) $(NCOLORS) -c $< -o $@ || \
-	echo "$(RED)Compilation failed ❌$(NC)"
+	@mkdir -p $(OBJ_DIR_BONUS)
+	@$(CC) $(CFLAGS) $(NCOLORS) -c $< -o $@
 
-$(NAME): start libft $(OBJS)
-	$(CC) $(CFLAGS) $(NCOLORS) $(OBJS) $(LIBFT) -o $(NAME) -lreadline
-	echo "$(GREEN)Compilation successful ✅$(NC)"
+$(NAME): $(LIBFT) $(OBJS)
+	@$(CC) $(CFLAGS) $(NCOLORS) $(OBJS) $(LIBFT) -o $(NAME) -lreadline
+	@echo "$(GREEN)Compilation successful ✅$(NC)"
 
-$(NAME_BONUS): start libft $(OBJS_BONUS)
-	$(CC) $(CFLAGS) $(NCOLORS) $(OBJS_BONUS) $(LIBFT) -o $(NAME_BONUS) -lreadline
-	echo "$(GREEN)Compilation successful ✅$(NC)"
+$(NAME_BONUS): $(LIBFT) $(OBJS_BONUS)
+	@$(CC) $(CFLAGS) $(NCOLORS) $(OBJS_BONUS) $(LIBFT) -o $(NAME_BONUS) -lreadline
+	@echo "$(GREEN)Compilation successful ✅$(NC)"
 
 
 clean:
@@ -99,16 +94,12 @@ ret: re t
 ####                                 LIBFT                                 #####
 ################################################################################
 
-LIBFT			= libft/libft.a
-LIBFT_SRC_DIR	= libft/
-LIBFT_OBJ_DIR	= libft/obj/
-
 $(LIBFT_OBJ_DIR)%.o: $(LIBFT_SRC_DIR)%.c
-	mkdir -p $(LIBFT_OBJ_DIR)
+	@mkdir -p $(LIBFT_OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-libft:
-	cd libft && make
+$(LIBFT):
+	@cd libft && make
 
 clean_libft:
 	cd libft && make clean
