@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_cd.c                                            :+:      :+:    :+:   */
+/*   ft_cd_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/21 00:41:52 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/12 17:42:53 by aalatzas         ###   ########.fr       */
+/*   Created: 2024/05/14 21:41:35 by aalatzas          #+#    #+#             */
+/*   Updated: 2024/05/14 21:41:37 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../include/minishell_bonus.h"
 
 static int	ft_cd2(t_cmd *cmd, t_ms *ms, char *old_cwd, char *current_cwd);
 

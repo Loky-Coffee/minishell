@@ -1,12 +1,8 @@
 # Ignoriere alles
 *
-
-# Erlaube .gitignore und README.md
-!.gitignore
-!README.md
-
 # Erlaube C-Quellcodedateien und Header-Dateien
 !mandatory
+!bonus
 !libft
 !libft/printf
 !libft/gnl

@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expander_utils.c                                   :+:      :+:    :+:   */
+/*   expander_utils_bonus.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/09 07:16:35 by aalatzas          #+#    #+#             */
-/*   Updated: 2024/05/14 16:28:22 by aalatzas         ###   ########.fr       */
+/*   Created: 2024/05/14 21:41:24 by aalatzas          #+#    #+#             */
+/*   Updated: 2024/05/14 21:41:26 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../include/minishell_bonus.h"
 
 int	reallocate_node_tokens(t_node *node, t_token *curr, int i)
 {

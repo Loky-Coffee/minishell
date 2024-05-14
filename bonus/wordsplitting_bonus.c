@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   wordsplitting.c                                    :+:      :+:    :+:   */
+/*   wordsplitting_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/04 09:42:58 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/14 01:45:05 by aalatzas         ###   ########.fr       */
+/*   Created: 2024/05/14 21:44:43 by aalatzas          #+#    #+#             */
+/*   Updated: 2024/05/14 21:44:45 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../include/minishell_bonus.h"
 
 void	word_splitting2(t_token	*curr, t_token *head, t_token *prev)
 {

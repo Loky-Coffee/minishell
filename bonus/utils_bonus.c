@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   utils_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/07 17:05:16 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/12 17:51:51 by aalatzas         ###   ########.fr       */
+/*   Created: 2024/05/14 21:44:17 by aalatzas          #+#    #+#             */
+/*   Updated: 2024/05/14 21:44:19 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../include/minishell_bonus.h"
 
 void	free_line(t_ms *ms)
 {

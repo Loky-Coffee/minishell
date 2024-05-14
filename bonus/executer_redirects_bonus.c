@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   executer_redirects.c                               :+:      :+:    :+:   */
+/*   executer_redirects_bonus.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/07 15:46:43 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/14 18:07:45 by aalatzas         ###   ########.fr       */
+/*   Created: 2024/05/14 21:41:01 by aalatzas          #+#    #+#             */
+/*   Updated: 2024/05/14 21:41:02 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../include/minishell_bonus.h"
 
 static int	redirect_in(int *fd_in, t_node *node, t_ms *ms)
 {

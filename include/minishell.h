@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nmihaile <nmihaile@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: aalatzas <aalatzas@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:46:39 by nmihaile          #+#    #+#             */
-/*   Updated: 2024/05/10 15:50:09 by nmihaile         ###   ########.fr       */
+/*   Updated: 2024/05/14 19:34:40 by aalatzas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -257,10 +257,17 @@ void			delete_empty_pre_tokens(t_token *token, t_node *node,
 					t_ms *ms, int *node_nbr);
 int				expand_wildcard_after_var(t_ms *ms, t_token *token,
 					t_node *node);
+void			free_token_and_set(t_token **token, t_token *buff);
+
+//expander_utils2.c
+void			expand_single_char(char *dst, int *j, char *src, int *i);
+void			expand_quote(char *qm, char *dst, int *j, char *src);
+void			set_zero(int *a, int *flag);
+int				process_braces_token_read_line(char **a);
 
 //expender_expand_var.c
 int				set_key(char *str, char *dst, t_ms *ms);
-void			process_braces_token(t_token *token, t_ms *ms, char *str);
+int				process_braces_token(t_token *token, t_ms *ms, char *str);
 
 // wildcards.c
 int				expand_wildcard(t_token *token);
@@ -274,8 +281,7 @@ int				ft_strlchr(char *dst, const char src, size_t dstsize);
 void			place_pattern(char mat[2048][2048], const char *pattern);
 
 // wordsplitting.c
-int				word_splitting(t_token *prev, t_token *token,
-					t_token *next, int *i);
+int				word_splitting(t_token *prev, t_token *token, t_token *next);
 int				word_split_token(t_token **token, t_ms *ms,
 					int *count, t_token *buff);
 
@@ -423,7 +429,7 @@ int				ft_cd(t_cmd *cmd, t_ms *ms);
 int				ft_pwd(void);
 int				export_arguments(t_ms *ms, t_node *node, t_token *token);
 int				ft_export(t_node *node, t_ms *ms);
-int				ft_unset(t_ms *ms);
+int				ft_unset(t_cmd *cmd, t_ms *ms);
 int				ft_env(t_ms *ms);
 unsigned char	ft_exit(t_cmd *cmd, t_ms *ms);
 
