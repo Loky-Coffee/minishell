@@ -4,6 +4,7 @@
 # Erlaube C-Quellcodedateien und Header-Dateien
 !mandatory
 !bonus
+!include
 !libft
 !libft/printf
 !libft/gnl
